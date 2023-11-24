@@ -18,6 +18,9 @@ export interface Schedule extends Document {
 
 const scheduleSchema: Schema = new Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
     subject: {
       type: String,
     },

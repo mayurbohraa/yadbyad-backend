@@ -4,8 +4,14 @@ import * as scheduleService from "../service/schedule.service";
 
 export async function getSchedule(req: Request, res: Response) {
   try {
-    // const settings = await SettingsService.getSettings();
-    return res.status(200).json({});
+    const schedules = await scheduleService.scheduleByUserId(
+      res.get("userId")!
+    );
+    return res.status(httpStatus.BAD_REQUEST).send({
+      data: schedules,
+      statusCode: httpStatus.BAD_REQUEST,
+      message: "Schedules succesfully",
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -13,8 +19,11 @@ export async function getSchedule(req: Request, res: Response) {
 
 export async function schedule(req: Request, res: Response) {
   try {
-    const schedule = await scheduleService.schedule(req.body);
-    res.status(httpStatus.BAD_REQUEST).send({
+    const schedule = await scheduleService.schedule({
+      userId: res.get("userId"),
+      ...req.body,
+    });
+    return res.status(httpStatus.BAD_REQUEST).send({
       data: schedule,
       statusCode: httpStatus.BAD_REQUEST,
       message: "Schedule succesfully",
