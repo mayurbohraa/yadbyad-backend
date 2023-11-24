@@ -1,0 +1,46 @@
+import mongoose, { Schema, Document } from "mongoose";
+
+export enum ScheduleType {
+  Leacture = "leacture",
+  Exam = "exam",
+}
+
+export interface Schedule extends Document {
+  subject: string;
+  scheduleType: string;
+  scheduleDate: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  updatedAt: Date;
+  createdAt: Date;
+}
+
+const scheduleSchema: Schema = new Schema(
+  {
+    subject: {
+      type: String,
+    },
+    scheduleType: {
+      type: String,
+      enum: ScheduleType,
+    },
+    scheduleDate: {
+      type: Date,
+    },
+    startTime: {
+      type: Date,
+    },
+    endTime: {
+      type: Date,
+    },
+    location: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export default mongoose.model<Schedule>("schedule", scheduleSchema);
