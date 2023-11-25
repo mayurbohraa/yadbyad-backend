@@ -2,6 +2,7 @@ import ScheduleModel, { Schedule } from "../models/schedule.model";
 import { RequestModel } from "../models";
 import moment from "moment";
 import { Request } from "../models/request.model";
+import { Types } from "mongoose";
 
 /**
  * @description This function is used to create Schedule
@@ -72,4 +73,20 @@ export async function request(requestDto: any): Promise<any> {
  */
 export async function requestByUserId(userId: string) {
   return await RequestModel.find({ userId });
+}
+
+/**
+ * @description This function updated the Request
+ * @author keshav suman
+ * @param {String} requestId
+ * @param {Object} updateRequestDto
+ * @returns {Promise<any>}
+ */
+
+export async function requestUpdate(requestId: string, updateRequestDto: any) {
+  return await RequestModel.findByIdAndUpdate(
+    new Types.ObjectId(requestId),
+    updateRequestDto,
+    { new: true }
+  );
 }
