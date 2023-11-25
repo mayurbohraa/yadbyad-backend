@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum ScheduleType {
-  Leacture = "leacture",
+  Leacture = "lecture",
   Exam = "exam",
 }
 
