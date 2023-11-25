@@ -17,9 +17,35 @@ export async function getSchedule(req: Request, res: Response) {
   }
 }
 
+export async function getScheduleAdmin(req: Request, res: Response) {
+  try {
+    const schedules = await scheduleService.scheduleByAdmin();
+    return res.status(httpStatus.OK).send({
+      data: schedules,
+      statusCode: httpStatus.OK,
+      message: "Schedules succesfully",
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
 export async function getRequest(req: Request, res: Response) {
   try {
     const requests = await scheduleService.requestByUserId(res.get("userId")!);
+    return res.status(httpStatus.OK).send({
+      data: requests,
+      statusCode: httpStatus.OK,
+      message: "Request fetched succesfully",
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
+export async function getRequestAdmin(req: Request, res: Response) {
+  try {
+    const requests = await scheduleService.requestByAdmin();
     return res.status(httpStatus.OK).send({
       data: requests,
       statusCode: httpStatus.OK,

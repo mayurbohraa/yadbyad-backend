@@ -6,7 +6,9 @@ const router = Router();
 
 router.use(jwtverify);
 router.get("/", ScheduleController.getSchedule);
+router.get("/scheduleadmin", ScheduleController.getScheduleAdmin);
 router.post("/", ScheduleController.schedule);
+router.get("/requestsadmin", ScheduleController.getRequestAdmin);
 router.get("/requests", ScheduleController.getRequest);
 router.post("/request", ScheduleController.request);
 router.put("/request/:id", ScheduleController.requestUpdate);

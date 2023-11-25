@@ -4,7 +4,7 @@ import { jwtverify } from "../middlewares";
 
 const router = Router();
 
-router.post("/signup", AuthenticationController.signup);
+router.post("/login", AuthenticationController.login);
 router.post("/signup", AuthenticationController.signup);
 router.get("/users", AuthenticationController.users);
 

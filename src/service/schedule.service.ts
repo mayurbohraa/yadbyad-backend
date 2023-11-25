@@ -29,6 +29,20 @@ export async function scheduleByUserId(userId: string): Promise<Schedule[]> {
 }
 
 /**
+ * @description This function is used to fetch the list of schedule by admin
+ * @author Keshav suman
+ * @returns {Promise<Schedule[]>}
+ */
+export async function scheduleByAdmin(): Promise<Schedule[]> {
+  return await ScheduleModel.find({}
+    ).populate({
+      path: "userId",
+      model: "users",
+    });
+}
+
+
+/**
  * @description This function is used to fetch the list of matches
  * @author Keshav suman
  * @param {String} userId
@@ -51,7 +65,7 @@ export async function fetchMatches(
   }
   ).populate({
     path: "userId",
-    model: "user",
+    model: "users",
   });
 }
 
@@ -76,8 +90,26 @@ export async function request(requestDto: any): Promise<any> {
  * @returns {Promise<any>}
  */
 export async function requestByUserId(userId: string) {
-  return await RequestModel.find({ userId });
+  return await RequestModel.find({ userId }
+    ).populate({
+      path: "userId",
+      model: "users",
+    });
 }
+
+/**
+ * @description This function is used to fetch the requests for admin
+ * @author Keshav suman
+ * @returns {Promise<any>}
+ */
+export async function requestByAdmin() {
+  return await RequestModel.find({}
+    ).populate({
+      path: "userId",
+      model: "users",
+    });
+}
+
 
 /**
  * @description This function updated the Request
