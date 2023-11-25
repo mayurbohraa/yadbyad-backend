@@ -52,6 +52,7 @@ export async function schedule(req: Request, res: Response) {
 }
 
 export async function request(req: Request, res: Response) {
+  console.log(req);
   try {
     const request = await scheduleService.request({
       userId: res.get("userId"),
