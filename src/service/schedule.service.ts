@@ -41,11 +41,15 @@ export async function fetchMatches(
   endTime: Date
 ): Promise<any> {
   return await ScheduleModel.find({
-    subject: { $or: [subject, ""] },
+    $or: [
+      { subject: { $exists: true } },
+      { subject: "" }
+    ],
     scheduleDate,
     startTime,
     endTime,
-  }).populate({
+  }
+  ).populate({
     path: "userId",
     model: "user",
   });
