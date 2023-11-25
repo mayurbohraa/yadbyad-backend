@@ -8,9 +8,9 @@ export enum ScheduleType {
 export interface Schedule extends Document {
   subject: string;
   scheduleType: string;
-  scheduleDate: string;
-  startTime: string;
-  endTime: string;
+  scheduleDate: Date;
+  startTime: Date;
+  endTime: Date;
   location: string;
   updatedAt: Date;
   createdAt: Date;
