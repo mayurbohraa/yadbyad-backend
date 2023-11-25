@@ -1,12 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum Status {
-  Accepted = "acepted",
+  Accepted = "accepted",
   Pending = "pending",
   Rejected = "rejected",
 }
 
 export interface Request extends Document {
+  request:string,
   scheduleDate: Date;
   startTime: Date;
   endTime: Date;
@@ -19,6 +20,10 @@ const requestSchema: Schema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
+    },
+
+    request: {
+      type: String,
     },
 
     scheduleDate: {
