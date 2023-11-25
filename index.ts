@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import router from "./src/routes";
 import path from "path";
 import Exceptionhandler from "./src/utils/exceptionhandler";
+import cors from "cors";
 
 const app = express.default();
 
@@ -23,7 +24,7 @@ mongoose.connection.on("error", (err) => {
 app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
-
+app.use(cors())
 app.use("/api/v1", router);
 
 app.use(Exceptionhandler);
