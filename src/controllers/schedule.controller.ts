@@ -55,7 +55,7 @@ export async function matches(req: Request, res: Response) {
     return res.status(httpStatus.BAD_REQUEST).send({
       data: allMatches,
       statusCode: httpStatus.BAD_REQUEST,
-      message: "Schedule succesfully",
+      message: "Matches fetched succesfully",
     });
   } catch (error) {
     console.log(error);

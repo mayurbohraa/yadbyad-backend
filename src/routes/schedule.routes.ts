@@ -7,4 +7,5 @@ const router = Router();
 router.use(jwtverify);
 router.get("/", ScheduleController.getSchedule);
 router.post("/", ScheduleController.schedule);
+router.get("/matches", ScheduleController.matches);
 export default router;
