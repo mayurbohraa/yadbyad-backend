@@ -71,3 +71,16 @@ export function comparePassword(
 export function generateToken(user: User): string {
   return jsonwebtoken.sign(user, process.env.JWT_Token!);
 }
+
+/**
+ * @description This function is used to list all users
+ * @author Keshav suman
+ * @param {number} page
+ * @param {number} limit
+ * @returns {Promise<any>}
+ */
+export async function fetchUsers(page: number, limit: number): Promise<any> {
+  return await UserModel.find({})
+    .limit(limit)
+    .skip((page - 1) * limit);
+}

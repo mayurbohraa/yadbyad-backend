@@ -78,3 +78,24 @@ export async function signup(req: Request, res: Response) {
     });
   }
 }
+
+export async function users(req: Request, res: Response) {
+  try {
+    const { page, limit } = req.query;
+    const users = await AuthenticationService.fetchUsers(
+      parseInt(page as string),
+      parseInt(limit as string)
+    );
+    res.status(httpStatus.BAD_REQUEST).send({
+      data: users,
+      statusCode: httpStatus.BAD_REQUEST,
+      message: "User doesn't Exists",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
