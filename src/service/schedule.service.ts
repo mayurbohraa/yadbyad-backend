@@ -1,5 +1,8 @@
 import ScheduleModel, { Schedule } from "../models/schedule.model";
+import { RequestModel } from "../models";
 import moment from "moment";
+import { Request } from "../models/request.model";
+
 /**
  * @description This function is used to create Schedule
  * @author Keshav suman
@@ -37,7 +40,7 @@ export async function fetchMatches(
   endTime: Date
 ): Promise<any> {
   return await ScheduleModel.find({
-    subject,
+    subject: { $or: [subject, ""] },
     scheduleDate,
     startTime,
     endTime,
@@ -45,4 +48,28 @@ export async function fetchMatches(
     path: "userId",
     model: "user",
   });
+}
+
+/**
+ * @description This function is used to create Request
+ * @author Keshav suman
+ * @param {Object} scheduleDto
+ * @returns {Promise<Request>}
+ */
+export async function request(requestDto: any): Promise<any> {
+  return await RequestModel.create({
+    ...requestDto,
+    startTime: moment(requestDto.startTime, "hh:mma").toDate(),
+    endTime: moment(requestDto.endTime, "hh:mma").toDate(),
+  });
+}
+
+/**
+ * @description This function is used to fetch the requests
+ * @author Keshav suman
+ * @param {String} userId
+ * @returns {Promise<any>}
+ */
+export async function requestByUserId(userId: string) {
+  return await RequestModel.find({ userId });
 }

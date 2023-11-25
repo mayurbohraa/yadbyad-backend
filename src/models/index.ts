@@ -1,3 +1,5 @@
 import UserModel from "./user.model";
 import SettingsModel from "./settings.model";
-export { UserModel, SettingsModel };
+import RequestModel from "./request.model";
+
+export { UserModel, SettingsModel, RequestModel };

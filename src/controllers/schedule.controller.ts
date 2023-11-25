@@ -7,10 +7,23 @@ export async function getSchedule(req: Request, res: Response) {
     const schedules = await scheduleService.scheduleByUserId(
       res.get("userId")!
     );
-    return res.status(httpStatus.BAD_REQUEST).send({
+    return res.status(httpStatus.OK).send({
       data: schedules,
-      statusCode: httpStatus.BAD_REQUEST,
+      statusCode: httpStatus.OK,
       message: "Schedules succesfully",
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
+export async function getRequest(req: Request, res: Response) {
+  try {
+    const requests = await scheduleService.requestByUserId(res.get("userId")!);
+    return res.status(httpStatus.OK).send({
+      data: requests,
+      statusCode: httpStatus.OK,
+      message: "Request fetched succesfully",
     });
   } catch (error) {
     return res.status(500).json(error);
@@ -24,10 +37,30 @@ export async function schedule(req: Request, res: Response) {
       userId: res.get("userId"),
       ...req.body,
     });
-    return res.status(httpStatus.BAD_REQUEST).send({
+    return res.status(httpStatus.OK).send({
       data: schedule,
-      statusCode: httpStatus.BAD_REQUEST,
+      statusCode: httpStatus.OK,
       message: "Schedule succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+export async function request(req: Request, res: Response) {
+  try {
+    const request = await scheduleService.request({
+      userId: res.get("userId"),
+      ...req.body,
+    });
+    return res.status(httpStatus.OK).send({
+      data: request,
+      statusCode: httpStatus.OK,
+      message: "Request added succesfully",
     });
   } catch (error) {
     console.log(error);
@@ -53,9 +86,9 @@ export async function matches(req: Request, res: Response) {
       return matches;
     });
 
-    return res.status(httpStatus.BAD_REQUEST).send({
+    return res.status(httpStatus.OK).send({
       data: allMatches,
-      statusCode: httpStatus.BAD_REQUEST,
+      statusCode: httpStatus.OK,
       message: "Matches fetched succesfully",
     });
   } catch (error) {
