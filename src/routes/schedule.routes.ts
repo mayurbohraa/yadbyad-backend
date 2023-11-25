@@ -6,5 +6,5 @@ const router = Router();
 
 router.use(jwtverify);
 router.get("/", ScheduleController.getSchedule);
-router.post("/addschedule", ScheduleController.schedule);
+router.post("/", ScheduleController.schedule);
 export default router;
