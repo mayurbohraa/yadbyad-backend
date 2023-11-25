@@ -48,7 +48,34 @@ export async function scheduleByAdmin(): Promise<Schedule[]> {
  * @param {String} userId
  * @returns {Promise<any>}
  */
-export async function fetchMatches(
+export async function fetchMatchesSNS(
+  subject: String,
+  scheduleDate: Date,
+  startTime: Date,
+  endTime: Date
+): Promise<any> {
+  return await ScheduleModel.find({
+    $or: [
+      { subject: { $exists: false } },
+      { subject: subject }
+    ],
+    scheduleDate,
+    startTime,
+    endTime,
+  }
+  ).populate({
+    path: "userId",
+    model: "users",
+  });
+}
+
+/**
+ * @description This function is used to fetch the list of matches
+ * @author Keshav suman
+ * @param {String} userId
+ * @returns {Promise<any>}
+ */
+export async function fetchMatchesPTS(
   subject: String,
   scheduleDate: Date,
   startTime: Date,
@@ -57,7 +84,7 @@ export async function fetchMatches(
   return await ScheduleModel.find({
     $or: [
       { subject: { $exists: true } },
-      { subject: "" }
+      { subject: subject }
     ],
     scheduleDate,
     startTime,

@@ -120,27 +120,47 @@ export async function requestUpdate(req: Request, res: Response) {
 
 export async function matches(req: Request, res: Response) {
   try {
+    const {type} = req.params;
     const schedules = await scheduleService.scheduleByUserId(
       res.get("userId")!
       );
       
-    const allMatches: any[] = [];
+    let allMatches: any[] = [];
+    let finalMatches: any[] =[];
 
     for (const element of schedules) {
-      const matches = await scheduleService.fetchMatches(
-        element.subject,
-        element.scheduleDate,
-        element.startTime,
-        element.endTime
-      );
-      console.log(matches);
-      allMatches.concat(matches);
+      if(type == "fetchMatchesSNS"){
+
+        const matches = await scheduleService.fetchMatchesSNS(
+          element.subject,
+          element.scheduleDate,
+          element.startTime,
+          element.endTime
+          );
+          // console.log(matches);
+          allMatches = allMatches.concat(matches);
+        }
+
+        if(type == "fetchMatchesPTS"){
+
+          const matches = await scheduleService.fetchMatchesPTS(
+            element.subject,
+            element.scheduleDate,
+            element.startTime,
+            element.endTime
+            );
+            // console.log(matches);
+            allMatches = allMatches.concat(matches);
+          }
     }
 
-    console.log(allMatches);
+    // console.log(allMatches);
+    finalMatches = allMatches.filter(({ _id: value1 }) =>
+      schedules.some(({ id: value2 }) => value1 != value2)
+    );
 
     return res.status(httpStatus.OK).send({
-      data: allMatches,
+      data: finalMatches,
       statusCode: httpStatus.OK,
       message: "Matches fetched succesfully",
     });

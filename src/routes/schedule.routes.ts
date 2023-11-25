@@ -12,5 +12,5 @@ router.get("/requestsadmin", ScheduleController.getRequestAdmin);
 router.get("/requests", ScheduleController.getRequest);
 router.post("/request", ScheduleController.request);
 router.put("/request/:id", ScheduleController.requestUpdate);
-router.get("/matches", ScheduleController.matches);
+router.get("/matches/:type", ScheduleController.matches);
 export default router;
