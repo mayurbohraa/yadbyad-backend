@@ -18,6 +18,7 @@ export async function getSchedule(req: Request, res: Response) {
 }
 
 export async function schedule(req: Request, res: Response) {
+  console.log(req);
   try {
     const schedule = await scheduleService.schedule({
       userId: res.get("userId"),
