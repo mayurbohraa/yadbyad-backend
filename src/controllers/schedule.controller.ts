@@ -122,16 +122,22 @@ export async function matches(req: Request, res: Response) {
   try {
     const schedules = await scheduleService.scheduleByUserId(
       res.get("userId")!
-    );
-    const allMatches: any[] = schedules.map(async (sched) => {
-      const matches = await scheduleService.fetchMatches(
-        sched.subject,
-        sched.scheduleDate,
-        sched.startTime,
-        sched.endTime
       );
-      return matches;
-    });
+      
+    const allMatches: any[] = [];
+
+    for (const element of schedules) {
+      const matches = await scheduleService.fetchMatches(
+        element.subject,
+        element.scheduleDate,
+        element.startTime,
+        element.endTime
+      );
+      console.log(matches);
+      allMatches.concat(matches);
+    }
+
+    console.log(allMatches);
 
     return res.status(httpStatus.OK).send({
       data: allMatches,
