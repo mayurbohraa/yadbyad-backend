@@ -7,9 +7,9 @@ export async function getSchedule(req: Request, res: Response) {
     const schedules = await scheduleService.scheduleByUserId(
       res.get("userId")!
     );
-    return res.status(httpStatus.BAD_REQUEST).send({
+    return res.status(httpStatus.OK).send({
       data: schedules,
-      statusCode: httpStatus.BAD_REQUEST,
+      statusCode: httpStatus.OK,
       message: "Schedules succesfully",
     });
   } catch (error) {
@@ -24,9 +24,9 @@ export async function schedule(req: Request, res: Response) {
       userId: res.get("userId"),
       ...req.body,
     });
-    return res.status(httpStatus.BAD_REQUEST).send({
+    return res.status(httpStatus.OK).send({
       data: schedule,
-      statusCode: httpStatus.BAD_REQUEST,
+      statusCode: httpStatus.OK,
       message: "Schedule succesfully",
     });
   } catch (error) {

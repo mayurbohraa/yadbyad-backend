@@ -37,7 +37,7 @@ export async function fetchMatches(
   endTime: Date
 ): Promise<any> {
   return await ScheduleModel.find({
-    subject,
+    subject: { $or: [subject, ""] },
     scheduleDate,
     startTime,
     endTime,
