@@ -12,6 +12,7 @@ export interface User extends Document {
   password: string;
   major: string;
   username: string;
+  studentID: string;
   isProfileCompleted: boolean;
   isEmailVerified: boolean;
   isMobileVerified: boolean;
@@ -26,6 +27,9 @@ const userSchema: Schema = new Schema(
       type: String,
     },
     username: {
+      type: String,
+    },
+    studentID: {
       type: String,
     },
     major: {

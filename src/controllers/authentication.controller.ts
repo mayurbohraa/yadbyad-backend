@@ -42,7 +42,7 @@ export async function login(req: Request, res: Response) {
 
 export async function signup(req: Request, res: Response) {
   try {
-    const { fullName, email, password, mobileNumber, role, major, username } =
+    const { fullName, email, password, mobileNumber, role, major, username, studentID } = 
       req.body;
     if (await AuthenticationService.findUserByEmail(email)) {
       res.status(httpStatus.PARTIAL_CONTENT).send({
@@ -57,6 +57,7 @@ export async function signup(req: Request, res: Response) {
         role: role,
         major,
         username,
+        studentID,
         password: AuthenticationService.hashPassword(password),
       };
       const createdUser = await AuthenticationService.createUser(user as User);

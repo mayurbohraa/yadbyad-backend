@@ -21,15 +21,20 @@ export default async function verify(
       });
     } else {
       const token = bearer[1];
-      const user: JwtVerify = jsonwebtoken.verify(
-        token,
-        process.env.JWT_Token!
-      ) as JwtVerify;
-      res.set("userId", user._id);
-      res.set("firstName", user.firstName);
-      res.set("lastName", user.lastName);
-      res.set("email", user.email);
-      next();
+      try{
+        const user: JwtVerify = jsonwebtoken.verify(
+          token,
+          process.env.JWT_Token!
+        ) as JwtVerify;
+        res.set("userId", user._id);
+        res.set("firstName", user.firstName);
+        res.set("lastName", user.lastName);
+        res.set("email", user.email);
+        next();
+      }
+      catch (error){
+        console.log(error);
+      }
     }
   }
 }
