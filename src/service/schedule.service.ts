@@ -57,7 +57,7 @@ export async function fetchMatchesSNS(
   return await ScheduleModel.find({
     $or: [
       { subject: { $exists: false } },
-      { subject: subject }
+      // { subject: subject }
     ],
     scheduleDate,
     startTime,
