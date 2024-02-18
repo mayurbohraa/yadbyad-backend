@@ -21,7 +21,7 @@ export async function login(req: Request, res: Response) {
         });
       } else {
         res.status(httpStatus.BAD_REQUEST).send({
-          statusCode: httpStatus.BAD_REQUEST,
+          statusCode: httpStatus.BAD_REQUEST, 
           message: "Password doesn't matched",
         });
       }
@@ -45,9 +45,9 @@ export async function signup(req: Request, res: Response) {
     const { fullName, email, password, mobileNumber, role, major, username, studentID } = 
       req.body;
     if (await AuthenticationService.findUserByEmail(email)) {
-      res.status(httpStatus.PARTIAL_CONTENT).send({
-        statusCode: httpStatus.PARTIAL_CONTENT,
-        message: "User with this email already exists",
+      res.status(httpStatus.BAD_REQUEST).send({
+        statusCode: httpStatus.BAD_REQUEST,
+        message: "User already exists",
       });
     } else {
       const user = {

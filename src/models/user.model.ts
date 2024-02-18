@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum Role {
-  PartTime = "part_time",
-  SpecialNeed = "special_need",
+  PartTime = "part time student",
+  SpecialNeed = "special need student",
 }
 
 export interface User extends Document {
