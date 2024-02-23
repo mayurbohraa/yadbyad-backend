@@ -2,6 +2,7 @@ import { UserModel } from "../models";
 import { User } from "../models/user.model";
 import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { ObjectId } from 'mongodb';
 
 /**
  * @description This function is used to find a user by email
@@ -15,13 +16,24 @@ export async function findUserByEmail(email: string): Promise<User | null> {
 }
 
 /**
+ * @description This function is used to find a user by id
+ * @param {String} id
+ * @author Kunal Rathod
+ * @returns {Promise<User|null>}
+ */
+
+export async function findUserById(id: string): Promise<User | null> {
+  const objectId = new ObjectId(id);
+  return await UserModel.findOne({ _id: objectId });
+}
+
+/**
  * @description This function is used to update users details by using id
  * @param {String} _id
  * @author Kunal Rathod
  * @returns {Promise<User|null>}
  */
 
-import { ObjectId } from 'mongodb';
 
 export async function findUserByIdAndUpdate(id: string, user: User): Promise<User | null> {
   // Convert the string id to ObjectId
@@ -40,6 +52,28 @@ export async function findUserByIdAndUpdate(id: string, user: User): Promise<Use
   // Return the updated user
   return await UserModel.findOne({ _id: objectId });
 }
+
+/**
+ * @description This function is used to reset password details by using email
+ * @param {String} email
+ * @author Kunal Rathod
+ * @returns {Promise<User|null>}
+ */
+export async function changePasswordByEmail(email: string, newPassword: string): Promise<User|null> {
+  // Find the user by email
+  const existingUser = await UserModel.findOne({ email });
+
+  if (!existingUser) {
+    return null; // User not found
+  }
+
+  // Update the user's password
+  existingUser.password = newPassword;
+  await existingUser.save();
+
+  return existingUser; // Password changed successfully
+}
+
 
 /**
  * @description This function is used to delete users by using id
