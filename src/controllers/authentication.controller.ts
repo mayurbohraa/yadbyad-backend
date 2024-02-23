@@ -88,10 +88,10 @@ export async function users(req: Request, res: Response) {
       parseInt(page as string),
       parseInt(limit as string)
     );
-    res.status(httpStatus.BAD_REQUEST).send({
+    res.status(httpStatus.OK).send({
       data: users,
-      statusCode: httpStatus.BAD_REQUEST,
-      message: "User doesn't Exists",
+      statusCode: httpStatus.OK,
+      message: "Users Data Fetch Successfully",
     });
   } catch (error) {
     console.log(error);
