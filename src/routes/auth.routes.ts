@@ -7,5 +7,6 @@ const router = Router();
 router.post("/login", AuthenticationController.login);
 router.post("/signup", AuthenticationController.signup);
 router.get("/users", AuthenticationController.users);
+// router.get("/users/edit", AuthenticationController.editUsers);
 
 export default router;

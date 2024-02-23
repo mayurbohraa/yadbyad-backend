@@ -17,6 +17,7 @@ export interface User extends Document {
   isEmailVerified: boolean;
   isMobileVerified: boolean;
   role: Role;
+  gender: string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -39,6 +40,9 @@ const userSchema: Schema = new Schema(
       type: String,
     },
     mobileNumber: {
+      type: String,
+    },
+    gender: {
       type: String,
     },
     password: {
