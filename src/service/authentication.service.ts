@@ -15,6 +15,50 @@ export async function findUserByEmail(email: string): Promise<User | null> {
 }
 
 /**
+ * @description This function is used to update users details by using id
+ * @param {String} _id
+ * @author Kunal Rathod
+ * @returns {Promise<User|null>}
+ */
+
+import { ObjectId } from 'mongodb';
+
+export async function findUserByIdAndUpdate(id: string, user: User): Promise<User | null> {
+  // Convert the string id to ObjectId
+  const objectId = new ObjectId(id);
+
+  // Find the user by _id
+  const existingUser = await UserModel.findOne({ _id: objectId });
+
+  if (!existingUser) {
+    return null; // User not found
+  }
+
+  // Update the user's details
+  await UserModel.updateOne({ _id: objectId }, user);
+
+  // Return the updated user
+  return await UserModel.findOne({ _id: objectId });
+}
+
+/**
+ * @description This function is used to delete users by using id
+ * @param {String} _id
+ * @author Kunal Rathod
+ * @returns {Promise<User|null>}
+ */
+export async function deleteUserById(id: string): Promise<boolean> {
+  // Convert the string id to ObjectId
+  const objectId = new ObjectId(id);
+
+  // Find the user by _id and delete them
+  const result = await UserModel.deleteOne({ _id: objectId });
+
+  // Check if the deletion was successful
+  return result.deletedCount === 1;
+}
+
+/**
  * @description This function is used to find a user by username
  * @param {String} username
  * @author Keshav suman

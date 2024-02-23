@@ -102,23 +102,78 @@ export async function users(req: Request, res: Response) {
   }
 }
 
-// export async function editUsers(req: Request, res: Response) {
-//   try {
-//     const { page, limit } = req.query;
-//     const users = await AuthenticationService.fetchUsers(
-//       parseInt(page as string),
-//       parseInt(limit as string)
-//     );
-//     res.status(httpStatus.BAD_REQUEST).send({
-//       data: users,
-//       statusCode: httpStatus.BAD_REQUEST,
-//       message: "User doesn't Exists",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-//       message: error,
-//     });
-//   }
-// }
+export async function editUsers(req: Request, res: Response) {
+  try {
+    const { username } = req.params;
+    console.log(username);
+    const user = await AuthenticationService.findUserByUsername(
+      username
+    );
+    console.log(user);
+    if (user) {
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Edit Users details",
+      data: {
+        user
+      },
+    });
+  }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+export async function updateUsers(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const user = await AuthenticationService.findUserByIdAndUpdate(
+      id, {...req.body}
+    );
+    console.log(user);
+    if (user) {
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Users details is updated successfully",
+      data: {
+        user
+      },
+    });
+  }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+export async function deleteUsers(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const user = await AuthenticationService.deleteUserById(
+      id
+    );
+    console.log(user);
+    if (user) {
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Users is deleted successfully",
+      data: {
+        user
+      },
+    });
+  }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
