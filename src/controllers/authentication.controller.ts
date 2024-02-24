@@ -104,10 +104,9 @@ export async function users(req: Request, res: Response) {
 
 export async function editUsers(req: Request, res: Response) {
   try {
-    const { username } = req.params;
-    console.log(username);
-    const user = await AuthenticationService.findUserByUsername(
-      username
+    const { id } = req.params;
+    const user = await AuthenticationService.findUserById(
+      id
     );
     console.log(user);
     if (user) {
@@ -164,6 +163,58 @@ export async function deleteUsers(req: Request, res: Response) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Users deleted successfully",
+      data: {
+        user
+      },
+    });
+  }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+
+export async function forgotPassword(req: Request, res: Response) {
+ 
+  try {
+    const { email, newPassword } = req.body;
+    const passwordChanged = await AuthenticationService.changePasswordByEmail(email, newPassword);
+
+    if (passwordChanged) {
+      res.status(httpStatus.OK).send({
+        statusCode: httpStatus.OK,
+        message: "New password is set",
+      });
+    } else {
+      res.status(httpStatus.BAD_REQUEST).send({
+        statusCode: httpStatus.BAD_REQUEST,
+        message: "Email doesn't exist or password couldn't be changed",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: "Internal server error",
+    });
+  }
+}
+
+export async function editProfile(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const user = await AuthenticationService.findUserByIdAndUpdate(
+      id, {...req.body}
+    );
+    console.log(user);
+    if (user) {
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Users details is updated successfully",
       data: {
         user
       },
