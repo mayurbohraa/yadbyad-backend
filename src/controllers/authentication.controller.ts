@@ -138,7 +138,7 @@ export async function updateUsers(req: Request, res: Response) {
     if (user) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Users details is updated successfully",
+      message: "Users details updated successfully",
       data: {
         user
       },
@@ -163,7 +163,7 @@ export async function deleteUsers(req: Request, res: Response) {
     if (user) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Users is deleted successfully",
+      message: "Users deleted successfully",
       data: {
         user
       },
