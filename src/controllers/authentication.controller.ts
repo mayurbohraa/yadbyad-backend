@@ -42,7 +42,7 @@ export async function login(req: Request, res: Response) {
 
 export async function signup(req: Request, res: Response) {
   try {
-    const { fullName, email, password, mobileNumber, role, major, username, studentID, gender } = 
+    const { fullName, email, password, mobileNumber, role, username, studentID, gender } = 
       req.body;
     if (await AuthenticationService.findUserByEmail(email)) {
       res.status(httpStatus.BAD_REQUEST).send({
@@ -55,7 +55,6 @@ export async function signup(req: Request, res: Response) {
         fullName: fullName,
         mobileNumber: mobileNumber,
         role: role,
-        major,
         username,
         studentID,
         gender,
@@ -228,3 +227,4 @@ export async function editProfile(req: Request, res: Response) {
     });
   }
 }
+
