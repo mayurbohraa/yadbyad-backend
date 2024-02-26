@@ -7,10 +7,8 @@ export enum Status {
 }
 
 export interface Report extends Document {
-  file:{
-    url: String;
-    filename: String;
-};
+  fileUrl: String;
+  filename: String;
   fileDescription:string;
   status: Status;
   updatedAt: Date;
@@ -23,10 +21,13 @@ const reportSchema: Schema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
     },
 
-    file: {
-        url: String,
-        filename: String,
+    fileUrl: {
+        type: String,
     },
+
+    filename: {
+      type: String,
+  },
 
     fileDescription: {
         type: String,
@@ -35,6 +36,11 @@ const reportSchema: Schema = new Schema(
     status: {
       type: String,
       enum: Status,
+      default: "pending",
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
     },
   },
   {
@@ -42,4 +48,4 @@ const reportSchema: Schema = new Schema(
   }
 );
 
-export default mongoose.model<Report>("Report", reportSchema);
+export default mongoose.model<Report>("reports", reportSchema);

@@ -1,12 +1,11 @@
-// import { Router } from "express";
-// import { ReportController } from "../controllers";
-// const multer = require("multer");
-// const {storage} = require("../../cloudConfig.ts");
-// const upload = multer({storage});
+import { Router } from "express";
+import { ReportController } from "../controllers";
+import upload from "../utils/upload.middleware";
 
 
-// const router = Router();
 
-// router.post("/:id",upload.single("User[file]"), ReportController.report);
+const router = Router();
 
-// export default router;
+router.post("/",upload.single("file"), ReportController.submitReport);
+
+export default router;

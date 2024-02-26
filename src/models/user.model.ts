@@ -65,6 +65,7 @@ const userSchema: Schema = new Schema(
       enum: Role,
       default: Role.PartTime,
     },
+    
   },
   {
     timestamps: true,

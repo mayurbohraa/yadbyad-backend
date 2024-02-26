@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+import { Types } from "mongoose";
 import { Complain } from "../models/complain.model";
-import { ComplainService, SettingsService } from "../service";
+import { ComplainService, SettingsService, AuthenticationService } from "../service";
 import { compare } from "bcryptjs";
 
 export async function submitComplain(req: Request, res: Response) {
   try {
+    const { userId } = req.params;
     const { subject, message } =  req.body;
       const Complain = {
       
@@ -15,11 +17,15 @@ export async function submitComplain(req: Request, res: Response) {
       };
       const createdComplain = await ComplainService.createComplain(Complain as Complain);
       await SettingsService.createSettings(createdComplain._id);
+      const userData = await AuthenticationService.findUserById(
+        userId
+      );
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "Complain is submitted successfully",
         data: {
           complain: createdComplain,
+          user: userData,
           token: ComplainService.generateToken(createdComplain.toObject()),
         },
       });
@@ -37,16 +43,20 @@ export async function submitComplain(req: Request, res: Response) {
 export async function fetchComplain(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    const { userId } = req.params;
     const complain = await ComplainService.findUserById(
       id
     );
-  
+    const userData = await AuthenticationService.findUserById(
+      userId
+    );
     if (complain) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is fetched successfully",
       data: {
-        complain
+        complain,
+        user: userData,
       },
     });
   }
@@ -62,8 +72,12 @@ export async function fetchComplain(req: Request, res: Response) {
 export async function replyComplain(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    const { userId } = req.params;
     const complain = await ComplainService.findUserByIdAndUpdate(
       id, {...req.body}
+    );
+    const userData = await AuthenticationService.findUserById(
+      userId
     );
     
     if (complain) {
@@ -71,7 +85,8 @@ export async function replyComplain(req: Request, res: Response) {
       statusCode: httpStatus.OK,
       message: "Complain is replied successfully",
       data: {
-        complain
+        complain,
+        user: userData,
       },
     });
   }
@@ -87,16 +102,21 @@ export async function replyComplain(req: Request, res: Response) {
 export async function deleteComplain(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    const { userId } = req.params;
     const complain = await ComplainService.deleteUserById(
       id
     );
-  
+    const userData = await AuthenticationService.findUserById(
+      userId
+    );
+
     if (complain) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is deleted successfully",
       data: {
-        complain
+        complain,
+        user: userData,
       },
     });
   }
