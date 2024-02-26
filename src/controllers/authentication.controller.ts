@@ -107,14 +107,20 @@ export async function editUsers(req: Request, res: Response) {
     const user = await AuthenticationService.findUserById(
       id
     );
-    console.log(user);
-    if (user) {
+   
+    if (user && user.status == "active") {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Edit Users details",
       data: {
         user
       },
+    });
+  }else{
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "User you are finding is deleted",
+      
     });
   }
   } catch (error) {
@@ -154,11 +160,14 @@ export async function updateUsers(req: Request, res: Response) {
 export async function deleteUsers(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const user = await AuthenticationService.deleteUserById(
+    const user = await AuthenticationService.findUserById(
       id
     );
-    console.log(user);
+
+
     if (user) {
+      user.status ="deleted";
+      user.save();
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Users deleted successfully",

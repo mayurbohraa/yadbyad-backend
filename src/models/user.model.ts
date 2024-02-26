@@ -5,6 +5,11 @@ export enum Role {
   SpecialNeed = "special need student",
 }
 
+export enum Status {
+  Active = "active",
+  Deleted = "deleted",
+}
+
 export interface User extends Document {
   fullName: string;
   email: string;
@@ -18,6 +23,7 @@ export interface User extends Document {
   isMobileVerified: boolean;
   role: Role;
   gender: string;
+  status: string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -64,6 +70,11 @@ const userSchema: Schema = new Schema(
       type: String,
       enum: Role,
       default: Role.PartTime,
+    },
+    status: {
+      type: String,
+      enum: Status,
+      default: "active",
     },
     
   },
