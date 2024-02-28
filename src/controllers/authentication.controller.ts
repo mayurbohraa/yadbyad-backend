@@ -9,7 +9,7 @@ export async function login(req: Request, res: Response) {
     const user: User | null = await AuthenticationService.findUserByUsername(
       username
     );
-    if (user) {
+    if (user && user.status == "active") {
       if (AuthenticationService.comparePassword(password, user.password)) {
         res.status(httpStatus.OK).send({
           statusCode: httpStatus.OK,
@@ -87,11 +87,15 @@ export async function users(req: Request, res: Response) {
       parseInt(page as string),
       parseInt(limit as string)
     );
+
+    const activeUsers = users.filter((user: User) => user.status === "active");
+
     res.status(httpStatus.OK).send({
-      data: users,
+      data: activeUsers,
       statusCode: httpStatus.OK,
-      message: "Users Data Fetch Successfully",
+      message: "Active Users Data Fetch Successfully",
     });
+
   } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
@@ -100,6 +104,7 @@ export async function users(req: Request, res: Response) {
     });
   }
 }
+
 
 export async function editUsers(req: Request, res: Response) {
   try {
@@ -139,7 +144,7 @@ export async function updateUsers(req: Request, res: Response) {
       id, {...req.body}
     );
     console.log(user);
-    if (user) {
+    if (user ) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Users details updated successfully",
@@ -190,7 +195,8 @@ export async function forgotPassword(req: Request, res: Response) {
  
   try {
     const { email, newPassword } = req.body;
-    const passwordChanged = await AuthenticationService.changePasswordByEmail(email, newPassword);
+    const hashedPassword = AuthenticationService.hashPassword(newPassword);
+    const passwordChanged = await AuthenticationService.changePasswordByEmail(email, hashedPassword);
 
     if (passwordChanged) {
       res.status(httpStatus.OK).send({
@@ -219,7 +225,7 @@ export async function editProfile(req: Request, res: Response) {
       id, {...req.body}
     );
     console.log(user);
-    if (user) {
+    if (user && user.status == "active") {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Users details is updated successfully",
@@ -237,3 +243,43 @@ export async function editProfile(req: Request, res: Response) {
   }
 }
 
+
+export async function changePassword(req: Request, res: Response) {
+  try {
+    const { username, password, newPassword, email } = req.body;
+    const user: User | null = await AuthenticationService.findUserByUsername(
+      username
+    );
+    console.log(user);
+    if (user && user.status == "active") {
+      if (AuthenticationService.comparePassword(password, user.password)) {
+
+    const hashedPassword = AuthenticationService.hashPassword(newPassword);
+    const passwordChanged = await AuthenticationService.changePasswordByEmail(email, hashedPassword);
+
+    if (passwordChanged) {
+      res.status(httpStatus.OK).send({
+        statusCode: httpStatus.OK,
+        message: "New password is set",
+      });
+    }
+      } else {
+        res.status(httpStatus.BAD_REQUEST).send({
+          statusCode: httpStatus.BAD_REQUEST, 
+          message: "Password doesn't matched",
+        });
+      }
+    } else {
+      res.status(httpStatus.BAD_REQUEST).send({
+        statusCode: httpStatus.BAD_REQUEST,
+        message: "User doesn't Exists",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}

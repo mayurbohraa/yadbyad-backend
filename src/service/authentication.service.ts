@@ -69,6 +69,7 @@ export async function changePasswordByEmail(email: string, newPassword: string):
 
   // Update the user's password
   existingUser.password = newPassword;
+  
   await existingUser.save();
 
   return existingUser; // Password changed successfully
