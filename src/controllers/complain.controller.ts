@@ -15,11 +15,14 @@ export async function submitComplain(req: Request, res: Response) {
         message: message,
        
       };
-      const createdComplain = await ComplainService.createComplain(Complain as Complain);
-      await SettingsService.createSettings(createdComplain._id);
       const userData = await AuthenticationService.findUserById(
         userId
       );
+  
+      if (userData && userData.status == "active") {
+      const createdComplain = await ComplainService.createComplain(Complain as Complain);
+      await SettingsService.createSettings(createdComplain._id);
+     
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "Complain is submitted successfully",
@@ -29,7 +32,13 @@ export async function submitComplain(req: Request, res: Response) {
           token: ComplainService.generateToken(createdComplain.toObject()),
         },
       });
-    
+    } else{
+      res.status(httpStatus.OK).send({
+        statusCode: httpStatus.OK,
+        message: "user is already deleted",
+       
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
@@ -44,13 +53,13 @@ export async function fetchComplain(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const { userId } = req.params;
-    const complain = await ComplainService.findUserById(
+    const complain = await ComplainService.findComplainById(
       id
     );
     const userData = await AuthenticationService.findUserById(
       userId
     );
-    if (complain) {
+    if (userData && complain && (userData.status == "active" && complain.userStatus == "active")) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is fetched successfully",
@@ -58,6 +67,13 @@ export async function fetchComplain(req: Request, res: Response) {
         complain,
         user: userData,
       },
+    });
+  }
+  else{
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "user or complain is already deleted",
+     
     });
   }
   } catch (error) {
@@ -80,7 +96,7 @@ export async function replyComplain(req: Request, res: Response) {
       userId
     );
     
-    if (complain) {
+    if (userData && complain && (userData.status == "active" && complain.userStatus == "active")) {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is replied successfully",
@@ -88,6 +104,13 @@ export async function replyComplain(req: Request, res: Response) {
         complain,
         user: userData,
       },
+    });
+  }
+  else{
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "user or complain is already deleted",
+     
     });
   }
   } catch (error) {
@@ -103,14 +126,16 @@ export async function deleteComplain(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const { userId } = req.params;
-    const complain = await ComplainService.deleteUserById(
+    const complain = await ComplainService.findComplainById(
       id
     );
     const userData = await AuthenticationService.findUserById(
       userId
     );
-
+   
     if (complain) {
+      complain.userStatus = "deleted";
+      complain.save();
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is deleted successfully",

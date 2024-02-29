@@ -33,7 +33,7 @@ export function generateToken(complain: Complain): string {
  * @returns {Promise<Complain|null>}
  */
 
-export async function findUserById(id: string): Promise<Complain | null> {
+export async function findComplainById(id: string): Promise<Complain | null> {
   const objectId = new ObjectId(id);
   return await ComplainModel.findOne({ _id: objectId });
 }
@@ -71,7 +71,7 @@ export async function findUserByIdAndUpdate(id: string, complain: Complain): Pro
  * @author Kunal Rathod
  * @returns {Promise<boolean|null>}
  */
-export async function deleteUserById(id: string): Promise<boolean> {
+export async function deleteComplainById(id: string): Promise<boolean> {
   // Convert the string id to ObjectId
   const objectId = new ObjectId(id);
 
