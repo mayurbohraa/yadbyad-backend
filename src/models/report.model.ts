@@ -6,10 +6,17 @@ export enum Status {
   Rejected = "rejected",
 }
 
+export enum userStatus {
+  Active = "active",
+  Deleted = "deleted",
+}
+
 export interface Report extends Document {
   fileUrl: String;
   filename: String;
   fileDescription:string;
+  remarks: string;
+  userStatus: string;
   status: Status;
   updatedAt: Date;
   createdAt: Date;
@@ -32,15 +39,26 @@ const reportSchema: Schema = new Schema(
     fileDescription: {
         type: String,
     },
+
+    remarks: {
+      type: String,
+  },
     
     status: {
       type: String,
       enum: Status,
       default: "pending",
     },
+
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
+    },
+
+    userStatus: {
+      type: String,
+      enum: userStatus,
+      default:"active"
     },
   },
   {
@@ -48,4 +66,4 @@ const reportSchema: Schema = new Schema(
   }
 );
 
-export default mongoose.model<Report>("reports", reportSchema);
+export default mongoose.model<Report>("report", reportSchema);
