@@ -7,6 +7,7 @@ export enum Status {
 }
 
 export interface Complain extends Document {
+  userId:string;
   userStatus: string;
   subject:string,
   message:string,
@@ -25,6 +26,7 @@ const complainSchema: Schema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
     },
 
     subject: {
@@ -55,10 +57,10 @@ const complainSchema: Schema = new Schema(
       default:"active"
     },
 
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
-    },
+    // user: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "user",
+    // },
   },
   {
     timestamps: true,

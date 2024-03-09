@@ -35,7 +35,22 @@ export function generateToken(complain: Complain): string {
 
 export async function findComplainById(id: string): Promise<Complain | null> {
   const objectId = new ObjectId(id);
-  return await ComplainModel.findOne({ _id: objectId });
+  // return await ComplainModel.findOne({ _id: objectId }).populate({path: "userId",model: "users", select:{
+  //   fullName: 1,
+  //   email: 2,
+  //   mobileNumber: 3,
+  //   password: 4,
+  //   major: 5,
+  //   username:6, 
+  //   studentID: 7,
+  //   role: 8,
+  //   gender: 9,
+  //   status:10 
+   
+  // }});
+
+  return await ComplainModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
+  
 }
 
 /**
@@ -61,7 +76,8 @@ export async function findUserByIdAndUpdate(id: string, complain: Complain): Pro
   await ComplainModel.updateOne({ _id: objectId }, complain);
 
   // Return the updated user
-  return await ComplainModel.findOne({ _id: objectId });
+  return await ComplainModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
+  
 }
 
 
