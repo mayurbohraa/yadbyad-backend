@@ -37,26 +37,23 @@ export async function submitComplain(req: Request, res: Response) {
 
 export async function fetchComplain(req: Request, res: Response) {
   try {
-    const { id } = req.params;
-    const complain = await ComplainService.findComplainById(
-      id
+   
+    const id  =  res.get("userId")!;
+    const { page, limit } = req.query;
+    const complains = await ComplainService.fetchComplains(
+      id,
+      parseInt(page as string),
+      parseInt(limit as string)
     );
-  
-    if (complain &&  complain.userStatus === "active") {
+
+    const activeComplains = complains.filter((complain: Complain) => complain.userStatus === "active");
+   
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is fetched successfully",
-      data: complain
+      data: activeComplains
     });
   }
-  else{
-    res.status(httpStatus.OK).send({
-      statusCode: httpStatus.OK,
-      message: "user or complain is already deleted",
-     
-    });
-  }
-  } 
   catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({

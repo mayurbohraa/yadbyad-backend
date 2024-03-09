@@ -12,6 +12,7 @@ export enum userStatus {
 }
 
 export interface Report extends Document {
+  userId:string;
   fileUrl: String;
   filename: String;
   fileDescription:string;
@@ -26,6 +27,7 @@ const reportSchema: Schema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
     },
 
     fileUrl: {
@@ -50,11 +52,7 @@ const reportSchema: Schema = new Schema(
       default: "pending",
     },
 
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
-    },
-
+  
     userStatus: {
       type: String,
       enum: userStatus,

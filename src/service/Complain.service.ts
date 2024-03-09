@@ -1,4 +1,4 @@
-import { ComplainModel } from "../models";
+import { ComplainModel, ReportModel } from "../models";
 import { Complain } from "../models/complain.model";
 import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -35,22 +35,35 @@ export function generateToken(complain: Complain): string {
 
 export async function findComplainById(id: string): Promise<Complain | null> {
   const objectId = new ObjectId(id);
-  // return await ComplainModel.findOne({ _id: objectId }).populate({path: "userId",model: "users", select:{
-  //   fullName: 1,
-  //   email: 2,
-  //   mobileNumber: 3,
-  //   password: 4,
-  //   major: 5,
-  //   username:6, 
-  //   studentID: 7,
-  //   role: 8,
-  //   gender: 9,
-  //   status:10 
-   
-  // }});
-
   return await ComplainModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
   
+}
+/**
+ * @description This function is used to find all complain by userid
+ * @param {String} id
+ * @author Kunal Rathod
+ * @returns {Promise<Complain|null>}
+ */
+
+export async function findComplainByuserId(id: string): Promise<Complain | null> {
+  const objectId = new ObjectId(id);
+  return await ComplainModel.findOne({userId: objectId }).populate({path: "userId",model: "users"});
+  
+}
+
+/**
+ * @description This function is used to list all complains
+ * @author Kunal Rathod
+ * @param {number} page
+ * @param {number} limit
+ * @param {String} id
+ * @returns {Promise<any>}
+ */
+export async function fetchComplains(id: string, page: number, limit: number): Promise<any> {
+  const objectId = new ObjectId(id);
+  return await ComplainModel.find({userId: objectId})
+    .limit(limit)
+    .skip((page - 1) * limit);
 }
 
 /**

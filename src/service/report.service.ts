@@ -28,6 +28,21 @@ export function generateToken(report: Report): string {
 }
 
 /**
+ * @description This function is used to list all complains
+ * @author Kunal Rathod
+ * @param {number} page
+ * @param {number} limit
+ * @param {String} id
+ * @returns {Promise<any>}
+ */
+export async function fetchReports(id: string, page: number, limit: number): Promise<any> {
+  const objectId = new ObjectId(id);
+  return await ReportModel.find({userId: objectId})
+    .limit(limit)
+    .skip((page - 1) * limit);
+}
+
+/**
  * @description This function is used to find a report by id
  * @param {String} id
  * @author Kunal Rathod
@@ -36,7 +51,7 @@ export function generateToken(report: Report): string {
 
 export async function findReportById(id: string): Promise<Report | null> {
   const objectId = new ObjectId(id);
-  return await ReportModel.findOne({ _id: objectId });
+  return await ReportModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
 }
 
 /**
@@ -62,7 +77,7 @@ export async function findUserByIdAndUpdate(id: string, report: Report): Promise
   await ReportModel.updateOne({ _id: objectId },report);
 
   // Return the updated user
-  return await ReportModel.findOne({ _id: objectId });
+  return await ReportModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
 }
 
 
