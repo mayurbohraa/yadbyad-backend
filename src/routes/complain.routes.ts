@@ -13,7 +13,7 @@ router.get("/fetchComplain", ComplainController.fetchComplain);
 
 router.get("/fetchAllComplain", ComplainController.fetchAllComplain);
 
-router.put("/replyComplain/:id", ComplainController.replyComplain);
+router.post("/replyComplain/:id", ComplainController.replyComplain);
 
 router.delete("/deleteComplain/:id", ComplainController.deleteComplain);
 

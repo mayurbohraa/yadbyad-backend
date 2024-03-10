@@ -13,5 +13,5 @@ router.put("/users/:id", AuthenticationController.updateUsers);
 router.delete("/users/:id", AuthenticationController.deleteUsers);
 router.post("/forgotPassword", AuthenticationController.forgotPassword);
 router.post("/users/changePassword", AuthenticationController.changePassword);
-router.put("/users/profile/:id", AuthenticationController.editProfile);
+router.post("/users/profile/:id", AuthenticationController.editProfile);
 export default router;
