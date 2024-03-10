@@ -69,7 +69,6 @@ export async function fetchComplain(req: Request, res: Response) {
 export async function fetchAllComplain(req: Request, res: Response) {
   try {
    
-    const id  =  res.get("userId")!;
     const { page, limit } = req.query;
 
    
@@ -77,11 +76,13 @@ export async function fetchAllComplain(req: Request, res: Response) {
       parseInt(page as string),
       parseInt(limit as string)
     );
-
+    
+    const activeComplains = complains.filter((complain: Complain) => complain.userStatus === "active");
+    
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complains is fetched successfully",
-      data: complains
+      data: activeComplains
     });
   }
   catch (error) {
