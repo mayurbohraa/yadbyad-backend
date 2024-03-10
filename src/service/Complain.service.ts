@@ -52,7 +52,7 @@ export async function findComplainByuserId(id: string): Promise<Complain | null>
 }
 
 /**
- * @description This function is used to list all complains
+ * @description This function is used to list all complains by userId
  * @author Kunal Rathod
  * @param {number} page
  * @param {number} limit
@@ -62,6 +62,19 @@ export async function findComplainByuserId(id: string): Promise<Complain | null>
 export async function fetchComplains(id: string, page: number, limit: number): Promise<any> {
   const objectId = new ObjectId(id);
   return await ComplainModel.find({userId: objectId})
+    .limit(limit)
+    .skip((page - 1) * limit);
+}
+
+/**
+ * @description This function is used to list all complains
+ * @author Kunal Rathod
+ * @param {number} page
+ * @param {number} limit
+ * @returns {Promise<any>}
+ */
+export async function fetchAllComplain(page: number, limit: number): Promise<any> {
+  return await ComplainModel.find({})
     .limit(limit)
     .skip((page - 1) * limit);
 }
