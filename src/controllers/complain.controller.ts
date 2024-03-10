@@ -104,7 +104,7 @@ export async function replyComplain(req: Request, res: Response) {
 
     if (complain && complain.userStatus == "active") {
       complain.status = "completed";
-     complain.save();
+      complain.save();
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is replied successfully",

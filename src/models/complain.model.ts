@@ -5,6 +5,10 @@ export enum Status {
   Completed = "completed",
   
 }
+export enum userStatus {
+  Active = "active",
+  Deleted = "deleted",
+}
 
 export interface Complain extends Document {
   userId:string;
@@ -17,10 +21,7 @@ export interface Complain extends Document {
   createdAt: Date;
 }
 
-export enum userStatus {
-  Active = "active",
-  Deleted = "deleted",
-}
+
 
 const complainSchema: Schema = new Schema(
   {

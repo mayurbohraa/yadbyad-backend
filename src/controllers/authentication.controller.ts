@@ -194,9 +194,10 @@ export async function deleteUsers(req: Request, res: Response) {
 export async function forgotPassword(req: Request, res: Response) {
  
   try {
-    const { email, newPassword } = req.body;
+    const Id  =  res.get("userId")!;
+    const { newPassword } = req.body;
     const hashedPassword = AuthenticationService.hashPassword(newPassword);
-    const passwordChanged = await AuthenticationService.changePasswordByEmail(email, hashedPassword);
+    const passwordChanged = await AuthenticationService.changePasswordById(Id, hashedPassword);
 
     if (passwordChanged) {
       res.status(httpStatus.OK).send({
@@ -246,16 +247,17 @@ export async function editProfile(req: Request, res: Response) {
 
 export async function changePassword(req: Request, res: Response) {
   try {
-    const { username, password, newPassword, email } = req.body;
-    const user: User | null = await AuthenticationService.findUserByUsername(
-      username
+    const Id  =  res.get("userId")!;
+    const { password, newPassword} = req.body;
+    const user: User | null = await AuthenticationService.findUserById(
+      Id
     );
     console.log(user);
     if (user && user.status == "active") {
       if (AuthenticationService.comparePassword(password, user.password)) {
 
     const hashedPassword = AuthenticationService.hashPassword(newPassword);
-    const passwordChanged = await AuthenticationService.changePasswordByEmail(email, hashedPassword);
+    const passwordChanged = await AuthenticationService.changePasswordById(Id, hashedPassword);
 
     if (passwordChanged) {
       res.status(httpStatus.OK).send({

@@ -59,9 +59,10 @@ export async function findUserByIdAndUpdate(id: string, user: User): Promise<Use
  * @author Kunal Rathod
  * @returns {Promise<User|null>}
  */
-export async function changePasswordByEmail(email: string, newPassword: string): Promise<User|null> {
+export async function changePasswordById(id: string, newPassword: string): Promise<User|null> {
   // Find the user by email
-  const existingUser = await UserModel.findOne({ email });
+  const objectId = new ObjectId(id);
+  const existingUser = await UserModel.findOne({  _id: objectId });
 
   if (!existingUser) {
     return null; // User not found

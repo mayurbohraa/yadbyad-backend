@@ -18,7 +18,7 @@ export interface Report extends Document {
   fileDescription:string;
   remarks: string;
   userStatus: string;
-  status: Status;
+  status: string;
   updatedAt: Date;
   createdAt: Date;
 }

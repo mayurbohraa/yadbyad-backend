@@ -3,6 +3,7 @@ import { AuthenticationController } from "../controllers";
 import { jwtverify } from "../middlewares";
 
 const router = Router();
+router.use(jwtverify);
 
 router.post("/login", AuthenticationController.login);
 router.post("/signup", AuthenticationController.signup);
