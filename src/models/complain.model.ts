@@ -12,7 +12,7 @@ export interface Complain extends Document {
   subject:string,
   message:string,
   replyMessage: string
-  status: Status;
+  status: string;
   updatedAt: Date;
   createdAt: Date;
 }

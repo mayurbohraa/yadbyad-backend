@@ -39,9 +39,9 @@ export async function fetchComplain(req: Request, res: Response) {
   try {
    
     const id  =  res.get("userId")!;
-    const { page, limit, role } = req.query;
+    const { page, limit } = req.query;
 
-    if(role == "special need student" || role == "part time student"){
+   
     const complains = await ComplainService.fetchComplains(
       id,
       parseInt(page as string),
@@ -56,7 +56,23 @@ export async function fetchComplain(req: Request, res: Response) {
       data: activeComplains
     });
   }
-  else{
+  catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+
+export async function fetchAllComplain(req: Request, res: Response) {
+  try {
+   
+    const id  =  res.get("userId")!;
+    const { page, limit } = req.query;
+
+   
  const complains = await ComplainService.fetchAllComplain(
       parseInt(page as string),
       parseInt(limit as string)
@@ -67,7 +83,6 @@ export async function fetchComplain(req: Request, res: Response) {
       message: "Complains is fetched successfully",
       data: complains
     });
-  }
   }
   catch (error) {
     console.log(error);
@@ -86,8 +101,10 @@ export async function replyComplain(req: Request, res: Response) {
     const complain = await ComplainService.findUserByIdAndUpdate(
       id, {...req.body}
     );
-    
+
     if (complain && complain.userStatus == "active") {
+      complain.status = "completed";
+     complain.save();
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Complain is replied successfully",
