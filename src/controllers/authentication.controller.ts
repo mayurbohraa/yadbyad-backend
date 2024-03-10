@@ -198,11 +198,15 @@ export async function forgotPassword(req: Request, res: Response) {
     const { newPassword } = req.body;
     const hashedPassword = AuthenticationService.hashPassword(newPassword);
     const passwordChanged = await AuthenticationService.changePasswordById(Id, hashedPassword);
+    const user: User | null = await AuthenticationService.findUserById(
+      Id
+    );
 
     if (passwordChanged) {
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "New password is set",
+        data: user
       });
     } else {
       res.status(httpStatus.BAD_REQUEST).send({
@@ -252,7 +256,7 @@ export async function changePassword(req: Request, res: Response) {
     const user: User | null = await AuthenticationService.findUserById(
       Id
     );
-    console.log(user);
+  
     if (user && user.status == "active") {
       if (AuthenticationService.comparePassword(password, user.password)) {
 
@@ -263,6 +267,7 @@ export async function changePassword(req: Request, res: Response) {
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "New password is set",
+        data: user
       });
     }
       } else {

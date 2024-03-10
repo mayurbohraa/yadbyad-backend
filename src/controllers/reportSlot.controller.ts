@@ -1,19 +1,35 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
-import * as scheduleService from "../service/schedule.service";
+import * as ReportSlotService from "../service/reportSlot.service";
+import { reportSlot } from "../models/reportSlot.model";
 
 export async function createSlot(req: Request, res: Response) {
   try {
-    const schedules = await scheduleService.scheduleByUserId(
-      res.get("userId")!
-    );
-    return res.status(httpStatus.OK).send({
-      data: schedules,
-      statusCode: httpStatus.OK,
-      message: "Schedules succesfully",
-    });
+    const userId  =  res.get("userId")!;
+    const { title, startDate, endDate, startTime, endTime } =  req.body;
+      const reportSlot = {
+       title: title,
+        startDate: startDate,
+        endDate: endDate,
+        startTime: startTime,
+        endTime: endTime,
+        userId: userId,
+      };
+     
+      // const createdReportSlot = await ReportSlotService.createReportSlot(reportSlot as reportSlot);
+      // await SettingsService.createSettings(createdComplain._id);
+     
+      res.status(httpStatus.OK).send({
+        statusCode: httpStatus.OK,
+        message: "Report slot is created successfully",
+        // data: createdReportSlot
+      });
   } catch (error) {
-    return res.status(500).json(error);
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
   }
 }
 

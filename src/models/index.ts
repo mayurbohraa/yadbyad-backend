@@ -3,5 +3,6 @@ import SettingsModel from "./settings.model";
 import RequestModel from "./request.model";
 import ComplainModel from "./complain.model";
 import ReportModel from "./report.model";
+import ReportSlotModel from "./reportSlot.model";
 
-export { UserModel, SettingsModel, RequestModel, ComplainModel,ReportModel };
+export { UserModel, SettingsModel, RequestModel, ComplainModel,ReportModel,ReportSlotModel  };
