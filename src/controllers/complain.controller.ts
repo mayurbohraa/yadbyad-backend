@@ -97,8 +97,6 @@ export async function fetchAllComplain(req: Request, res: Response) {
 
 
 export async function replyComplain(req: Request, res: Response) {
-  console.log(req.body);
-  // console.log(res);
   try {
     const { id } = req.params;
     const complain = await ComplainService.findUserByIdAndUpdate(
@@ -106,7 +104,7 @@ export async function replyComplain(req: Request, res: Response) {
       );      
 
     if (complain && complain.userStatus == "active") {
-      // complain.status = "completed";
+      complain.status = "completed";
       complain.save();
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
