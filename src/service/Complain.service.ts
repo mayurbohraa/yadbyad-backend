@@ -63,7 +63,7 @@ export async function fetchComplains(id: string, page: number, limit: number): P
   const objectId = new ObjectId(id);
   return await ComplainModel.find({userId: objectId})
     .limit(limit)
-    .skip((page - 1) * limit);
+    .skip((page - 1) * limit).populate({path: "userId",model: "users"});
 }
 
 /**
@@ -76,7 +76,7 @@ export async function fetchComplains(id: string, page: number, limit: number): P
 export async function fetchAllComplain(page: number, limit: number): Promise<any> {
   return await ComplainModel.find({})
     .limit(limit)
-    .skip((page - 1) * limit);
+    .skip((page - 1) * limit).populate({path: "userId",model: "users"});
 }
 
 /**

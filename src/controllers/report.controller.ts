@@ -100,6 +100,8 @@ export async function remarks(req: Request, res: Response) {
     );
     
     if (report && report.userStatus == "active") {
+      // report.status = "Accepted";
+     report.save();
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Report is replied successfully",
