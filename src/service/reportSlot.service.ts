@@ -18,8 +18,11 @@ export async function createSlot(reportSlotDto: any): Promise<ReportSlot> {
   const { startTime, endTime } = reportSlotDto;
 
   // Parse the start and end times using moment.js
-  const parsedStartTime = moment(startTime, "hh:mma").toDate();
-  const parsedEndTime = moment(endTime, "hh:mma").toDate();
+  // const parsedStartTime = moment(startTime, "hh:mma").toDate();
+  // const parsedEndTime = moment(endTime, "hh:mma").toDate();
+
+  const parsedStartTime = moment(startTime, "DD-MM-YY: hh:mma").toDate();
+  const parsedEndTime = moment(endTime, "DD-MM-YY: hh:mma").toDate();
 
   // Create a new schedule instance
   return await reportSlotModel.create({

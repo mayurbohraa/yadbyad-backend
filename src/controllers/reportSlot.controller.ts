@@ -2,17 +2,19 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as ReportSlotService from "../service/reportSlot.service";
 import { ReportSlot } from "../models/reportSlot.model";
+import moment from "moment";
 
 export async function createSlot(req: Request, res: Response) {
   try {
     const userId  =  res.get("userId")!;
     const { title, startDate, endDate, startTime, endTime } =  req.body;
+    const startDate1 = moment(startDate, 'DD-MM-YY: hh:mma');
+    const endDate1 = moment(endDate, 'DD-MM-YY: hh:mma');
+
       const reportSlot = {
         title: title,
-        startDate: startDate,
-        endDate: endDate,
-        startTime: startTime,
-        endTime: endTime,
+        startDate: startDate1,
+        endDate: endDate1,
         userId: userId,
       };
      
