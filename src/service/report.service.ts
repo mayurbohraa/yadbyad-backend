@@ -1,5 +1,6 @@
-import { ReportModel } from "../models";
-import reportModel, { Report } from "../models/report.model";
+import { ReportModel,ReportSlotModel } from "../models";
+import { Report } from "../models/report.model";
+import { ReportSlot } from "../models/reportSlot.model";
 import jsonwebtoken from "jsonwebtoken";
 
 import bcrypt from "bcryptjs";
@@ -67,6 +68,18 @@ export async function findReportById(id: string): Promise<Report | null> {
   return await ReportModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
 }
 
+
+/**
+ * @description This function is used to find a reportSlot by id
+ * @param {String} slotId
+ * @author Kunal Rathod
+ * @returns {Promise<ReportSlot|null>}
+ */
+
+export async function findReportSlotById(slotId: string): Promise<ReportSlot | null> {
+  const objectId = new ObjectId(slotId);
+  return await ReportSlotModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
+}
 /**
  * @description This function is used to update report details by using id
  * @param {String} _id

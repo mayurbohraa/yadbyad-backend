@@ -1,16 +1,16 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// export enum ScheduleType {
-//   Leacture = "lecture",
-//   Exam = "exam",
-// }
-
-export interface reportSlot extends Document {
+export enum Status {
+  Open = "open",
+  Closed = "closed",
+  
+}
+export interface ReportSlot extends Document {
   title: string;
   startDate: Date;
   endDate: Date;
-  startTime: Date;
-  endTime: Date;
+  status:string;
+  userId: mongoose.Schema.Types.ObjectId;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -19,6 +19,7 @@ const slotSchema: Schema = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "users"
     },
     title: {
       type: String,
@@ -29,17 +30,15 @@ const slotSchema: Schema = new Schema(
     endDate: {
       type: Date,
     },
-    startTime: {
-      type: Date,
+    status: {
+      type: String,
+      enum: Status,
+      default: "open"
     },
-    endTime: {
-      type: Date,
-    },
-   
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model<reportSlot>("reportSlot", slotSchema);
+export default mongoose.model<ReportSlot>("reportSlot", slotSchema);

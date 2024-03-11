@@ -3,18 +3,30 @@ import { Complain } from "../models/complain.model";
 import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
-import { reportSlot } from "../models/reportSlot.model";
+import moment from "moment";
+import reportSlotModel, { ReportSlot } from "../models/reportSlot.model";
 
 
 /**
  * @description this function creates a complain in database
- * @param {reportSlot} reportSlot
+ * @param {any} reportSlotDto
  * @author Kunal Rathod
- * @returns {Promise<reportSlot>}
+ * @returns {Promise<ReportSlot>}
  */
 
-export async function createReportSlot(reportSlot: reportSlot): Promise<reportSlot> {
-  return await ReportSlotModel.create(reportSlot);
+export async function createSlot(reportSlotDto: any): Promise<ReportSlot> {
+  const { startTime, endTime } = reportSlotDto;
+
+  // Parse the start and end times using moment.js
+  const parsedStartTime = moment(startTime, "hh:mma").toDate();
+  const parsedEndTime = moment(endTime, "hh:mma").toDate();
+
+  // Create a new schedule instance
+  return await reportSlotModel.create({
+    ...reportSlotDto,
+    startTime: parsedStartTime,
+    endTime: parsedEndTime,
+  });
 }
 
 // /**

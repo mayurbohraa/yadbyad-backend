@@ -2,29 +2,60 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { Report } from "../models/report.model";
 import { ReportService, SettingsService, AuthenticationService } from "../service";
-import userModel from "../models/user.model";
-import { Types } from "mongoose";
+import moment from 'moment';
 
 export async function submitReport(req: Request, res: Response) {
   try {
-    const userId  =  res.get("userId")!;
+    const { slotId } = req.params;
+    const userId = res.get("userId")!;
     const file = req.file;
+
+    const reportSlot = await ReportService.findReportSlotById(slotId);
+
+    if (!reportSlot) {
+      return res.status(httpStatus.NOT_FOUND).send({
+        status: httpStatus.NOT_FOUND,
+        message: "Report slot not found",
+      });
+    }
+    const startdate1 = moment(reportSlot.startDate, 'DD-MM-YY: hh:mma');
+    const enddate1 = moment(reportSlot.endDate, 'DD-MM-YY: hh:mma');
+
+    const currentDateTime = moment();
+    const isDateAfterStartDate = currentDateTime.isSameOrAfter(moment(startdate1));
+    const isDateBeforeEndDate = currentDateTime.isSameOrBefore(moment(enddate1));
+
+    // console.log(reportSlot.startDate);
+    // console.log(startdate1);
+    // console.log(isDateAfterStartDate);
+    // console.log(reportSlot.endDate);
+    // console.log(enddate1);
+    // console.log(isDateBeforeEndDate);
+    // console.log(currentDateTime);
     
+
+    if (!(isDateAfterStartDate && isDateBeforeEndDate)) {
+      return res.status(httpStatus.BAD_REQUEST).send({
+        status: httpStatus.BAD_REQUEST,
+        message: "Current date/time is not within the report slot's range",
+      });
+    }
+
     const report = await ReportService.createReport({
       ...req.body,
       userId: userId,
       fileUrl: file!.path,
       filename: file?.originalname,
+      slotId: slotId,
     });
 
     res.status(httpStatus.OK).send({
       status: httpStatus.OK,
       message: "File uploaded successfully",
       data: report,
-    
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
       status: httpStatus.INTERNAL_SERVER_ERROR,
       data: error,
@@ -32,37 +63,6 @@ export async function submitReport(req: Request, res: Response) {
   }
 }
 
-// export async function fetchReport(req: Request, res: Response) {
-//   try {
-//     const { id } = req.params;
-//     // const userId  =  res.get("userId")!;
-//     const report = await ReportService.findReportById(
-//       id
-//     );
-  
-//     if (report && report.userStatus == "active") {
-//     res.status(httpStatus.OK).send({
-//       statusCode: httpStatus.OK,
-//       message: "Report is fetched successfully",
-//       data: report
-      
-//     });
-//   }
-//   else{
-//     res.status(httpStatus.OK).send({
-//       statusCode: httpStatus.OK,
-//       message: "user or report is already deleted",
-     
-//     });
-//   }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-//       message: error,
-//     });
-//   }
-// }
 
 export async function fetchReport(req: Request, res: Response) {
   try {
@@ -128,7 +128,7 @@ export async function remarks(req: Request, res: Response) {
     );
     
     if (report && report.userStatus == "active") {
-      // report.status = "Accepted";
+     report.status = "completed";
      report.save();
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,

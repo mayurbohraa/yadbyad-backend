@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum Status {
-  Accepted = "accepted",
-  Pending = "pending",
-  Rejected = "rejected",
+  Processing = "processing",
+  Completed = "completed",
+  
 }
 
 export enum userStatus {
@@ -12,7 +12,8 @@ export enum userStatus {
 }
 
 export interface Report extends Document {
-  userId:string;
+  slotId:mongoose.Schema.Types.ObjectId;
+  userId:mongoose.Schema.Types.ObjectId;
   fileUrl: String;
   filename: String;
   fileDescription:string;
@@ -28,6 +29,11 @@ const reportSchema: Schema = new Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
+    },
+
+    slotId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "reportSlot",
     },
 
     fileUrl: {
@@ -49,7 +55,7 @@ const reportSchema: Schema = new Schema(
     status: {
       type: String,
       enum: Status,
-      default: "pending",
+      default: "processing",
     },
 
   

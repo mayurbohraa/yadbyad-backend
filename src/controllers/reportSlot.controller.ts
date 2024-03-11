@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as ReportSlotService from "../service/reportSlot.service";
-import { reportSlot } from "../models/reportSlot.model";
+import { ReportSlot } from "../models/reportSlot.model";
 
 export async function createSlot(req: Request, res: Response) {
   try {
     const userId  =  res.get("userId")!;
     const { title, startDate, endDate, startTime, endTime } =  req.body;
       const reportSlot = {
-       title: title,
+        title: title,
         startDate: startDate,
         endDate: endDate,
         startTime: startTime,
@@ -16,13 +16,13 @@ export async function createSlot(req: Request, res: Response) {
         userId: userId,
       };
      
-      // const createdReportSlot = await ReportSlotService.createReportSlot(reportSlot as reportSlot);
-      // await SettingsService.createSettings(createdComplain._id);
+      const createdReportSlot = await ReportSlotService.createSlot(reportSlot);
+      
      
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "Report slot is created successfully",
-        // data: createdReportSlot
+        data: createdReportSlot
       });
   } catch (error) {
     console.log(error);
