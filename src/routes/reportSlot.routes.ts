@@ -5,7 +5,7 @@ import { jwtverify } from "../middlewares";
 const router = Router();
 
 router.use(jwtverify);
-router.get("/", ReportSlotController.createSlot);
+router.get("/createReportSlot", ReportSlotController.createSlot);
 // router.get("/scheduleadmin", ScheduleController.getScheduleAdmin);
 // router.post("/", ScheduleController.schedule);
 // router.get("/requestsadmin", ScheduleController.getRequestAdmin);

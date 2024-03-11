@@ -43,6 +43,19 @@ export async function fetchReports(id: string, page: number, limit: number): Pro
 }
 
 /**
+ * @description This function is used to list all reports
+ * @author Kunal Rathod
+ * @param {number} page
+ * @param {number} limit
+ * @returns {Promise<any>}
+ */
+export async function fetchAllReport(page: number, limit: number): Promise<any> {
+  return await ReportModel.find({})
+    .limit(limit)
+    .skip((page - 1) * limit).populate({path: "userId",model: "users"});
+}
+
+/**
  * @description This function is used to find a report by id
  * @param {String} id
  * @author Kunal Rathod

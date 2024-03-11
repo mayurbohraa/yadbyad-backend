@@ -92,6 +92,34 @@ export async function fetchReport(req: Request, res: Response) {
   }
 }
 
+export async function fetchAllReport(req: Request, res: Response) {
+  try {
+   
+    const { page, limit } = req.query;
+
+   
+ const reports = await ReportService.fetchAllReport(
+      parseInt(page as string),
+      parseInt(limit as string)
+    );
+    
+    const activeReports = reports.filter((report: Report) => report.userStatus === "active");
+    
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Reports is fetched successfully",
+      data: activeReports
+    });
+  }
+  catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
 export async function remarks(req: Request, res: Response) {
   try {
     const { id } = req.params;
