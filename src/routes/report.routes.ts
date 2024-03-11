@@ -6,7 +6,7 @@ import { jwtverify } from "../middlewares";
 
 const router = Router();
 router.use(jwtverify);
-router.post("/",upload.single("file"), ReportController.submitReport);
+router.post("/submitReport",upload.single("file"), ReportController.submitReport);
 router.get("/fetchReport", ReportController.fetchReport);
 router.put("/remarks/:id", ReportController.remarks);
 router.delete("/deleteReport/:id", ReportController.deleteReport);
