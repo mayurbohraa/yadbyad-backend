@@ -13,7 +13,7 @@ import { ObjectId } from "mongodb";
  * @returns {Promise<Report>}
  */
 
-export async function createReport(report: any) {
+export async function createReport(report: any): Promise<Report> {
   return await ReportModel.create(report);
 }
 
@@ -43,7 +43,9 @@ export async function fetchReports(
   const objectId = new ObjectId(id);
   return await ReportModel.find({ userId: objectId, userStatus: "active" })
     .limit(limit)
-    .skip((page - 1) * limit);
+    .skip((page - 1) * limit)
+    .populate({ path: "slotId", model: "reportSlot" })
+    .populate({ path: "userId", model: "users" });
 }
 
 /**
@@ -62,7 +64,8 @@ export async function fetchAllReport(
   })
     .limit(limit)
     .skip((page - 1) * limit)
-    .populate({ path: "userId", model: "users" });
+    .populate({ path: "userId", model: "users" })
+    .populate({ path: "slotId", model: "reportSlot" });
 }
 
 /**

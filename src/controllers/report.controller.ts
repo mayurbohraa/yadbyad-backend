@@ -22,24 +22,14 @@ export async function submitReport(req: Request, res: Response) {
         message: "Report slot not found",
       });
     }
-    const startdate1 = moment(reportSlot.startDate, "DD-MM-YY: hh:mma");
-    const enddate1 = moment(reportSlot.endDate, "DD-MM-YY: hh:mma");
+    const startdate = moment(reportSlot.startDate, "DD-MM-YY: hh:mma");
+    const enddate = moment(reportSlot.endDate, "DD-MM-YY: hh:mma");
 
     const currentDateTime = moment();
     const isDateAfterStartDate = currentDateTime.isSameOrAfter(
-      moment(startdate1)
+      moment(startdate)
     );
-    const isDateBeforeEndDate = currentDateTime.isSameOrBefore(
-      moment(enddate1)
-    );
-
-    // console.log(reportSlot.startDate);
-    // console.log(startdate1);
-    // console.log(isDateAfterStartDate);
-    // console.log(reportSlot.endDate);
-    // console.log(enddate1);
-    // console.log(isDateBeforeEndDate);
-    // console.log(currentDateTime);
+    const isDateBeforeEndDate = currentDateTime.isSameOrBefore(moment(enddate));
 
     if (!(isDateAfterStartDate && isDateBeforeEndDate)) {
       return res.status(httpStatus.BAD_REQUEST).send({
