@@ -8,11 +8,10 @@ export async function createSlot(req: Request, res: Response) {
   try {
     const userId = res.get("userId")!;
     const { title, startDate, endDate } = req.body;
-
     const reportSlot = {
       title: title,
-      startDate: moment(startDate, "DD-MM-YY: hh:mma"),
-      endDate: moment(endDate, "DD-MM-YY: hh:mma"),
+      startDate: moment(startDate),
+      endDate: moment(endDate),
       userId: userId,
     };
 
