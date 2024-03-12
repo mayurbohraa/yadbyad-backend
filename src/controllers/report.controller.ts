@@ -9,6 +9,7 @@ import {
 import moment from "moment";
 
 export async function submitReport(req: Request, res: Response) {
+  console.log(req);
   try {
     const { slotId } = req.params;
     const userId = res.get("userId")!;
@@ -42,7 +43,6 @@ export async function submitReport(req: Request, res: Response) {
       ...req.body,
       userId: userId,
       fileUrl: file!.path,
-      filename: file?.originalname,
       slotId: slotId,
     });
 
