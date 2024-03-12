@@ -6,5 +6,7 @@ const router = Router();
 
 router.use(jwtverify);
 router.post("/createReportSlot", ReportSlotController.createSlot);
+router.get("/", ReportSlotController.getReportSlots);
+router.delete("/:slotId", ReportSlotController.deleteReportSlot);
 
 export default router;

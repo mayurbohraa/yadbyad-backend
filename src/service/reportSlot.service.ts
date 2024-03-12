@@ -2,10 +2,10 @@ import { ReportSlotModel } from "../models";
 import { Complain } from "../models/complain.model";
 import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { ObjectId } from 'mongodb';
+import { ObjectId } from "mongodb";
 import moment from "moment";
 import reportSlotModel, { ReportSlot } from "../models/reportSlot.model";
-
+import { Types } from "mongoose";
 
 /**
  * @description this function creates a complain in database
@@ -15,127 +15,71 @@ import reportSlotModel, { ReportSlot } from "../models/reportSlot.model";
  */
 
 export async function createSlot(reportSlotDto: any): Promise<ReportSlot> {
-  const { startTime, endTime } = reportSlotDto;
-
-  // Parse the start and end times using moment.js
-  // const parsedStartTime = moment(startTime, "hh:mma").toDate();
-  // const parsedEndTime = moment(endTime, "hh:mma").toDate();
-
-  const parsedStartTime = moment(startTime, "DD-MM-YY: hh:mma").toDate();
-  const parsedEndTime = moment(endTime, "DD-MM-YY: hh:mma").toDate();
-
-  // Create a new schedule instance
-  return await reportSlotModel.create({
-    ...reportSlotDto,
-    startTime: parsedStartTime,
-    endTime: parsedEndTime,
-  });
+  return await reportSlotModel.create(reportSlotDto);
 }
 
-// /**
-//  * @description This function is used to generate authenticaton token
-//  * @param {Complain} complain
-//  * @author Kunal Rathod
-//  * @returns {Promise<Complain>}
-//  */
-// export function generateToken(complain: Complain): string {
-//   return jsonwebtoken.sign(complain, process.env.JWT_Token!);
-// }
+/**
+ * @description this function fetches the repor slot
+ * @param {Types.ObjectId} userId
+ * @param {number} limit
+ * @param {number} page
+ * @param {string} role
+ * @author Keshav suman
+ * @returns {Promise<Array<ReportSlot>>}
+ */
 
-// /**
-//  * @description This function is used to find a complain by id
-//  * @param {String} id
-//  * @author Kunal Rathod
-//  * @returns {Promise<Complain|null>}
-//  */
+export async function getReportSlots(
+  userId: Types.ObjectId,
+  limit: number,
+  page: number,
+  role: string
+): Promise<Array<ReportSlot>> {
+  const matchObject: any = {};
+  if (role === "admin") {
+    matchObject.userId = userId;
+  } else {
+    matchObject.status = "open";
+  }
+  return await reportSlotModel
+    .find(matchObject)
+    .limit(limit)
+    .skip(page * limit);
+}
 
-// export async function findComplainById(id: string): Promise<Complain | null> {
-//   const objectId = new ObjectId(id);
-//   return await ComplainModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
-  
-// }
-// /**
-//  * @description This function is used to find all complain by userid
-//  * @param {String} id
-//  * @author Kunal Rathod
-//  * @returns {Promise<Complain|null>}
-//  */
+/**
+ * @description this function delete the report slot
+ * @param {Types.ObjectId} slotId
+ * @author Keshav suman
+ * @returns {Promise<ReportSlot|null>}
+ */
 
-// export async function findComplainByuserId(id: string): Promise<Complain | null> {
-//   const objectId = new ObjectId(id);
-//   return await ComplainModel.findOne({userId: objectId }).populate({path: "userId",model: "users"});
-  
-// }
+export async function deleteReportSlot(
+  slotId: Types.ObjectId
+): Promise<ReportSlot | null> {
+  return await reportSlotModel.findByIdAndUpdate(
+    {
+      _id: slotId,
+    },
+    {
+      status: "deleted",
+    },
+    {
+      new: true,
+    }
+  );
+}
 
-// /**
-//  * @description This function is used to list all complains by userId
-//  * @author Kunal Rathod
-//  * @param {number} page
-//  * @param {number} limit
-//  * @param {String} id
-//  * @returns {Promise<any>}
-//  */
-// export async function fetchComplains(id: string, page: number, limit: number): Promise<any> {
-//   const objectId = new ObjectId(id);
-//   return await ComplainModel.find({userId: objectId})
-//     .limit(limit)
-//     .skip((page - 1) * limit).populate({path: "userId",model: "users"});
-// }
+// Write a function for geting the report slot by id
 
-// /**
-//  * @description This function is used to list all complains
-//  * @author Kunal Rathod
-//  * @param {number} page
-//  * @param {number} limit
-//  * @returns {Promise<any>}
-//  */
-// export async function fetchAllComplain(page: number, limit: number): Promise<any> {
-//   return await ComplainModel.find({})
-//     .limit(limit)
-//     .skip((page - 1) * limit).populate({path: "userId",model: "users"});
-// }
+/**
+ * @description this function fetches the report slot by id
+ * @param {Types.ObjectId} slotId
+ * @returns {Promise<ReportSlot|null>}
+ * @author Keshav suman
+ */
 
-// /**
-//  * @description This function is used to update users details by using id
-//  * @param {String} _id
-//  * @author Kunal Rathod
-//  * @returns {Promise<Complain|null>}
-//  */
-
-
-// export async function findUserByIdAndUpdate(id: string, complain: Complain): Promise<Complain | null> {
-//   // Convert the string id to ObjectId
-//   const objectId = new ObjectId(id);
-
-//   // Find the user by _id
-//   const existingComplain = await ComplainModel.findOne({ _id: objectId });
-
-//   if (!existingComplain) {
-//     return null; // User not found
-//   }
-
-//   // Update the user's details
-//   await ComplainModel.updateOne({ _id: objectId }, complain);
-
-//   // Return the updated user
-//   return await ComplainModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
-  
-// }
-
-
-// /**
-//  * @description This function is used to delete complain by using id
-//  * @param {String} _id
-//  * @author Kunal Rathod
-//  * @returns {Promise<boolean|null>}
-//  */
-// export async function deleteComplainById(id: string): Promise<boolean> {
-//   // Convert the string id to ObjectId
-//   const objectId = new ObjectId(id);
-
-//   // Find the user by _id and delete them
-//   const result = await ComplainModel.deleteOne({ _id: objectId });
-
-//   // Check if the deletion was successful
-//   return result.deletedCount === 1;
-// }
+export async function getReportSlotById(
+  slotId: Types.ObjectId
+): Promise<ReportSlot | null> {
+  return await reportSlotModel.findById(slotId);
+}

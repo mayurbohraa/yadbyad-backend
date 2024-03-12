@@ -1,11 +1,10 @@
-import { ReportModel,ReportSlotModel } from "../models";
+import { ReportModel, ReportSlotModel } from "../models";
 import { Report } from "../models/report.model";
 import { ReportSlot } from "../models/reportSlot.model";
 import jsonwebtoken from "jsonwebtoken";
 
 import bcrypt from "bcryptjs";
-import { ObjectId } from 'mongodb';
-
+import { ObjectId } from "mongodb";
 
 /**
  * @description this function creates a report in database
@@ -14,7 +13,7 @@ import { ObjectId } from 'mongodb';
  * @returns {Promise<Report>}
  */
 
-export async function createReport(report: any){
+export async function createReport(report: any) {
   return await ReportModel.create(report);
 }
 
@@ -36,9 +35,13 @@ export function generateToken(report: Report): string {
  * @param {String} id
  * @returns {Promise<any>}
  */
-export async function fetchReports(id: string, page: number, limit: number): Promise<any> {
+export async function fetchReports(
+  id: string,
+  page: number,
+  limit: number
+): Promise<any> {
   const objectId = new ObjectId(id);
-  return await ReportModel.find({userId: objectId})
+  return await ReportModel.find({ userId: objectId, userStatus: "active" })
     .limit(limit)
     .skip((page - 1) * limit);
 }
@@ -50,10 +53,16 @@ export async function fetchReports(id: string, page: number, limit: number): Pro
  * @param {number} limit
  * @returns {Promise<any>}
  */
-export async function fetchAllReport(page: number, limit: number): Promise<any> {
-  return await ReportModel.find({})
+export async function fetchAllReport(
+  page: number,
+  limit: number
+): Promise<any> {
+  return await ReportModel.find({
+    userStatus: "active",
+  })
     .limit(limit)
-    .skip((page - 1) * limit).populate({path: "userId",model: "users"});
+    .skip((page - 1) * limit)
+    .populate({ path: "userId", model: "users" });
 }
 
 /**
@@ -65,9 +74,11 @@ export async function fetchAllReport(page: number, limit: number): Promise<any> 
 
 export async function findReportById(id: string): Promise<Report | null> {
   const objectId = new ObjectId(id);
-  return await ReportModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
+  return await ReportModel.findOne({ _id: objectId }).populate({
+    path: "userId",
+    model: "users",
+  });
 }
-
 
 /**
  * @description This function is used to find a reportSlot by id
@@ -76,9 +87,14 @@ export async function findReportById(id: string): Promise<Report | null> {
  * @returns {Promise<ReportSlot|null>}
  */
 
-export async function findReportSlotById(slotId: string): Promise<ReportSlot | null> {
+export async function findReportSlotById(
+  slotId: string
+): Promise<ReportSlot | null> {
   const objectId = new ObjectId(slotId);
-  return await ReportSlotModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
+  return await ReportSlotModel.findOne({ _id: objectId }).populate({
+    path: "userId",
+    model: "users",
+  });
 }
 /**
  * @description This function is used to update report details by using id
@@ -87,8 +103,10 @@ export async function findReportSlotById(slotId: string): Promise<ReportSlot | n
  * @returns {Promise<Report|null>}
  */
 
-
-export async function findUserByIdAndUpdate(id: string, report: Report): Promise<Report | null> {
+export async function findUserByIdAndUpdate(
+  id: string,
+  report: Report
+): Promise<Report | null> {
   // Convert the string id to ObjectId
   const objectId = new ObjectId(id);
 
@@ -100,12 +118,14 @@ export async function findUserByIdAndUpdate(id: string, report: Report): Promise
   }
 
   // Update the user's details
-  await ReportModel.updateOne({ _id: objectId },report);
+  await ReportModel.updateOne({ _id: objectId }, report);
 
   // Return the updated user
-  return await ReportModel.findOne({ _id: objectId }).populate({path: "userId",model: "users"});
+  return await ReportModel.findOne({ _id: objectId }).populate({
+    path: "userId",
+    model: "users",
+  });
 }
-
 
 // /**
 //  * @description This function is used to delete report by using id

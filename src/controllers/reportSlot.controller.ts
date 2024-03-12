@@ -1,31 +1,28 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as ReportSlotService from "../service/reportSlot.service";
-import { ReportSlot } from "../models/reportSlot.model";
 import moment from "moment";
+import { Types } from "mongoose";
 
 export async function createSlot(req: Request, res: Response) {
   try {
-    const userId  =  res.get("userId")!;
-    const { title, startDate, endDate, startTime, endTime } =  req.body;
-    const startDate1 = moment(startDate, 'DD-MM-YY: hh:mma');
-    const endDate1 = moment(endDate, 'DD-MM-YY: hh:mma');
+    const userId = res.get("userId")!;
+    const { title, startDate, endDate } = req.body;
 
-      const reportSlot = {
-        title: title,
-        startDate: startDate1,
-        endDate: endDate1,
-        userId: userId,
-      };
-     
-      const createdReportSlot = await ReportSlotService.createSlot(reportSlot);
-      
-     
-      res.status(httpStatus.OK).send({
-        statusCode: httpStatus.OK,
-        message: "Report slot is created successfully",
-        data: createdReportSlot
-      });
+    const reportSlot = {
+      title: title,
+      startDate: moment(startDate, "DD-MM-YY: hh:mma"),
+      endDate: moment(endDate, "DD-MM-YY: hh:mma"),
+      userId: userId,
+    };
+
+    const createdReportSlot = await ReportSlotService.createSlot(reportSlot);
+
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Report slot is created successfully",
+      data: createdReportSlot,
+    });
   } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
@@ -35,158 +32,61 @@ export async function createSlot(req: Request, res: Response) {
   }
 }
 
-// export async function getScheduleAdmin(req: Request, res: Response) {
-//   try {
-//     const schedules = await scheduleService.scheduleByAdmin();
-//     return res.status(httpStatus.OK).send({
-//       data: schedules,
-//       statusCode: httpStatus.OK,
-//       message: "Schedules succesfully",
-//     });
-//   } catch (error) {
-//     return res.status(500).json(error);
-//   }
-// }
+export async function getReportSlots(req: Request, res: Response) {
+  try {
+    const userId = res.get("userId")!;
+    const { limit, page, role } = req.query;
 
-// export async function getRequest(req: Request, res: Response) {
-//   try {
-//     const requests = await scheduleService.requestByUserId(res.get("userId")!);
-//     return res.status(httpStatus.OK).send({
-//       data: requests,
-//       statusCode: httpStatus.OK,
-//       message: "Request fetched succesfully",
-//     });
-//   } catch (error) {
-//     return res.status(500).json(error);
-//   }
-// }
+    const reportSlots = await ReportSlotService.getReportSlots(
+      new Types.ObjectId(userId),
+      parseInt(limit as string),
+      parseInt(page as string),
+      role as string
+    );
 
-// export async function getRequestAdmin(req: Request, res: Response) {
-//   try {
-//     const requests = await scheduleService.requestByAdmin();
-//     return res.status(httpStatus.OK).send({
-//       data: requests,
-//       statusCode: httpStatus.OK,
-//       message: "Request fetched succesfully",
-//     });
-//   } catch (error) {
-//     return res.status(500).json(error);
-//   }
-// }
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Report slots fetched successfully",
+      data: reportSlots,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
 
-// export async function schedule(req: Request, res: Response) {
-//   // console.log(req);
-//   try {
-//     const schedule = await scheduleService.schedule({
-//       userId: res.get("userId"),
-//       ...req.body,
-//     });
-//     return res.status(httpStatus.OK).send({
-//       data: schedule,
-//       statusCode: httpStatus.OK,
-//       message: "Schedule succesfully",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-//       message: error,
-//     });
-//   }
-// }
+export async function deleteReportSlot(req: Request, res: Response) {
+  try {
+    const userId = res.get("userId")!;
 
-// export async function request(req: Request, res: Response) {
-//   // console.log(req);
-//   try {
-//     const request = await scheduleService.request({
-//       userId: res.get("userId"),
-//       ...req.body,
-//     });
-//     return res.status(httpStatus.OK).send({
-//       data: request,
-//       statusCode: httpStatus.OK,
-//       message: "Request added succesfully",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-//       message: error,
-//     });
-//   }
-// }
+    const slotId = req.params.slotId;
+    const slot = await ReportSlotService.getReportSlotById(
+      new Types.ObjectId(slotId)
+    );
+    if (slot?.userId.toString() !== userId) {
+      return res.status(httpStatus.UNAUTHORIZED).send({
+        statusCode: httpStatus.UNAUTHORIZED,
+        message: "You are not authorized to delete this slot",
+      });
+    }
 
-// export async function requestUpdate(req: Request, res: Response) {
-//   try {
-//     const request = await scheduleService.requestUpdate(
-//       req.params.id,
-//       req.body
-//     );
-//     return res.status(httpStatus.OK).send({
-//       data: request,
-//       statusCode: httpStatus.OK,
-//       message: "Request Updated succesfully",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-//       message: error,
-//     });
-//   }
-// }
+    const reportSlots = await ReportSlotService.deleteReportSlot(
+      new Types.ObjectId(slotId)
+    );
 
-// export async function matches(req: Request, res: Response) {
-//   try {
-//     const {type} = req.params;
-//     const schedules = await scheduleService.scheduleByUserId(
-//       res.get("userId")!
-//       );
-      
-//     let allMatches: any[] = [];
-//     let finalMatches: any[] =[];
-
-//     for (const element of schedules) {
-//       if(type == "fetchMatchesSNS"){
-
-//         const matches = await scheduleService.fetchMatchesSNS(
-//           element.subject,
-//           element.scheduleDate,
-//           element.startTime,
-//           element.endTime
-//           );
-//           // console.log(matches);
-//           allMatches = allMatches.concat(matches);
-//         }
-
-//         if(type == "fetchMatchesPTS"){
-
-//           const matches = await scheduleService.fetchMatchesPTS(
-//             element.subject,
-//             element.scheduleDate,
-//             element.startTime,
-//             element.endTime
-//             );
-//             // console.log(matches);
-//             allMatches = allMatches.concat(matches);
-//           }
-//     }
-
-//     // console.log(allMatches);
-//     finalMatches = allMatches.filter(({ _id: value1 }) =>
-//       schedules.some(({ id: value2 }) => value1 != value2)
-//     );
-
-//     return res.status(httpStatus.OK).send({
-//       data: finalMatches,
-//       statusCode: httpStatus.OK,
-//       message: "Matches fetched succesfully",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-//       message: error,
-//     });
-//   }
-// }
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Report slots deleted successfully",
+      data: reportSlots,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
