@@ -5,6 +5,7 @@ import scheduleRoutes from "./schedule.routes";
 import complainRoutes from "./complain.routes";
 import reportRoutes from "./report.routes";
 import reportSlotRoutes from "./reportSlot.routes";
+import resourceRoutes from "./resource.routes";
 
 const routes = Router();
 
@@ -14,4 +15,5 @@ routes.use("/schedule", scheduleRoutes);
 routes.use("/complain", complainRoutes);
 routes.use("/reports", reportRoutes);
 routes.use("/reportSlot", reportSlotRoutes);
+routes.use("/library", resourceRoutes);
 export default routes;
