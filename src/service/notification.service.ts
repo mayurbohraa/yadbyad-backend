@@ -29,3 +29,15 @@ export async function fetchNotifications(id: string, page: number, limit: number
     .skip((page - 1) * limit).populate({path: "userId",model: "users"});
 }
 
+/**
+ * @description This function is used to list all notifications
+ * @author Kunal Rathod
+ * @param {number} page
+ * @param {number} limit
+ * @returns {Promise<any>}
+ */
+export async function fetchAllNotifications(page: number, limit: number): Promise<any> {
+  return await NotificationModel.find({})
+    .limit(limit)
+    .skip((page - 1) * limit).populate({path: "userId",model: "users"});
+}

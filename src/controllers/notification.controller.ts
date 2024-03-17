@@ -35,20 +35,20 @@ export async function createNotification(req: Request, res: Response) {
 }
 
 
-export async function fetchNotification(req: Request, res: Response) {
+export async function fetchSpecificNotification(req: Request, res: Response) {
   try {
    
-    const id  =  res.get("userId")!;
+    const {userId}  =  req.params;
     const { page, limit } = req.query;
 
    
     const notifications = await NotificationService.fetchNotifications(
-      id,
+      userId,
       parseInt(page as string),
       parseInt(limit as string)
     );
 
-    const unreadNotifications = notifications.filter((notifications: Notification) => notifications.isRead == false);
+    const unreadNotifications = notifications.filter((notifications: Notification) => (notifications.isRead == false));
    
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
@@ -65,7 +65,63 @@ export async function fetchNotification(req: Request, res: Response) {
   }
 }
 
+export async function fetchNotification(req: Request, res: Response) {
+  try {
+   
+    const { page, limit } = req.query;
 
+   
+    const notifications = await NotificationService.fetchAllNotifications(
+      parseInt(page as string),
+      parseInt(limit as string)
+    );
+
+    const unreadNotifications = notifications.filter((notifications: Notification) => (notifications.isRead ==  false && (notifications.notificationType == "reportSlotCreated" || 
+    notifications.notificationType == "reportSlotDeleted" || notifications.notificationType == "resourcecreated" || notifications.notificationType == "resourceedited")));
+   
+  
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Notification is fetched successfully",
+      data: unreadNotifications
+    });
+  }
+  catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+export async function fetchAdminNotification(req: Request, res: Response) {
+  try {
+   
+    const { page, limit } = req.query;
+
+   
+    const notifications = await NotificationService.fetchAllNotifications(
+      parseInt(page as string),
+      parseInt(limit as string)
+    );
+
+    const unreadNotifications = notifications.filter((notifications: Notification) => (notifications.isRead ==  false && (notifications.notificationType == "complainsubmitted" || notifications.notificationType == "reportsubmitted")));
+   
+    res.status(httpStatus.OK).send({
+      statusCode: httpStatus.OK,
+      message: "Notification is fetched successfully",
+      data: unreadNotifications
+    });
+  }
+  catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
 
 export async function readNotification(req: Request, res: Response) {
   try {
