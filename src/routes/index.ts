@@ -6,6 +6,7 @@ import complainRoutes from "./complain.routes";
 import reportRoutes from "./report.routes";
 import reportSlotRoutes from "./reportSlot.routes";
 import resourceRoutes from "./resource.routes";
+import notificationRoutes from "./notification.routes";
 
 const routes = Router();
 
@@ -16,4 +17,6 @@ routes.use("/complain", complainRoutes);
 routes.use("/reports", reportRoutes);
 routes.use("/reportSlot", reportSlotRoutes);
 routes.use("/library", resourceRoutes);
+routes.use("/notifications", notificationRoutes)
+
 export default routes;

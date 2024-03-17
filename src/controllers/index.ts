@@ -5,5 +5,7 @@ import * as ComplainController from "./complain.controller";
 import * as ReportController from "./report.controller";
 import * as ReportSlotController from "./reportSlot.controller";
 import * as ResourceController from "./resource.controller";
+import * as NotificationController from "./notification.controller";
 
-export { AuthenticationController, SettingsController, ScheduleController, ComplainController, ReportController,ReportSlotController, ResourceController};
+export { AuthenticationController, SettingsController, ScheduleController, ComplainController, ReportController
+    ,ReportSlotController, ResourceController, NotificationController};

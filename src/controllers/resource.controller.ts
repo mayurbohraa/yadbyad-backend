@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { Resource } from "../models/resource.model";
 import { ComplainService, SettingsService, ResourceService } from "../service";
-
+import axios from "axios";
 
 export async function createResource(req: Request, res: Response) {
   try {
@@ -17,6 +17,26 @@ export async function createResource(req: Request, res: Response) {
      
       const createdResource = await ResourceService.createResource(resource as Resource);
       
+      axios.post(
+        "http://localhost:9000/api/v1/notifications/createNotification",
+        {
+          message: "Resource is created",
+          userId: userId,
+          notificationType: "resourcecreated",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "Resource is submitted successfully",
@@ -72,6 +92,25 @@ export async function editResource(req: Request, res: Response) {
 
     if (resource && resource.status == "active") {
      
+
+      axios.post(
+        "http://localhost:9000/api/v1/notifications/createNotification",
+        {
+          message: "Resource is edited",
+          notificationType: "resourceedited",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Resource is edited successfully",

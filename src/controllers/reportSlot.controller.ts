@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import * as ReportSlotService from "../service/reportSlot.service";
 import moment from "moment";
 import { Types } from "mongoose";
+import axios from "axios";
 
 export async function createSlot(req: Request, res: Response) {
   try {
@@ -16,6 +17,26 @@ export async function createSlot(req: Request, res: Response) {
     };
 
     const createdReportSlot = await ReportSlotService.createSlot(reportSlot);
+
+    axios.post(
+      "http://localhost:9000/api/v1/notifications/createNotification",
+      {
+        message: "ReportSlot is Created",
+        userId: userId,
+        notificationType: "reportSlotCreated",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }
+    )
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
@@ -75,6 +96,27 @@ export async function deleteReportSlot(req: Request, res: Response) {
     const reportSlots = await ReportSlotService.deleteReportSlot(
       new Types.ObjectId(slotId)
     );
+if(reportSlots){
+    axios.post(
+      "http://localhost:9000/api/v1/notifications/createNotification",
+      {
+        message: "ReportSlot is Deleted",
+        userId: reportSlots.userId,
+        notificationType: "reportSlotDeleted",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }
+    )
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,

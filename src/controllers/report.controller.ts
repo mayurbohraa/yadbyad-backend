@@ -1,15 +1,12 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { Report } from "../models/report.model";
-import {
-  ReportService,
-  SettingsService,
-  AuthenticationService,
-} from "../service";
+import { ReportService} from "../service";
 import moment from "moment";
+import axios from "axios";
 
 export async function submitReport(req: Request, res: Response) {
-  console.log(req);
+ 
   try {
     const { slotId } = req.params;
     const userId = res.get("userId")!;
@@ -44,6 +41,26 @@ export async function submitReport(req: Request, res: Response) {
       userId: userId,
       fileUrl: file!.path,
       slotId: slotId,
+    });
+
+    axios.post(
+      "http://localhost:9000/api/v1/notifications/createNotification",
+      {
+        message: "Report is Submitted",
+        userId: userId,
+        notificationType: "reportsubmitted",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }
+    )
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
     });
 
     res.status(httpStatus.OK).send({
@@ -116,6 +133,26 @@ export async function remarks(req: Request, res: Response) {
     if (report && report.userStatus == "active") {
       report.status = "completed";
       report.save();
+
+      axios.post(
+        "http://localhost:9000/api/v1/notifications/createNotification",
+        {
+          message: "Report is Remarked",
+          userId: report.userId,
+          notificationType: "reportRemarked",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "Report is replied successfully",
