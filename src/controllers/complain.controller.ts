@@ -26,7 +26,7 @@ export async function submitComplain(req: Request, res: Response) {
         "http://localhost:9000/api/v1/notifications/createNotification",
         {
           message: "Complain is Submitted",
-          userId: res.get("userId"),
+          userId1: userId,
           notificationType: "complainsubmitted",
         },
         {
@@ -127,7 +127,7 @@ export async function replyComplain(req: Request, res: Response) {
         "http://localhost:9000/api/v1/notifications/createNotification",
         {
           message: "Complain is replied",
-          userId: complain.userId,
+          userId1: complain.userId,
           notificationType: "complainReplied",
         },
         {

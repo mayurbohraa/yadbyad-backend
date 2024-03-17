@@ -21,7 +21,7 @@ export async function createResource(req: Request, res: Response) {
         "http://localhost:9000/api/v1/notifications/createNotification",
         {
           message: "Resource is created",
-          userId: userId,
+          userId1: userId,
           notificationType: "resourcecreated",
         },
         {
@@ -85,6 +85,7 @@ export async function fetchResources(req: Request, res: Response) {
 
 export async function editResource(req: Request, res: Response) {
   try {
+    const userId  =  res.get("userId")!;
     const { id } = req.params;
     const resource = await ResourceService.findResourceByIdAndUpdate(
       id, {...req.body}
@@ -97,6 +98,7 @@ export async function editResource(req: Request, res: Response) {
         "http://localhost:9000/api/v1/notifications/createNotification",
         {
           message: "Resource is edited",
+          userId1: userId,
           notificationType: "resourceedited",
         },
         {

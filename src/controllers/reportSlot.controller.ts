@@ -22,7 +22,7 @@ export async function createSlot(req: Request, res: Response) {
       "http://localhost:9000/api/v1/notifications/createNotification",
       {
         message: "ReportSlot is Created",
-        userId: userId,
+        userId1: userId,
         notificationType: "reportSlotCreated",
       },
       {
@@ -101,7 +101,7 @@ if(reportSlots){
       "http://localhost:9000/api/v1/notifications/createNotification",
       {
         message: "ReportSlot is Deleted",
-        userId: reportSlots.userId,
+        userId1: reportSlots.userId,
         notificationType: "reportSlotDeleted",
       },
       {

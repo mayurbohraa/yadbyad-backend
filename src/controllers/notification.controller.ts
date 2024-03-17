@@ -8,12 +8,12 @@ import { compare } from "bcryptjs";
 export async function createNotification(req: Request, res: Response) {
   try {
     const userId  =  res.get("userId")!;
-    const { message, notificationType } =  req.body;
+    const { message, notificationType , userId1} =  req.body;
       const Notification = {
        
         message:message,
         notificationType: notificationType,
-        userId: userId
+        userId: userId1
       };
      
       const createdNotification = await NotificationService.createNotification( Notification as Notification);

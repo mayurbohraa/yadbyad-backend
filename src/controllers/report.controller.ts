@@ -47,7 +47,7 @@ export async function submitReport(req: Request, res: Response) {
       "http://localhost:9000/api/v1/notifications/createNotification",
       {
         message: "Report is Submitted",
-        userId: userId,
+        userId1: userId,
         notificationType: "reportsubmitted",
       },
       {
@@ -138,7 +138,7 @@ export async function remarks(req: Request, res: Response) {
         "http://localhost:9000/api/v1/notifications/createNotification",
         {
           message: "Report is Remarked",
-          userId: report.userId,
+          userId1: report.userId,
           notificationType: "reportRemarked",
         },
         {
