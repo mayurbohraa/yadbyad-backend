@@ -164,3 +164,8 @@ export async function fetchUsers(page: number, limit: number): Promise<any> {
     .limit(limit)
     .skip((page - 1) * limit);
 }
+
+
+export async function findUserByStudentId(id: string): Promise<User | null> {
+  return await UserModel.findOne({ studentID: id });
+}
