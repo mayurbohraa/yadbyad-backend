@@ -9,7 +9,9 @@ export enum NotificationType {
   reportRemarked = "reportRemarked",
   reportSlotDeleted = "reportSlotDeleted",
   resourcecreated ="resourcecreated",
-  resourceedited = "resourceedited"
+  resourceedited = "resourceedited",
+  casualSessionCreated = "casualSessionCreated",
+  examScheduled = "examScheduled"
 }
 
 export interface Notification extends Document {

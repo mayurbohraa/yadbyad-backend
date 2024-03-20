@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as scheduleService from "../service/schedule.service";
-import { AuthenticationService } from "../service";
+import { AuthenticationService, NotificationService } from "../service";
+import { Notification } from "../models/notification.model";
+
+
 export async function postSchedule(req: Request, res: Response) {
   // console.log(res, req.body);
   try {
@@ -14,6 +17,13 @@ export async function postSchedule(req: Request, res: Response) {
         ...req.body,
       });
 
+      NotificationService.createNotification({ 
+        message: "exam is scheduled ",
+        userId: schedule.userId.toString(),
+        notificationType: "examScheduled",
+  
+         } as  Notification
+       );
       return res.status(httpStatus.OK).send({
         data: schedule,
         statusCode: httpStatus.OK,

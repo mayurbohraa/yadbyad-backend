@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as casualService from "../service/schedule.service";
+import { Notification } from "../models/notification.model";
+import { NotificationService} from "../service";
+
 export async function postCasual(req: Request, res: Response) {
   try {
     const schedule = await casualService.Casual({
@@ -8,6 +11,13 @@ export async function postCasual(req: Request, res: Response) {
       ...req.body,
     });
 
+    NotificationService.createNotification({ 
+      message: "Casual session is created",
+      userId: schedule.userId.toString(),
+      notificationType: "casualSessionCreated",
+
+       } as  Notification
+     );
     return res.status(httpStatus.OK).send({
       data: schedule,
       statusCode: httpStatus.OK,

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { Resource } from "../models/resource.model";
-import { ComplainService, SettingsService, ResourceService } from "../service";
-import axios from "axios";
+import { NotificationService, ResourceService } from "../service";
+import { Notification } from "../models/notification.model";
 
 export async function createResource(req: Request, res: Response) {
   try {
@@ -17,25 +17,14 @@ export async function createResource(req: Request, res: Response) {
      
       const createdResource = await ResourceService.createResource(resource as Resource);
       
-      axios.post(
-        "http://localhost:9000/api/v1/notifications/createNotification",
-        {
-          message: "Resource is created",
-          userId1: userId,
+      NotificationService.createNotification({ 
+        message: "Resource is created",
+          userId: userId.toString(),
           notificationType: "resourcecreated",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+
+         } as  Notification
+       );
+
 
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
@@ -93,26 +82,14 @@ export async function editResource(req: Request, res: Response) {
 
     if (resource && resource.status == "active") {
      
+      NotificationService.createNotification({ 
+        message: "Resource is edited",
+        userId: userId.toString(),
+        notificationType: "resourceedited",
 
-      axios.post(
-        "http://localhost:9000/api/v1/notifications/createNotification",
-        {
-          message: "Resource is edited",
-          userId1: userId,
-          notificationType: "resourceedited",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+         } as  Notification
+       );
+    
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Resource is edited successfully",

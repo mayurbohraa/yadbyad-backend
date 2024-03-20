@@ -2,9 +2,8 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { Types } from "mongoose";
 import { Complain } from "../models/complain.model";
-import { ComplainService, SettingsService } from "../service";
-import { compare } from "bcryptjs";
-import axios from "axios";
+import { ComplainService, SettingsService, NotificationService } from "../service";
+import { Notification } from "../models/notification.model";
 
 
 export async function submitComplain(req: Request, res: Response) {
@@ -22,25 +21,14 @@ export async function submitComplain(req: Request, res: Response) {
     );
     await SettingsService.createSettings(createdComplain._id);
 
-    axios.post(
-        "http://localhost:9000/api/v1/notifications/createNotification",
-        {
-          message: "Complain is Submitted",
-          userId1: userId,
-          notificationType: "complainsubmitted",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    NotificationService.createNotification(
+      { 
+        message: "Complain is Submitted",
+        userId: Complain.userId,
+        notificationType: "complainsubmitted",
+         }as  Notification
+       );
+        
 
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
@@ -114,6 +102,7 @@ export async function fetchAllComplain(req: Request, res: Response) {
 
 export async function replyComplain(req: Request, res: Response) {
   try {
+    
     const { id } = req.params;
     const complain = await ComplainService.findUserByIdAndUpdate(id, {
       ...req.body,
@@ -123,25 +112,12 @@ export async function replyComplain(req: Request, res: Response) {
       complain.status = "completed";
       complain.save();
 
-      axios.post(
-        "http://localhost:9000/api/v1/notifications/createNotification",
-        {
-          message: "Complain is replied",
-          userId1: complain.userId,
-          notificationType: "complainReplied",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      NotificationService.createNotification(
+       { message: "Complain is replied",
+            userId: complain.userId,
+            notificationType: "complainReplied",
+          }as  Notification
+        );
 
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,

@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { Report } from "../models/report.model";
-import { ReportService} from "../service";
+import { ReportService, NotificationService } from "../service";
 import moment from "moment";
-import axios from "axios";
+import { Notification } from "../models/notification.model";
+
 
 export async function submitReport(req: Request, res: Response) {
  
@@ -43,25 +44,16 @@ export async function submitReport(req: Request, res: Response) {
       slotId: slotId,
     });
 
-    axios.post(
-      "http://localhost:9000/api/v1/notifications/createNotification",
-      {
+
+    NotificationService.createNotification(
+      { 
         message: "Report is Submitted",
-        userId1: userId,
         notificationType: "reportsubmitted",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json"
-        },
-      }
-    )
-    .then((response) => {
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+        userId: userId,
+  
+         }as  Notification
+       );
+
 
     res.status(httpStatus.OK).send({
       status: httpStatus.OK,
@@ -134,25 +126,14 @@ export async function remarks(req: Request, res: Response) {
       report.status = "completed";
       report.save();
 
-      axios.post(
-        "http://localhost:9000/api/v1/notifications/createNotification",
-        {
+      NotificationService.createNotification({ 
           message: "Report is Remarked",
-          userId1: report.userId,
           notificationType: "reportRemarked",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          },
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+          userId: report.userId.toString(),
+
+           } as  Notification
+         );
+
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "Report is replied successfully",

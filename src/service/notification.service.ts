@@ -36,8 +36,8 @@ export async function fetchNotifications(id: string, page: number, limit: number
  * @param {number} limit
  * @returns {Promise<any>}
  */
-export async function fetchAllNotifications(page: number, limit: number): Promise<any> {
-  return await NotificationModel.find({})
+export async function fetchAllNotifications(matchBody: any, page: number, limit: number): Promise<any> {
+  return await NotificationModel.find(matchBody)
     .limit(limit)
     .skip((page - 1) * limit).populate({path: "userId",model: "users"});
 }
