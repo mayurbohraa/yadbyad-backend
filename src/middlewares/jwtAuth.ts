@@ -30,6 +30,7 @@ export default async function verify(
         res.set("firstName", user.firstName);
         res.set("lastName", user.lastName);
         res.set("email", user.email);
+        res.set("role", user.role);
         next();
       }
       catch (error){

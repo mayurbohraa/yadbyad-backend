@@ -18,6 +18,7 @@ router.get("/fetchNotification", NotificationController.fetchNotification);
 
 // fetch only complain and report submit notifications
 router.get("/fetchAdminNotification", NotificationController.fetchAdminNotification);
+
 router.post("/readNotification", NotificationController.readNotification);
 
 export default router;
