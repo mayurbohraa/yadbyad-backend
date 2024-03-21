@@ -51,24 +51,33 @@ export async function fetchNotification(req: Request, res: Response) {
       {notificationType:"casualSessionCreated"},
     ];
   }
-  else if(role == "part time student" ||role == "special need student" ){
+  else if(role == "part time student" ){
    
     matchBody["$or"] = [
       { notificationType: "reportSlotDeleted" },
       { notificationType: "resourcecreated" },
       { notificationType: "resourceedited" },
       { notificationType: "reportSlotCreated" },
-      { notificationType: "examScheduled" },
       {
         $and: [
-          { notificationType: { $nin: ["reportsubmitted", "complainsubmitted"] } },
+          { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "examScheduled"] } },
           { $or: [{ userId: userId }, { userId: { $exists: false } }] },
         ],
       },
     ];
     
   }else{
-    console.log("invalid user");
+    matchBody["$or"] = [
+      { notificationType: "resourcecreated" },
+      { notificationType: "resourceedited" },
+      { notificationType: "examScheduled" },
+      {
+        $and: [
+          { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "reportSlotDeleted","reportSlotCreated"] } },
+          { $or: [{ userId: userId }, { userId: { $exists: false } }] },
+        ],
+      },
+    ];
   }
 
     const notifications = await NotificationService.fetchAllNotifications(

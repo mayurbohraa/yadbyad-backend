@@ -106,7 +106,7 @@ export async function findReportSlotById(
  * @returns {Promise<Report|null>}
  */
 
-export async function findUserByIdAndUpdate(
+export async function findReportByIdAndUpdate(
   id: string,
   report: Report
 ): Promise<Report | null> {

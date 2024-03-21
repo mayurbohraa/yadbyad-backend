@@ -4,7 +4,7 @@ import { Report } from "../models/report.model";
 import { ReportService, NotificationService } from "../service";
 import moment from "moment";
 import { Notification } from "../models/notification.model";
-
+import { Types } from 'mongoose';
 
 export async function submitReport(req: Request, res: Response) {
  
@@ -118,19 +118,19 @@ export async function fetchAllReport(req: Request, res: Response) {
 export async function remarks(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const report = await ReportService.findUserByIdAndUpdate(id, {
+    const report = await ReportService.findReportByIdAndUpdate(id, {
       ...req.body,
     });
 
     if (report && report.userStatus == "active") {
       report.status = "completed";
       report.save();
-
+     
       NotificationService.createNotification({ 
           message: "Report is Remarked",
           notificationType: "reportRemarked",
-          userId: report.userId.toString(),
-
+          userId: report.userId,
+         
            } as  Notification
          );
 
