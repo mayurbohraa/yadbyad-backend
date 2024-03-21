@@ -35,7 +35,8 @@ export async function createNotification(req: Request, res: Response) {
 
 export async function fetchNotification(req: Request, res: Response) {
   try {
-    const {userId}  =  req.params;
+    // const {userId}  =  req.params;
+    const userId  =  res.get("userId")!;
     const { page, limit, role } = req.query;
 
    const matchBody: any = {
@@ -93,24 +94,77 @@ export async function fetchNotification(req: Request, res: Response) {
 
 export async function readNotification(req: Request, res: Response) {
   try {
-   
-    const id  =  res.get("userId")!;
-    const { page, limit } = req.query;
+    // const {userId}  =  req.params;
 
+    const userId  =  res.get("userId")!;
+    const { page, limit, role } = req.query;
+
+   const matchBody: any = {
+    isRead : false,
+    
+  };
+
+  if(role == "admin"){
+    matchBody["$or"] = [
+      {notificationType: "complainsubmitted"} ,
+      {notificationType:"reportsubmitted"},
+      {notificationType:"casualSessionCreated"},
+    ];
+  }
+  else if(role == "part time student" ||role == "special need student" ){
    
-    const notifications = await NotificationService.fetchNotifications(
-      id,
+    matchBody["$or"] = [
+      { notificationType: "reportSlotDeleted" },
+      { notificationType: "resourcecreated" },
+      { notificationType: "resourceedited" },
+      { notificationType: "reportSlotCreated" },
+      { notificationType: "examScheduled" },
+      {
+        $and: [
+          { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "casualSessionCreated"] } },
+          { $or: [{ userId: userId }, { userId: { $exists: false } }] },
+        ],
+      },
+    ];
+    
+  }else{
+    console.log("invalid user");
+  }
+
+    const notifications = await NotificationService.fetchAllNotifications(
+      matchBody,
       parseInt(page as string),
       parseInt(limit as string)
     );
 
-    const unreadNotifications = notifications.filter((notifications: Notification) => notifications.isRead == false);
-    const readNotifications = unreadNotifications.filter((unreadNotification: Notification) => unreadNotification.isRead =true);
+    if(role == "admin"){
+    notifications.forEach(async (notification: Notification) => {
+      notification.isRead = true; 
+      await notification.save(); 
+    });
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Notification is fetched successfully",
-      data: readNotifications
+      message: "Notification is read successfully",
+      data: notifications
     });
+  }
+  else{
+       notifications.forEach(async (notification: Notification) => {
+    // console.log(notification.userId);
+      if(notification.userId == userId){
+      notification.isRead = true; 
+      await notification.save(); 
+      }
+    });  
+    res.status(httpStatus.OK).send({
+          statusCode: httpStatus.OK,
+          message: "Notification is read successfully",
+          data: notifications
+        });
+  }
+
+     
+    
   }
   catch (error) {
     console.log(error);
@@ -120,3 +174,32 @@ export async function readNotification(req: Request, res: Response) {
     });
   }
 }
+// export async function readNotification(req: Request, res: Response) {
+//   try {
+   
+//     const id  =  res.get("userId")!;
+//     const { page, limit } = req.query;
+
+   
+//     const notifications = await NotificationService.fetchNotifications(
+//       id,
+//       parseInt(page as string),
+//       parseInt(limit as string)
+//     );
+
+//     const unreadNotifications = notifications.filter((notifications: Notification) => notifications.isRead == false);
+//     const readNotifications = unreadNotifications.filter((unreadNotification: Notification) => unreadNotification.isRead =true);
+//     res.status(httpStatus.OK).send({
+//       statusCode: httpStatus.OK,
+//       message: "Notification is fetched successfully",
+//       data: readNotifications
+//     });
+//   }
+//   catch (error) {
+//     console.log(error);
+//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+//       message: error,
+//     });
+//   }
+// }
