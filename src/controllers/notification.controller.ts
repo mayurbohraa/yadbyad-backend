@@ -40,8 +40,7 @@ export async function fetchNotification(req: Request, res: Response) {
     const { page, limit, role } = req.query;
 
    const matchBody: any = {
-    isRead : false,
-    
+    isRead : false,    
   };
 
   if(role == "admin"){
