@@ -26,7 +26,8 @@ export async function fetchNotifications(id: string, page: number, limit: number
   const objectId = new ObjectId(id);
   return await NotificationModel.find({userId: objectId})
     .limit(limit)
-    .skip((page - 1) * limit).populate({path: "userId",model: "users"});
+    .skip((page - 1) * limit).populate({path: "userId",model: "users"})
+    .sort({createdAt:-1});
 }
 
 /**
@@ -39,5 +40,6 @@ export async function fetchNotifications(id: string, page: number, limit: number
 export async function fetchAllNotifications(matchBody: any, page: number, limit: number): Promise<any> {
   return await NotificationModel.find(matchBody)
     .limit(limit)
-    .skip((page - 1) * limit).populate({path: "userId",model: "users"});
+    .skip((page - 1) * limit).populate({path: "userId",model: "users"})
+    .sort({createdAt:-1});
 }
