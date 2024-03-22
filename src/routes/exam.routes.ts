@@ -9,6 +9,12 @@ router.get("/", ScheduleController.getSchedule);
 router.get("/scheduleadmin", ScheduleController.getScheduleAdmin);
 router.post("/request", ScheduleController.postSchedule);
 
+// request by part time student on the created exam
+router.post("/partTimeRequest/:examId", ScheduleController.addRequesteeId);
+
+// to update (accept or reject) the request by Special need student sended by part Time student
+router.put("/specialNeedUpdate/:id/:update", ScheduleController.requestUpdateSpecialNeed);
+
 // router.post("/", ScheduleController.schedule);
 // router.get("/requestsadmin", ScheduleController.getRequestAdmin);
 // router.get("/requests", ScheduleController.getRequest);

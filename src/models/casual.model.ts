@@ -6,6 +6,8 @@ export interface Casual extends Document {
   bookedRoom: string;
   desc: string;
   type: string;
+  status: string;
+  specialNeedStatus:string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -14,6 +16,13 @@ export enum Status {
   Pending = "pending",
   Rejected = "rejected",
 }
+
+export enum specialNeedStatus {
+  Accepted = "accepted",
+  Pending = "pending",
+  Rejected = "rejected",
+}
+
 const casualSchema: Schema = new Schema(
   {
     userId: {
@@ -45,6 +54,13 @@ const casualSchema: Schema = new Schema(
       enum: Status,
       default: "pending",
     },
+
+    specialNeedStatus: {
+      type: String,
+      enum: specialNeedStatus,
+      default: "pending",
+    },
+
     requesteeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",

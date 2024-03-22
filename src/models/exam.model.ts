@@ -1,8 +1,16 @@
+import { Status } from "cloudinary";
 import mongoose, { Schema, Document } from "mongoose";
+
+export enum specialNeedStatus {
+  Accepted = "accepted",
+  Pending = "pending",
+  Rejected = "rejected",
+}
 
 // Common interface for all document types
 export interface Schedule extends Document {
-  userId: mongoose.Types.ObjectId;
+  // userId: mongoose.Types.ObjectId;
+  userId: string;
   date: string;
   time: string;
   type: string;
@@ -13,9 +21,13 @@ export interface Schedule extends Document {
   specialNeedsStudentName?: string;
   specialNeedsStudentID?: string;
   specialNeedsStudentPhoneNumber?: string;
+  specialNeedStatus: string;
+  requesteeId:string;
+  status: string;
   updatedAt: Date;
   createdAt: Date;
 }
+
 
 // Combined schema for all event types
 const eventSchema: Schema = new Schema(
@@ -46,6 +58,13 @@ const eventSchema: Schema = new Schema(
     specialNeedsStudentName: String,
     specialNeedsStudentID: String,
     specialNeedsStudentPhoneNumber: String,
+    
+    specialNeedStatus: {
+      type: String,
+      enum: specialNeedStatus,
+      default: "pending",
+    },
+
     requesteeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
@@ -54,6 +73,7 @@ const eventSchema: Schema = new Schema(
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected"],
+
     },
   },
   {

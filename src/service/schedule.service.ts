@@ -3,6 +3,7 @@ import { RequestModel } from "../models";
 import moment from "moment";
 import { Request } from "../models/request.model";
 import { Types } from "mongoose";
+import { ObjectId } from "mongodb";
 
 /**
  * @description This function is used to create Schedule
@@ -51,7 +52,19 @@ export async function requestUpdate(
   );
 }
 
+export async function requestUpdateSpecialNeed(
+  requestId: string,
+  updateRequestDto: any
+): Promise<any> {
+  return await ScheduleModel.findByIdAndUpdate(
+    new Types.ObjectId(requestId),
+    { $set: { specialNeedStatus: updateRequestDto } },
+    { new: true }
+  );
+}
+
 export async function Casual(scheduleDto: any): Promise<Schedule> {
+  console.log(scheduleDto);
   return await ScheduleModel.create({
     ...scheduleDto,
     startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),
@@ -83,6 +96,23 @@ export async function CasualAccepted(): Promise<Schedule[]> {
     model: "users",
   });
 }
+
+
+export async function findCasualById(
+  id: string,
+ 
+): Promise<Schedule | null> {
+  // Convert the string id to ObjectId
+  const objectId = new ObjectId(id);
+
+  // Return the updated casual
+  return await ScheduleModel.findOne({ _id: objectId }).populate({
+    path: "userId",
+    model: "users",
+  });
+}
+
+
 
 export async function lecture(scheduleDto: any): Promise<Schedule> {
   return await ScheduleModel.create({

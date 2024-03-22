@@ -167,5 +167,5 @@ export async function fetchUsers(page: number, limit: number): Promise<any> {
 
 
 export async function findUserByStudentId(id: string): Promise<User | null> {
-  return await UserModel.findOne({ studentID: id });
+  return await UserModel.findOne({ _id: id });
 }

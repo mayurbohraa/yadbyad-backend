@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as scheduleService from "../service/schedule.service";
-import { AuthenticationService, NotificationService } from "../service";
+import { AuthenticationService, NotificationService, ScheduleService } from "../service";
 import { Notification } from "../models/notification.model";
 
 
 export async function postSchedule(req: Request, res: Response) {
-  // console.log(res, req.body);
   try {
+
     const userID = await AuthenticationService.findUserByStudentId(
       req.body.specialNeedsStudentID
     );
+
     if (userID) {
       const schedule = await scheduleService.schedule({
         userId: userID._id,
@@ -18,9 +19,9 @@ export async function postSchedule(req: Request, res: Response) {
       });
 
       NotificationService.createNotification({ 
-        message: "exam is scheduled ",
+        message: "new exam is added ",
         userId: schedule.userId.toString(),
-        notificationType: "examScheduled",
+        notificationType: "examAdded",
   
          } as  Notification
        );
@@ -66,6 +67,71 @@ export async function getScheduleAdmin(req: Request, res: Response) {
     });
   } catch (error) {
     return res.status(500).json(error);
+  }
+}
+
+
+export async function addRequesteeId(req: Request, res: Response) {
+  try {
+    const userId = res.get("userId")!;
+    const { examId } = req.params;
+    const request = await scheduleService.findCasualById(examId);
+
+    
+    if(request){
+      request.requesteeId= userId;
+      request.save();
+    NotificationService.createNotification({ 
+      message: `Exam session's requestee Id is added`,
+      userId: request.userId,
+      notificationType: "partTimeCasual/Exam/LectureRequest",
+
+       } as  Notification
+     );
+
+      }
+
+    return res.status(httpStatus.OK).send({
+      data: request,
+      statusCode: httpStatus.OK,
+      message: "Requestee Id Updated succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+export async function requestUpdateSpecialNeed(req: Request, res: Response) {
+  try {
+    console.log(req.body);
+    const request = await ScheduleService.requestUpdateSpecialNeed(
+      req.params.id,
+      req.params.update
+    );
+
+    NotificationService.createNotification({ 
+      message: `Exam session is ${request.specialNeedStatus} by Special need Student`,
+      userId: request.userId,
+      notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
+
+       } as  Notification
+     );
+
+    return res.status(httpStatus.OK).send({
+      data: request,
+      statusCode: httpStatus.OK,
+      message: "Request Updated succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
   }
 }
 
