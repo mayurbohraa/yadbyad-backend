@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as lectureService from "../service/schedule.service";
 import { Notification } from "../models/notification.model";
-import { LectureService, NotificationService} from "../service";
+import { LectureService, NotificationService, ScheduleService} from "../service";
 
 export async function postLecture(req: Request, res: Response) {
   try {
@@ -99,6 +99,40 @@ export async function addRequesteeId(req: Request, res: Response) {
   }
 }
 
+export async function deleteLecture(req: Request, res: Response) {
+  try {
+    const userId = res.get("userId")!;
+    const { lectureId } = req.params;
+    const request = await ScheduleService.findCasualById(lectureId);
+
+    
+    if(request){
+      request.dropStatus= "deleted";
+      request.save();
+
+    NotificationService.createNotification({ 
+      message: `Lecture session's is deleted`,
+      userId: request.userId,
+      notificationType: "Casual/Exam/LectureDeleted",
+
+       } as  Notification
+     );
+
+      }
+
+    return res.status(httpStatus.OK).send({
+      data: request,
+      statusCode: httpStatus.OK,
+      message: "lecture session is deleted succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
 
 export async function requestUpdateSpecialNeed(req: Request, res: Response) {
   try {

@@ -74,7 +74,7 @@ export async function Casual(scheduleDto: any): Promise<Schedule> {
 
 export async function CasualByAdmin(): Promise<Schedule[]> {
   // console.log("Fetching schedules...");
-  const schedules = await ScheduleModel.find({ type: "casual" }).populate(
+  const schedules = await ScheduleModel.find({ type: "casual", dropStatus: "open" }).populate(
     "userId",
     "-password"
   );
@@ -87,7 +87,7 @@ export async function CasualByAdmin(): Promise<Schedule[]> {
 // }
 
 export async function CasualByUserId(userId: string): Promise<Schedule[]> {
-  return await ScheduleModel.find({ userId });
+  return await ScheduleModel.find({ userId }, {dropStatus:"open"});
 }
 
 export async function CasualAccepted(): Promise<Schedule[]> {

@@ -15,7 +15,8 @@ export enum NotificationType {
   lectureCreated= "lectureCreated",
   casualSessionAcceptedOrRejected = "casualSessionAcceptedOrRejected",
   partTimeCasualExamLectureRequest = "partTimeCasual/Exam/LectureRequest",
-  ccasualexamlectureSessionAcceptedOrRejectedBySpecialNeed = "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed"
+  ccasualexamlectureSessionAcceptedOrRejectedBySpecialNeed = "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
+  CasualExamLectureDeleted = "Casual/Exam/LectureDeleted"
 }
 
 export interface Notification extends Document {

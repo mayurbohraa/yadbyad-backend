@@ -28,6 +28,10 @@ router.get("/accept", CasualController.casualAccepted);
 // request by part time student on the created casual
 router.post("/partTimeRequest/:casualId", CasualController.addRequesteeId);
 
+
+//use to delete the casual by part time student or special need
+router.delete("/deleteCasual/:casualId", CasualController.deleteCasual);
+
 // router.get("/scheduleadmin", LectureController.getLecturesAdmin);
 // router.post("/", ScheduleController.schedule);
 // router.get("/requestsadmin", ScheduleController.getRequestAdmin);

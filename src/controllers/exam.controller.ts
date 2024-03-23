@@ -105,6 +105,40 @@ export async function addRequesteeId(req: Request, res: Response) {
   }
 }
 
+export async function deleteExam(req: Request, res: Response) {
+  try {
+    const userId = res.get("userId")!;
+    const { examId } = req.params;
+    const request = await scheduleService.findCasualById(examId);
+
+    
+    if(request){
+      request.dropStatus= "deleted";
+      request.save();
+
+    NotificationService.createNotification({ 
+      message: `Exam session's is deleted`,
+      userId: request.userId,
+      notificationType: "Casual/Exam/LectureDeleted",
+
+       } as  Notification
+     );
+
+      }
+
+    return res.status(httpStatus.OK).send({
+      data: request,
+      statusCode: httpStatus.OK,
+      message: "Exam session is deleted succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
 export async function requestUpdateSpecialNeed(req: Request, res: Response) {
   try {
     console.log(req.body);

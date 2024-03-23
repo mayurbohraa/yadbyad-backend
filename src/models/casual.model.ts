@@ -8,6 +8,7 @@ export interface Casual extends Document {
   type: string;
   status: string;
   specialNeedStatus:string;
+  dropStatus:string;
   updatedAt: Date;
   createdAt: Date;
 }
@@ -21,6 +22,11 @@ export enum specialNeedStatus {
   Accepted = "accepted",
   Pending = "pending",
   Rejected = "rejected",
+}
+
+export enum dropStatus {
+   open = "open",
+   deleted = "deleted"
 }
 
 const casualSchema: Schema = new Schema(
@@ -59,6 +65,12 @@ const casualSchema: Schema = new Schema(
       type: String,
       enum: specialNeedStatus,
       default: "pending",
+    },
+
+    dropStatus: {
+      type: String,
+      enum: dropStatus,
+      default: "open",
     },
 
     requesteeId: {

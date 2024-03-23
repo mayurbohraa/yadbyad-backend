@@ -40,7 +40,7 @@ export async function fetchNotification(req: Request, res: Response) {
     const { page, limit, role } = req.query;
 
    const matchBody: any = {
-    isRead : false,    
+    isRead : false,  
   };
 
   if(role == "admin"){
@@ -48,6 +48,7 @@ export async function fetchNotification(req: Request, res: Response) {
       {notificationType: "complainsubmitted"} ,
       {notificationType:"reportsubmitted"},
       {notificationType:"casualSessionRequested"},
+      {notificationType:"Casual/Exam/LectureDeleted"},
     ];
   }
   else if(role == "part time student" ){
@@ -59,10 +60,11 @@ export async function fetchNotification(req: Request, res: Response) {
       { notificationType: "reportSlotCreated" },
       { notificationType: "lectureCreated" },
       { notificationType: "examAdded" },
+      {notificationType:"Casual/Exam/LectureDeleted"},
       {
         $and: [
           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted"] } },
-          { $or: [{ userId: userId }, { userId: { $exists: false } }] },
+          { $or: [{ userId: userId },{ requesteeId :userId} ,{ userId: { $exists: false } }] },
         ],
       },
     ];
@@ -74,6 +76,7 @@ export async function fetchNotification(req: Request, res: Response) {
       { notificationType: "examAdded" },
       { notificationType: "partTimeCasual/Exam/LectureRequest" },
       { notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed" },
+      {notificationType:"Casual/Exam/LectureDeleted"},
       {
         $and: [
           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "reportSlotDeleted","reportSlotCreated"] } },

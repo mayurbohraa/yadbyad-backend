@@ -7,6 +7,11 @@ export enum specialNeedStatus {
   Rejected = "rejected",
 }
 
+export enum dropStatus {
+  open = "open",
+  deleted = "deleted"
+}
+
 // Common interface for all document types
 export interface Schedule extends Document {
   // userId: mongoose.Types.ObjectId;
@@ -22,6 +27,7 @@ export interface Schedule extends Document {
   specialNeedsStudentID?: string;
   specialNeedsStudentPhoneNumber?: string;
   specialNeedStatus: string;
+  dropStatus: string;
   requesteeId:string;
   status: string;
   updatedAt: Date;
@@ -64,7 +70,12 @@ const eventSchema: Schema = new Schema(
       enum: specialNeedStatus,
       default: "pending",
     },
-
+    
+    dropStatus: {
+      type: String,
+      enum: dropStatus,
+      default: "open",
+    },
     requesteeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
