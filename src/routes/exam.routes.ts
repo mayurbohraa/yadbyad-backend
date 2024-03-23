@@ -15,8 +15,6 @@ router.post("/partTimeRequest/:examId", ScheduleController.addRequesteeId);
 // to update (accept or reject) the request by Special need student sended by part Time student
 router.put("/specialNeedUpdate/:id/:update", ScheduleController.requestUpdateSpecialNeed);
 
-//use to delete the exam by part time student
-router.delete("/deleteExam/:examId", ScheduleController.deleteExam);
 
 // router.post("/", ScheduleController.schedule);
 // router.get("/requestsadmin", ScheduleController.getRequestAdmin);

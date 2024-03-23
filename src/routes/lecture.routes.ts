@@ -15,8 +15,6 @@ router.post("/partTimeRequest/:casualId", LectureController.addRequesteeId);
 // to update (accept or reject) the request by Special need student sended by part Time student
 router.put("/specialNeedUpdate/:id/:update",LectureController.requestUpdateSpecialNeed);
 
-//use to delete the casual by part time student or special need
-router.delete("/deleteLecture/:lectureId", LectureController.deleteLecture);
 
 // router.post("/", ScheduleController.schedule);
 // router.get("/requestsadmin", ScheduleController.getRequestAdmin);

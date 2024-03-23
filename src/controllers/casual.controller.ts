@@ -101,11 +101,11 @@ export async function addRequesteeId(req: Request, res: Response) {
 }
 
 
-export async function deleteCasual(req: Request, res: Response) {
+export async function deleteSchedule(req: Request, res: Response) {
   try {
     const userId = res.get("userId")!;
-    const { casualId } = req.params;
-    const request = await casualService.findCasualById(casualId);
+    const { scheduleId } = req.params;
+    const request = await casualService.findCasualById(scheduleId);
 
     
     if(request){
@@ -113,20 +113,21 @@ export async function deleteCasual(req: Request, res: Response) {
       request.save();
 
     NotificationService.createNotification({ 
-      message: `Casual session's is deleted`,
+      message: `${request.type} session's is deleted`,
       userId: request.userId,
       notificationType: "Casual/Exam/LectureDeleted",
 
        } as  Notification
      );
 
-      }
+      
 
     return res.status(httpStatus.OK).send({
       data: request,
       statusCode: httpStatus.OK,
-      message: "Casual session is deleted succesfully",
+      message:  `${request.type} session's is deleted successfully`,
     });
+  }
   } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({

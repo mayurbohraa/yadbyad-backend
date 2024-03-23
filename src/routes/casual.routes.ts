@@ -30,7 +30,7 @@ router.post("/partTimeRequest/:casualId", CasualController.addRequesteeId);
 
 
 //use to delete the casual by part time student or special need
-router.delete("/deleteCasual/:casualId", CasualController.deleteCasual);
+router.delete("/deleteSchedule/:scheduleId", CasualController.deleteSchedule);
 
 // router.get("/scheduleadmin", LectureController.getLecturesAdmin);
 // router.post("/", ScheduleController.schedule);
