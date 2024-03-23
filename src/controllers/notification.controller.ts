@@ -41,7 +41,8 @@ export async function fetchNotification(req: Request, res: Response) {
     const { page, limit, role } = req.query;
 
    const matchBody: any = {
-    isRead : false,  
+    // isRead : false, 
+    readBy: { $nin: userId } 
   };
 
   if(role == "admin"){
@@ -167,6 +168,7 @@ export async function readNotification(req: Request, res: Response) {
       parseInt(page as string),
       parseInt(limit as string)
     );
+
 
     for (const notification of notifications) {
       if (!notification.readBy.includes(userId)) {
