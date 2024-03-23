@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as requestService from "../service/slotrequests.service";
+import { NotificationService } from "../service";
+import { Notification } from "../models/notification.model";
+import ScheduleModel, { Schedule } from "../models/exam.model";
 
 // for part time student to post request
 export async function postRequest(req: Request, res: Response) {
@@ -9,6 +12,14 @@ export async function postRequest(req: Request, res: Response) {
       requesteeId: res.get("userId"),
       ...req.body,
     });
+
+    NotificationService.createNotification({ 
+      message: `${schedule.type} session's requested by part time user`,
+      userId: schedule.userId,
+      notificationType: "partTimeCasual/Exam/LectureRequest",
+
+       } as  Notification
+     );
 
     return res.status(httpStatus.OK).send({
       data: schedule,
@@ -69,6 +80,15 @@ export async function requestUpdate(req: Request, res: Response) {
       req.body.eventId,
       req.params.update
     );
+
+    NotificationService.createNotification({ 
+      message: `${request.type} session is ${request.specialNeedStatus} by Special need Student`,
+      userId: request.userId,
+      notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
+
+       } as  Notification
+     );
+     
     return res.status(httpStatus.OK).send({
       data: request,
       statusCode: httpStatus.OK,

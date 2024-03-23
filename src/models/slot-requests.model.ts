@@ -7,6 +7,7 @@ export enum Status {
 }
 
 export interface SlotRequest extends Document {
+  userId: string;
   requesteeId: string;
   status: Status;
   updatedAt: Date;
