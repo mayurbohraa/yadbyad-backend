@@ -12,6 +12,7 @@ export enum NotificationType {
   resourceedited = "resourceedited",
   casualSessionRequested = "casualSessionRequested",
   examAdded = "examAdded",
+  casualSessionAccepted = "casualSessionAccepted",
   lectureCreated= "lectureCreated",
   casualSessionAcceptedOrRejected = "casualSessionAcceptedOrRejected",
   partTimeCasualExamLectureRequest = "partTimeCasual/Exam/LectureRequest",
@@ -23,6 +24,7 @@ export interface Notification extends Document {
   
   message:string;
   isRead:boolean;
+  readBy: [string];
   notificationType:string;
   updatedAt: Date;
   createdAt: Date;
@@ -42,10 +44,16 @@ const notificationSchema: Schema = new Schema(
       default: false,
     },
 
+    readBy: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      default: [],
+    },
+
     notificationType: {
       type: String,
       enum: NotificationType,
     },
+
 
     userId: {
       type: mongoose.Schema.Types.ObjectId,
