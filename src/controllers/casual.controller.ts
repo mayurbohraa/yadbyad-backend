@@ -41,8 +41,12 @@ export async function getRequests(req: Request, res: Response) {
         ? await casualService.CasualByUserId(res.get("userId")!)
         : await casualService.CasualByAdmin();
 
+        const activeSchedules = schedules.filter(
+          (schedule: Schedule) => schedule.dropStatus === "open"
+        );
+    
     return res.status(httpStatus.OK).send({
-      data: schedules,
+      data: activeSchedules,
       statusCode: httpStatus.OK,
       message: "Schedules succesfully",
     });

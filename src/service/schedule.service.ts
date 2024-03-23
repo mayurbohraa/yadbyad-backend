@@ -87,7 +87,7 @@ export async function CasualByAdmin(): Promise<Schedule[]> {
 // }
 
 export async function CasualByUserId(userId: string): Promise<Schedule[]> {
-  return await ScheduleModel.find({ userId }, {dropStatus:"open"});
+  return await ScheduleModel.find({ userId });
 }
 
 export async function CasualAccepted(): Promise<Schedule[]> {

@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import * as lectureService from "../service/schedule.service";
 import { Notification } from "../models/notification.model";
 import { LectureService, NotificationService, ScheduleService} from "../service";
+import ScheduleModel, { Schedule } from "../models/exam.model";
 
 export async function postLecture(req: Request, res: Response) {
   try {
@@ -42,8 +43,12 @@ export async function getLectures(req: Request, res: Response) {
         ? await lectureService.lectureByUserId(res.get("userId")!)
         : await lectureService.lectureByAdmin();
 
+        const activeSchedules = schedules.filter(
+          (schedule: Schedule) => schedule.dropStatus === "open"
+        );
+
     return res.status(httpStatus.OK).send({
-      data: schedules,
+      data: activeSchedules,
       statusCode: httpStatus.OK,
       message: "Schedules succesfully",
     });
