@@ -8,7 +8,7 @@ import { Notification } from "../models/notification.model";
 
 export async function submitComplain(req: Request, res: Response) {
   try {
-    const userId = res.get("userId")!;
+    const userId : any = res.get("userId")!;
     const { subject, message } = req.body;
     const Complain = {
       subject: subject,

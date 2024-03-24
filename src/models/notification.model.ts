@@ -28,7 +28,7 @@ export interface Notification extends Document {
   notificationType:string;
   updatedAt: Date;
   createdAt: Date;
-  userId:string
+  userId:any
 }
 
 

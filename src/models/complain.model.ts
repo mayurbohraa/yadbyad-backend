@@ -11,7 +11,7 @@ export enum userStatus {
 }
 
 export interface Complain extends Document {
-  userId:string;
+  userId:mongoose.Schema.Types.ObjectId;
   userStatus: string;
   subject:string,
   message:string,

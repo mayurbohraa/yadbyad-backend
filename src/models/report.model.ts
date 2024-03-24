@@ -13,7 +13,7 @@ export enum userStatus {
 
 export interface Report extends Document {
   slotId:mongoose.Schema.Types.ObjectId;
-  userId:string;
+  userId:mongoose.Schema.Types.ObjectId;
   fileUrl: String;
   filename: String;
   fileDescription:string;

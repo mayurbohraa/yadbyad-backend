@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface Casual extends Document {
   date: string;
+  userId:mongoose.Schema.Types.ObjectId;
   time: string;
   bookedRoom: string;
   desc: string;

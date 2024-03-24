@@ -7,8 +7,8 @@ export enum Status {
 }
 
 export interface SlotRequest extends Document {
-  userId: string;
-  requesteeId: string;
+  userId: mongoose.Schema.Types.ObjectId;
+  requesteeId: mongoose.Schema.Types.ObjectId;
   status: Status;
   updatedAt: Date;
   createdAt: Date;
