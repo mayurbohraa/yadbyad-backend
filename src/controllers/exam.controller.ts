@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as scheduleService from "../service/schedule.service";
-import { AuthenticationService, NotificationService, ScheduleService } from "../service";
+import {
+  AuthenticationService,
+  NotificationService,
+  ScheduleService,
+} from "../service";
 import { Notification } from "../models/notification.model";
 import ScheduleModel, { Schedule } from "../models/exam.model";
 
-
 export async function postSchedule(req: Request, res: Response) {
   try {
-
-    const userID = await AuthenticationService.findUserByStudentId(
+    const userID = await AuthenticationService.findUserByStudentSecondId(
       req.body.specialNeedsStudentID
     );
 
@@ -19,13 +21,11 @@ export async function postSchedule(req: Request, res: Response) {
         ...req.body,
       });
 
-      NotificationService.createNotification({ 
+      NotificationService.createNotification({
         message: "new exam is added ",
         userId: schedule.userId.toString(),
         notificationType: "examAdded",
-  
-         } as  Notification
-       );
+      } as Notification);
       return res.status(httpStatus.OK).send({
         data: schedule,
         statusCode: httpStatus.OK,
@@ -48,9 +48,9 @@ export async function getSchedule(req: Request, res: Response) {
         ? await scheduleService.scheduleByUserId(res.get("userId")!)
         : await scheduleService.scheduleByAdmin();
 
-        const activeSchedules = schedules.filter(
-          (schedule: Schedule) => schedule.dropStatus === "open"
-        );
+    const activeSchedules = schedules.filter(
+      (schedule: Schedule) => schedule.dropStatus === "open"
+    );
 
     return res.status(httpStatus.OK).send({
       data: activeSchedules,
@@ -75,26 +75,21 @@ export async function getScheduleAdmin(req: Request, res: Response) {
   }
 }
 
-
 export async function addRequesteeId(req: Request, res: Response) {
   try {
     const userId = res.get("userId")!;
     const { examId } = req.params;
     const request = await scheduleService.findCasualById(examId);
 
-    
-    if(request){
-      request.requesteeId= userId;
+    if (request) {
+      request.requesteeId = userId;
       request.save();
-    NotificationService.createNotification({ 
-      message: `Exam session's requestee Id is added`,
-      userId: request.userId,
-      notificationType: "partTimeCasual/Exam/LectureRequest",
-
-       } as  Notification
-     );
-
-      }
+      NotificationService.createNotification({
+        message: `Exam session's requestee Id is added`,
+        userId: request.userId,
+        notificationType: "partTimeCasual/Exam/LectureRequest",
+      } as Notification);
+    }
 
     return res.status(httpStatus.OK).send({
       data: request,
@@ -118,13 +113,12 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
       req.params.update
     );
 
-    NotificationService.createNotification({ 
+    NotificationService.createNotification({
       message: `Exam session is ${request.specialNeedStatus} by Special need Student`,
       userId: request.userId,
-      notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
-
-       } as  Notification
-     );
+      notificationType:
+        "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
+    } as Notification);
 
     return res.status(httpStatus.OK).send({
       data: request,

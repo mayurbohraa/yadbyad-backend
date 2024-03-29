@@ -2,7 +2,7 @@ import { UserModel } from "../models";
 import { User } from "../models/user.model";
 import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { ObjectId } from 'mongodb';
+import { ObjectId } from "mongodb";
 
 /**
  * @description This function is used to find a user by email
@@ -34,8 +34,10 @@ export async function findUserById(id: string): Promise<User | null> {
  * @returns {Promise<User|null>}
  */
 
-
-export async function findUserByIdAndUpdate(id: string, user: User): Promise<User | null> {
+export async function findUserByIdAndUpdate(
+  id: string,
+  user: User
+): Promise<User | null> {
   // Convert the string id to ObjectId
   const objectId = new ObjectId(id);
 
@@ -59,10 +61,13 @@ export async function findUserByIdAndUpdate(id: string, user: User): Promise<Use
  * @author Kunal Rathod
  * @returns {Promise<User|null>}
  */
-export async function changePasswordById(id: string, newPassword: string): Promise<User|null> {
+export async function changePasswordById(
+  id: string,
+  newPassword: string
+): Promise<User | null> {
   // Find the user by email
   const objectId = new ObjectId(id);
-  const existingUser = await UserModel.findOne({  _id: objectId });
+  const existingUser = await UserModel.findOne({ _id: objectId });
 
   if (!existingUser) {
     return null; // User not found
@@ -70,12 +75,11 @@ export async function changePasswordById(id: string, newPassword: string): Promi
 
   // Update the user's password
   existingUser.password = newPassword;
-  
+
   await existingUser.save();
 
   return existingUser; // Password changed successfully
 }
-
 
 /**
  * @description This function is used to delete users by using id
@@ -165,7 +169,11 @@ export async function fetchUsers(page: number, limit: number): Promise<any> {
     .skip((page - 1) * limit);
 }
 
-
 export async function findUserByStudentId(id: string): Promise<User | null> {
   return await UserModel.findOne({ _id: id });
+}
+export async function findUserByStudentSecondId(
+  id: string
+): Promise<User | null> {
+  return await UserModel.findOne({ studentID: id });
 }

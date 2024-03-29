@@ -9,15 +9,17 @@ export enum specialNeedStatus {
 
 export enum dropStatus {
   open = "open",
-  deleted = "deleted"
+  deleted = "deleted",
 }
 
 // Common interface for all document types
 export interface Schedule extends Document {
   userId: mongoose.Types.ObjectId;
   date: string;
-  time: string;
+  startTime: string;
+  endTime: string;
   type: string;
+  location: string;
   bookedRoom: string;
   fCourse?: string;
   courseTitle?: string;
@@ -27,12 +29,11 @@ export interface Schedule extends Document {
   specialNeedsStudentPhoneNumber?: string;
   specialNeedStatus: string;
   dropStatus: string;
-  requesteeId:string;
+  requesteeId: string;
   status: string;
   updatedAt: Date;
   createdAt: Date;
 }
-
 
 // Combined schema for all event types
 const eventSchema: Schema = new Schema(
@@ -49,7 +50,11 @@ const eventSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    time: {
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
       type: String,
       required: true,
     },
@@ -57,19 +62,21 @@ const eventSchema: Schema = new Schema(
       type: String,
       required: true,
     },
+    location: {
+      type: String,
+      required: true,
+    },
     fCourse: String,
     courseTitle: String,
     scribeTask: String,
-    specialNeedsStudentName: String,
     specialNeedsStudentID: String,
-    specialNeedsStudentPhoneNumber: String,
-    
+
     specialNeedStatus: {
       type: String,
       enum: specialNeedStatus,
       default: "pending",
     },
-    
+
     dropStatus: {
       type: String,
       enum: dropStatus,
@@ -83,7 +90,6 @@ const eventSchema: Schema = new Schema(
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected"],
-
     },
   },
   {
