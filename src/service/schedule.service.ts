@@ -74,12 +74,12 @@ export async function Casual(scheduleDto: any): Promise<Schedule> {
 
 export async function CasualByAdmin(): Promise<Schedule[]> {
   // console.log("Fetching schedules...");
-  const schedules = await ScheduleModel.find({ type: "casual", dropStatus: "open" }).populate(
-    "userId",
-    "-password"
-  );
+  const schedules = await ScheduleModel.find({
+    type: "casual",
+    dropStatus: "open",
+  }).populate("userId", "-password");
   // console.log("Fetched schedules:", schedules);
-  return schedules;
+  return schedules;
 }
 
 // export async function CasualByAdmin(): Promise<Casual[]> {
@@ -97,11 +97,7 @@ export async function CasualAccepted(): Promise<Schedule[]> {
   });
 }
 
-
-export async function findCasualById(
-  id: string,
- 
-): Promise<Schedule | null> {
+export async function findCasualById(id: string): Promise<Schedule | null> {
   // Convert the string id to ObjectId
   const objectId = new ObjectId(id);
 
@@ -112,14 +108,28 @@ export async function findCasualById(
   });
 }
 
-
-
 export async function lecture(scheduleDto: any): Promise<Schedule> {
   return await ScheduleModel.create({
     ...scheduleDto,
     startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),
     endTime: moment(scheduleDto.endTime, "hh:mma").toDate(),
   });
+}
+
+export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
+  const schedules: Schedule[] = [];
+  console.log(scheduleDto);
+  for (const date of scheduleDto.dates) {
+    const schedule = await ScheduleModel.create({
+      ...scheduleDto,
+      date: date,
+      startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),
+      endTime: moment(scheduleDto.endTime, "hh:mma").toDate(),
+    });
+    schedules.push(schedule);
+  }
+
+  return schedules;
 }
 
 export async function lectureByAdmin(): Promise<Schedule[]> {

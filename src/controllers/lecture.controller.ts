@@ -2,25 +2,25 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as lectureService from "../service/schedule.service";
 import { Notification } from "../models/notification.model";
-import { LectureService, NotificationService, ScheduleService} from "../service";
+import {
+  LectureService,
+  NotificationService,
+  ScheduleService,
+} from "../service";
 import ScheduleModel, { Schedule } from "../models/exam.model";
 
 export async function postLecture(req: Request, res: Response) {
   try {
-
-    
-    const schedule = await lectureService.lecture({
+    const schedule = await lectureService.createLectures({
       userId: res.get("userId"),
       ...req.body,
     });
 
-    NotificationService.createNotification({ 
+    NotificationService.createNotification({
       message: "New Lecture is created",
-      userId: schedule.userId.toString(),
+      userId: res.get("userId"),
       notificationType: "lectureCreated",
-
-       } as  Notification
-     );
+    } as Notification);
 
     return res.status(httpStatus.OK).send({
       data: schedule,
@@ -43,9 +43,9 @@ export async function getLectures(req: Request, res: Response) {
         ? await lectureService.lectureByUserId(res.get("userId")!)
         : await lectureService.lectureByAdmin();
 
-        const activeSchedules = schedules.filter(
-          (schedule: Schedule) => schedule.dropStatus === "open"
-        );
+    const activeSchedules = schedules.filter(
+      (schedule: Schedule) => schedule.dropStatus === "open"
+    );
 
     return res.status(httpStatus.OK).send({
       data: activeSchedules,
@@ -76,19 +76,15 @@ export async function addRequesteeId(req: Request, res: Response) {
     const { casualId } = req.params;
     const request = await lectureService.findCasualById(casualId);
 
-    
-    if(request){
-      request.requesteeId= userId;
+    if (request) {
+      request.requesteeId = userId;
       request.save();
-    NotificationService.createNotification({ 
-      message: `Lecture session's requestee Id is added`,
-      userId: request.userId,
-      notificationType: "partTimeCasual/Exam/LectureRequest",
-
-       } as  Notification
-     );
-
-      }
+      NotificationService.createNotification({
+        message: `Lecture session's requestee Id is added`,
+        userId: request.userId,
+        notificationType: "partTimeCasual/Exam/LectureRequest",
+      } as Notification);
+    }
 
     return res.status(httpStatus.OK).send({
       data: request,
@@ -112,13 +108,12 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
       req.params.update
     );
 
-    NotificationService.createNotification({ 
+    NotificationService.createNotification({
       message: `Lecture session is ${request.specialNeedstatus} by Special need Student`,
       userId: request.userId,
-      notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
-
-       } as  Notification
-     );
+      notificationType:
+        "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
+    } as Notification);
 
     return res.status(httpStatus.OK).send({
       data: request,
