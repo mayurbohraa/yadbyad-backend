@@ -116,21 +116,43 @@ export async function lecture(scheduleDto: any): Promise<Schedule> {
   });
 }
 
+// export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
+//   const schedules: Schedule[] = [];
+//   console.log(scheduleDto);
+//   for (const date of scheduleDto.dates) {
+//     const schedule = await ScheduleModel.create({
+//       ...scheduleDto,
+//       date: date,
+//       startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),
+//       endTime: moment(scheduleDto.endTime, "hh:mma").toDate(),
+//     });
+//     schedules.push(schedule);
+//   }
+
+//   return schedules;
+// }
+
 export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
   const schedules: Schedule[] = [];
-  console.log(scheduleDto);
-  for (const date of scheduleDto.dates) {
+  
+  // Convert scheduleDto.dates to an array if it's not already an array
+  const dates = Array.isArray(scheduleDto.date) ? scheduleDto.date : [scheduleDto.date];
+
+  for (const date of dates) {
     const schedule = await ScheduleModel.create({
       ...scheduleDto,
       date: date,
       startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),
       endTime: moment(scheduleDto.endTime, "hh:mma").toDate(),
+      
     });
     schedules.push(schedule);
   }
 
   return schedules;
 }
+
+
 
 export async function lectureByAdmin(): Promise<Schedule[]> {
   return await ScheduleModel.find({}).populate({
@@ -142,3 +164,36 @@ export async function lectureByAdmin(): Promise<Schedule[]> {
 export async function lectureByUserId(userId: string): Promise<Schedule[]> {
   return await ScheduleModel.find({ userId });
 }
+
+
+export async function findDatesForSelectedDaysInMonth(selectedDays: string[], month: string) {
+  // Initialize an empty array to store dates
+  const dates: string[] = [];
+
+  // Get the current date
+  const currentDate = moment();
+
+  // Loop through selected days
+  selectedDays.forEach(day => {
+    // Get the first occurrence of the selected day in the given month
+    let currentDate = moment(`${month}-01`, 'YYYY-MM-DD');
+    const selectedDayOfWeek = moment().day(day).day();
+    while (currentDate.day() !== selectedDayOfWeek) {
+      currentDate.add(1, 'day');
+    }
+
+    // Add all occurrences of the selected day in the given month to the dates array
+    while (currentDate.month() === moment(month, 'YYYY-MM').month()) {
+      if (currentDate.isSameOrAfter(moment(), 'day')) {
+        dates.push(currentDate.format('YYYY-MM-DD'));
+      }
+      currentDate.add(7, 'days');
+    }
+  });
+
+  return dates;
+}
+
+
+
+

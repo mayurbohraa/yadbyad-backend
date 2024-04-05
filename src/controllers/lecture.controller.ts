@@ -9,12 +9,52 @@ import {
 } from "../service";
 import ScheduleModel, { Schedule } from "../models/exam.model";
 
+// export async function postLecture(req: Request, res: Response) {
+//   try {
+//     const selectedDays: string[] = req.body.selectedDays;
+//     const selectedDates: string[] = await lectureService.findDatesForSelectedDaysInMonth(selectedDays,req.body.month);
+
+//     console.log(selectedDates);
+
+//     const schedule = await lectureService.createLectures({
+//       userId: res.get("userId"),
+//       ...req.body,
+//     });
+
+//     NotificationService.createNotification({
+//       message: "New Lecture is created",
+//       userId: res.get("userId"),
+//       notificationType: "lectureCreated",
+//     } as Notification);
+
+//     return res.status(httpStatus.OK).send({
+//       data: schedule,
+//       statusCode: httpStatus.OK,
+//       message: "Schedule succesfully",
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+//       message: error,
+//     });
+//   }
+// }
+
 export async function postLecture(req: Request, res: Response) {
   try {
-    const schedule = await lectureService.createLectures({
-      userId: res.get("userId"),
-      ...req.body,
-    });
+    const selectedDays: string[] = req.body.selectedDays;
+    const selectedDates: string[] = await lectureService.findDatesForSelectedDaysInMonth(selectedDays,req.body.month);
+
+    const lectures: any [] = await Promise.all(selectedDates.map(async (date) => {
+      const schedule = await lectureService.createLectures({
+        userId: res.get("userId"),
+        ...req.body,
+        date:date 
+      });
+
+      return schedule;
+    }));
 
     NotificationService.createNotification({
       message: "New Lecture is created",
@@ -23,9 +63,9 @@ export async function postLecture(req: Request, res: Response) {
     } as Notification);
 
     return res.status(httpStatus.OK).send({
-      data: schedule,
+      data: lectures,
       statusCode: httpStatus.OK,
-      message: "Schedule succesfully",
+      message: "Schedules successfully created",
     });
   } catch (error) {
     console.log(error);
@@ -35,6 +75,7 @@ export async function postLecture(req: Request, res: Response) {
     });
   }
 }
+
 
 export async function getLectures(req: Request, res: Response) {
   try {

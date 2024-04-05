@@ -8,7 +8,7 @@ router.use(jwtverify);
 router.get("/", ScheduleController.getSchedule);
 router.get("/scheduleadmin", ScheduleController.getScheduleAdmin);
 router.post("/request", ScheduleController.postSchedule);
-
+router.get("/adminFetchExam", ScheduleController.getAdminFetchExam);
 // request by part time student on the created exam
 router.post("/partTimeRequest/:examId", ScheduleController.addRequesteeId);
 

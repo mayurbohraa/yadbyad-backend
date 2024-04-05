@@ -44,13 +44,12 @@ export async function ReuestByAdmin(): Promise<SlotRequest[]> {
 // }
 
 export async function ReuestByUserId(userId: string): Promise<SlotRequest[]> {
-  return await slotModel.find({ userId }).populate("requesteeId", "-password");
+  return await slotModel.find({ userId }).populate("requesteeId", "-password").populate("eventId");;
 }
 
 export async function ReuestByPtUserId(userId: string): Promise<SlotRequest[]> {
   return await slotModel
     .find({ requesteeId: userId })
-    // .populate("userId", "-password")
     .populate("eventId");
 }
 

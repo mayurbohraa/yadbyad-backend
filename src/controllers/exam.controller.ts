@@ -75,6 +75,24 @@ export async function getScheduleAdmin(req: Request, res: Response) {
   }
 }
 
+export async function getAdminFetchExam(req: Request, res: Response) {
+  try {
+    const schedules = await scheduleService.scheduleByAdmin();
+
+    const examSchedules = schedules.filter(
+      (schedule: Schedule) => schedule.type === "exam"
+    );
+
+    return res.status(httpStatus.OK).send({
+      data: examSchedules,
+      statusCode: httpStatus.OK,
+      message: "Schedules succesfully",
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
 export async function addRequesteeId(req: Request, res: Response) {
   try {
     const userId = res.get("userId")!;
