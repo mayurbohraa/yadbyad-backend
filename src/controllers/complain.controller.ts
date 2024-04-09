@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
-import { Types } from "mongoose";
 import { Complain } from "../models/complain.model";
 import { ComplainService, SettingsService, NotificationService } from "../service";
 import { Notification } from "../models/notification.model";

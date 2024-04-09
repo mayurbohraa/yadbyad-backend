@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as casualService from "../service/schedule.service";
-import ScheduleModel, { Schedule } from "../models/exam.model";
+import { Schedule } from "../models/exam.model";
 import { Notification } from "../models/notification.model";
 import { NotificationService} from "../service";
 

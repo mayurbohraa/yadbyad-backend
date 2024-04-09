@@ -1,7 +1,5 @@
 import ScheduleModel, { Schedule } from "../models/exam.model";
-import { RequestModel } from "../models";
 import moment from "moment";
-import { Request } from "../models/request.model";
 import { Types } from "mongoose";
 import { ObjectId } from "mongodb";
 
@@ -73,18 +71,13 @@ export async function Casual(scheduleDto: any): Promise<Schedule> {
 }
 
 export async function CasualByAdmin(): Promise<Schedule[]> {
-  // console.log("Fetching schedules...");
   const schedules = await ScheduleModel.find({
     type: "casual",
     dropStatus: "open",
   }).populate("userId", "-password");
-  // console.log("Fetched schedules:", schedules);
+ 
   return schedules;
 }
-
-// export async function CasualByAdmin(): Promise<Casual[]> {
-//   return await casualModel.find({}).populate("userId", "-password");
-// }
 
 export async function CasualByUserId(userId: string): Promise<Schedule[]> {
   return await ScheduleModel.find({ userId });
@@ -116,22 +109,6 @@ export async function lecture(scheduleDto: any): Promise<Schedule> {
   });
 }
 
-// export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
-//   const schedules: Schedule[] = [];
-//   console.log(scheduleDto);
-//   for (const date of scheduleDto.dates) {
-//     const schedule = await ScheduleModel.create({
-//       ...scheduleDto,
-//       date: date,
-//       startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),
-//       endTime: moment(scheduleDto.endTime, "hh:mma").toDate(),
-//     });
-//     schedules.push(schedule);
-//   }
-
-//   return schedules;
-// }
-
 export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
   const schedules: Schedule[] = [];
   
@@ -151,8 +128,6 @@ export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
 
   return schedules;
 }
-
-
 
 export async function lectureByAdmin(): Promise<Schedule[]> {
   return await ScheduleModel.find({}).populate({

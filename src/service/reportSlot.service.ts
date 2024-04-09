@@ -1,9 +1,3 @@
-import { ReportSlotModel } from "../models";
-import { Complain } from "../models/complain.model";
-import jsonwebtoken from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { ObjectId } from "mongodb";
-import moment from "moment";
 import reportSlotModel, { ReportSlot } from "../models/reportSlot.model";
 import { Types } from "mongoose";
 

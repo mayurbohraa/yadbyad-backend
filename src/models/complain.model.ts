@@ -57,11 +57,6 @@ const complainSchema: Schema = new Schema(
       enum: userStatus,
       default:"active"
     },
-
-    // user: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "user",
-    // },
   },
   {
     timestamps: true,

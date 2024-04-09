@@ -1,6 +1,4 @@
 import { ResourceModel } from "../models";
-import jsonwebtoken from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
 import { Resource } from "../models/resource.model";
 

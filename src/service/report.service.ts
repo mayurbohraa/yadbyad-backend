@@ -28,7 +28,7 @@ export function generateToken(report: Report): string {
 }
 
 /**
- * @description This function is used to list all complains
+ * @description This function is used to list all reports
  * @author Kunal Rathod
  * @param {number} page
  * @param {number} limit
@@ -130,19 +130,3 @@ export async function findReportByIdAndUpdate(
   });
 }
 
-// /**
-//  * @description This function is used to delete report by using id
-//  * @param {String} _id
-//  * @author Kunal Rathod
-//  * @returns {Promise<boolean|null>}
-//  */
-// export async function deleteUserById(id: string): Promise<boolean> {
-//   // Convert the string id to ObjectId
-//   const objectId = new ObjectId(id);
-
-//   // Find the user by _id and delete them
-//   const result = await ComplainModel.deleteOne({ _id: objectId });
-
-//   // Check if the deletion was successful
-//   return result.deletedCount === 1;
-// }

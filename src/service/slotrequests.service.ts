@@ -1,7 +1,5 @@
 import slotModel, { SlotRequest } from "../models/slot-requests.model";
 import examModel, { Schedule } from "../models/exam.model";
-import lectureModel, { Lecture } from "../models/lecture.model";
-import casualModel, { Casual } from "../models/casual.model";
 import moment from "moment";
 import { Types } from "mongoose";
 
@@ -38,10 +36,6 @@ export async function Reuest(scheduleDto: any): Promise<SlotRequest> {
 export async function ReuestByAdmin(): Promise<SlotRequest[]> {
   return await slotModel.find({}).populate("userId", "-password");
 }
-
-// export async function CasualByAdmin(): Promise<Casual[]> {
-//   return await casualModel.find({}).populate("userId", "-password");
-// }
 
 export async function ReuestByUserId(userId: string): Promise<SlotRequest[]> {
   return await slotModel.find({ userId }).populate("requesteeId", "-password").populate("eventId");;

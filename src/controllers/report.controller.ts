@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
-import { Report } from "../models/report.model";
 import { ReportService, NotificationService } from "../service";
 import moment from "moment";
 import { Notification } from "../models/notification.model";
-import { Types } from 'mongoose';
+
 
 export async function submitReport(req: Request, res: Response) {
  
