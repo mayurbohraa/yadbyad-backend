@@ -122,14 +122,13 @@ export async function readNotification(req: Request, res: Response) {
       {notificationType:"reportsubmitted"},
       {notificationType:"casualSessionRequested"},
       {notificationType:"Casual/Exam/LectureDeleted"},
+      {notificationType:"newStudentJoined"},
     ];
   }
   else if(role == "part time student" ){
    
     matchBody["$or"] = [
       { notificationType: "reportSlotDeleted" },
-      { notificationType: "resourcecreated" },
-      { notificationType: "resourceedited" },
       { notificationType: "reportSlotCreated" },
       { notificationType: "lectureCreated" },
       { notificationType: "examAdded" },
@@ -150,6 +149,7 @@ export async function readNotification(req: Request, res: Response) {
       { notificationType: "partTimeCasual/Exam/LectureRequest" },
       { notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed" },
       {notificationType:"Casual/Exam/LectureDeleted"},
+      {notificationType:"resourcedeleted"},
       {
         $and: [
           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "reportSlotDeleted","reportSlotCreated"] } },

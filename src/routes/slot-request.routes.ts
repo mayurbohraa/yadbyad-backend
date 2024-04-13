@@ -12,6 +12,9 @@ router.get("/", SlotRequestController.getRequests); // check
 // for sp students
 router.post("/update/:id/:update", SlotRequestController.requestUpdate); // check
 
+// for pt students
+router.post("/dropRequest/:requestId", SlotRequestController.dropRequest); 
+
 // for part students
 router.get("/accepted", SlotRequestController.requestAccepted); // check
 

@@ -1,5 +1,4 @@
 import * as AuthenticationService from "./authentication.service";
-import * as SettingsService from "./settings.service";
 import * as ScheduleService from "./schedule.service";
 import * as ComplainService from "./Complain.service";
 import * as ReportService from "./report.service";
@@ -9,6 +8,6 @@ import * as NotificationService from "./notification.service";
 import * as CasualService from "./casual.service";
 import * as LectureService from "./lecture.service";
 
-export { AuthenticationService, SettingsService, ScheduleService,ComplainService, ReportService, 
+export { AuthenticationService, ScheduleService,ComplainService, ReportService, 
     ReportSlotService, ResourceService,NotificationService,CasualService,
     LectureService,  };

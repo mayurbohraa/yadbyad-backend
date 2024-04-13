@@ -13,7 +13,7 @@ export async function postCasual(req: Request, res: Response) {
     });
 
     NotificationService.createNotification({ 
-      message: "Casual session is requested",
+      message: "Requested for Casual Session",
       userId: schedule.userId.toString(),
       notificationType: "casualSessionRequested",
 
@@ -79,6 +79,7 @@ export async function addRequesteeId(req: Request, res: Response) {
     
     if(request){
       request.requesteeId= userId;
+      request.dropStatus = "deleted";
       request.save();
     NotificationService.createNotification({ 
       message: `Casual session's requestee Id is added`,
@@ -150,7 +151,7 @@ export async function requestUpdateAdmin(req: Request, res: Response) {
     );
 
     NotificationService.createNotification({ 
-      message: `Casual session is ${request.status}`,
+      message: `Request ${request.status} for casual session `,
       userId: request.userId,
       notificationType: "casualSessionAcceptedOrRejected",
 
@@ -178,6 +179,11 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
       req.params.id,
       req.params.update
     );
+
+    if(request.specialNeedStatus == "rejected"){
+      request.dropStatus = "open";
+      request.save();
+    }
 
     NotificationService.createNotification({ 
       message: `Casual session is ${request.specialNeedstatus} by Special need Student`,

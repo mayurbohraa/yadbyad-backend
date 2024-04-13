@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { Complain } from "../models/complain.model";
-import { ComplainService, SettingsService, NotificationService } from "../service";
+import { ComplainService, NotificationService } from "../service";
 import { Notification } from "../models/notification.model";
 
 
@@ -18,11 +18,10 @@ export async function submitComplain(req: Request, res: Response) {
     const createdComplain = await ComplainService.createComplain(
       Complain as Complain
     );
-    await SettingsService.createSettings(createdComplain._id);
-
+   
     NotificationService.createNotification(
       { 
-        message: "Complain is Submitted",
+        message: "New Complain Registered ",
         userId: Complain.userId,
         notificationType: "complainsubmitted",
          }as  Notification
@@ -112,7 +111,7 @@ export async function replyComplain(req: Request, res: Response) {
       complain.save();
 
       NotificationService.createNotification(
-       { message: "Complain is replied",
+       { message: "Complain Resolved & Replied by Admin",
             userId: complain.userId,
             notificationType: "complainReplied",
           }as  Notification

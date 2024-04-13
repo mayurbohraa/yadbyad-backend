@@ -46,7 +46,7 @@ export async function submitReport(req: Request, res: Response) {
 
     NotificationService.createNotification(
       { 
-        message: "Report is Submitted",
+        message: "Report Submitted",
         notificationType: "reportsubmitted",
         userId: userId,
   
@@ -126,7 +126,7 @@ export async function remarks(req: Request, res: Response) {
       report.save();
      
       NotificationService.createNotification({ 
-          message: "Report is Remarked",
+          message: "Your Report Reviewed & Remarked by Admin",
           notificationType: "reportRemarked",
           userId: report.userId,
          

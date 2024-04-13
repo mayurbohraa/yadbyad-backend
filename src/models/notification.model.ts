@@ -16,8 +16,11 @@ export enum NotificationType {
   lectureCreated= "lectureCreated",
   casualSessionAcceptedOrRejected = "casualSessionAcceptedOrRejected",
   partTimeCasualExamLectureRequest = "partTimeCasual/Exam/LectureRequest",
-  ccasualexamlectureSessionAcceptedOrRejectedBySpecialNeed = "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
-  CasualExamLectureDeleted = "Casual/Exam/LectureDeleted"
+  casualexamlectureSessionAcceptedOrRejectedBySpecialNeed = "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
+  CasualExamLectureDeleted = "Casual/Exam/LectureDeleted",
+  newStudentJoined = "newStudentJoined",
+  resourcedeleted = "resourcedeleted",
+  requestDropped = "requestDropped"
 }
 
 export interface Notification extends Document {
@@ -28,7 +31,7 @@ export interface Notification extends Document {
   notificationType:string;
   updatedAt: Date;
   createdAt: Date;
-  userId:any
+  userId:any;
 }
 
 

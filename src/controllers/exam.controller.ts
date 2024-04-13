@@ -14,6 +14,7 @@ export async function postSchedule(req: Request, res: Response) {
     const userID = await AuthenticationService.findUserByStudentSecondId(
       req.body.specialNeedsStudentID
     );
+  
 
     if (userID) {
       const schedule = await scheduleService.schedule({
@@ -22,7 +23,7 @@ export async function postSchedule(req: Request, res: Response) {
       });
 
       NotificationService.createNotification({
-        message: "new exam is added ",
+        message: "New Exam Scheduled Check Calendar",
         userId: schedule.userId.toString(),
         notificationType: "examAdded",
       } as Notification);
@@ -40,6 +41,7 @@ export async function postSchedule(req: Request, res: Response) {
     });
   }
 }
+
 
 export async function getSchedule(req: Request, res: Response) {
   try {
@@ -101,6 +103,7 @@ export async function addRequesteeId(req: Request, res: Response) {
 
     if (request) {
       request.requesteeId = userId;
+      request.dropStatus = "deleted";
       request.save();
       NotificationService.createNotification({
         message: `Exam session's requestee Id is added`,
@@ -130,6 +133,11 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
       req.params.id,
       req.params.update
     );
+
+    if(request.specialNeedStatus == "rejected"){
+      request.dropStatus = "open";
+      request.save();
+    }
 
     NotificationService.createNotification({
       message: `Exam session is ${request.specialNeedStatus} by Special need Student`,

@@ -6,6 +6,7 @@ import moment from "moment";
 import { Types } from "mongoose";
 import { Notification } from "../models/notification.model";
 import axios from "axios";
+import { ReportSlot } from "../models/reportSlot.model";
 
 export async function createSlot(req: Request, res: Response) {
   try {
@@ -47,17 +48,32 @@ export async function getReportSlots(req: Request, res: Response) {
     const userId = res.get("userId")!;
     const { limit, page, role } = req.query;
 
-    const reportSlots = await ReportSlotService.getReportSlots(
+    // Get report slots
+    let reportSlots = await ReportSlotService.getReportSlots(
       new Types.ObjectId(userId),
       parseInt(limit as string),
       parseInt(page as string),
       role as string
     );
 
+    // Update report slots status to "closed" if end date is less than current date
+    const currentDate = new Date();
+    reportSlots = reportSlots.map(reportSlot => {
+      if (reportSlot.endDate < currentDate) {
+        reportSlot.status = "closed";
+        reportSlot.save();
+      }
+      return reportSlot;
+    });
+
+    let activeReportSlots = reportSlots.filter(
+      (reportSlot: ReportSlot) =>  reportSlot.status = "open"
+    );
+
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Report slots fetched successfully",
-      data: reportSlots,
+      data: activeReportSlots,
     });
   } catch (error) {
     console.log(error);

@@ -18,7 +18,7 @@ export async function createResource(req: Request, res: Response) {
       const createdResource = await ResourceService.createResource(resource as Resource);
       
       NotificationService.createNotification({ 
-        message: "Resource is created",
+        message: "New Resource Added by Admin",
           userId: userId.toString(),
           notificationType: "resourcecreated",
 
@@ -116,6 +116,7 @@ export async function editResource(req: Request, res: Response) {
 
 export async function deleteResource(req: Request, res: Response) {
   try {
+    const userId  =  res.get("userId")!;
     const { id } = req.params;
     const resource = await ResourceService.findResourceById(
       id
@@ -124,6 +125,14 @@ export async function deleteResource(req: Request, res: Response) {
     if (resource) {
       resource.status = "deleted";
       resource.save();
+
+      NotificationService.createNotification({ 
+        message: "Resource Deleted by Admin",
+        userId: userId.toString(),
+        notificationType: "resourcedeleted",
+
+         } as  Notification
+       );
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
       message: "Resource is deleted successfully",

@@ -2,6 +2,7 @@ import slotModel, { SlotRequest } from "../models/slot-requests.model";
 import examModel, { Schedule } from "../models/exam.model";
 import moment from "moment";
 import { Types } from "mongoose";
+import { ScheduleModel } from "../models";
 
 export async function requestUpdate(
   requestId: string,
@@ -38,12 +39,12 @@ export async function ReuestByAdmin(): Promise<SlotRequest[]> {
 }
 
 export async function ReuestByUserId(userId: string): Promise<SlotRequest[]> {
-  return await slotModel.find({ userId }).populate("requesteeId", "-password").populate("eventId");;
+  return await slotModel.find({dropStatus :"open", userId }).populate("requesteeId", "-password").populate("eventId");;
 }
 
 export async function ReuestByPtUserId(userId: string): Promise<SlotRequest[]> {
   return await slotModel
-    .find({ requesteeId: userId })
+    .find({dropStatus :"open", requesteeId: userId })
     .populate("eventId");
 }
 
@@ -60,4 +61,12 @@ export async function ReuestAcceptedSn(userId: string): Promise<SlotRequest[]> {
     .populate("requesteeId", "-password")
     .populate("userId", "-password")
     .populate("eventId");
+}
+
+export async function findRequestByUserId(requestId:string, requesteeId:string): Promise<SlotRequest[]> {
+  return await slotModel
+  .find({ status: "accepted", _id: requestId, requesteeId: requesteeId })
+  .populate("requesteeId", "-password")
+  .populate("userId", "-password")
+  .populate("eventId");
 }

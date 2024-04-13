@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import * as requestService from "../service/slotrequests.service";
 import { NotificationService } from "../service";
 import { Notification } from "../models/notification.model";
-import ScheduleModel, { Schedule } from "../models/exam.model";
+import slotModel, { SlotRequest } from "../models/slot-requests.model";
 
 // for part time student to post request
 export async function postRequest(req: Request, res: Response) {
@@ -13,8 +13,11 @@ export async function postRequest(req: Request, res: Response) {
       ...req.body,
     });
 
+    schedule.dropStatus = "deleted";
+    schedule.save();
+
     NotificationService.createNotification({ 
-      message: `${schedule.type} session's requested by part time user`,
+      message: `Schedule Match Request Arrived`,
       userId: schedule.userId,
       notificationType: "partTimeCasual/Exam/LectureRequest",
 
@@ -34,6 +37,8 @@ export async function postRequest(req: Request, res: Response) {
     });
   }
 }
+
+
 
 // for student to get all request for there tasks
 export async function getRequests(req: Request, res: Response) {
@@ -73,7 +78,7 @@ export async function requestAccepted(req: Request, res: Response) {
 // for accepting or rejecting request of part time student
 export async function requestUpdate(req: Request, res: Response) {
   try {
-    console.log(req.body);
+    
     const request = await requestService.requestUpdate(
       req.params.id,
       req.body.requesteeId,
@@ -81,8 +86,13 @@ export async function requestUpdate(req: Request, res: Response) {
       req.params.update
     );
 
+    if(request.status == "rejected"){
+      request.dropStatus = "open";
+      request.save();
+    }
+
     NotificationService.createNotification({ 
-      message: `${request.type} session is ${request.specialNeedStatus} by Special need Student`,
+      message: `Schedule Match request ${request.specialNeedStatus} `,
       userId: request.userId,
       notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
 
@@ -94,6 +104,46 @@ export async function requestUpdate(req: Request, res: Response) {
       statusCode: httpStatus.OK,
       message: "Request Updated succesfully",
     });
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+      statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+      message: error,
+    });
+  }
+}
+
+// for part time student to drop the request
+export async function dropRequest(req: Request, res: Response) {
+  try {
+    
+    const request:any = await requestService.findRequestByUserId(
+      req.params.requestId,
+      req.body.requesteeId,
+    );
+
+    console.log(request);
+    
+    if(request.dropStatus == "deleted"){
+      request.dropStatus = "open";
+      await request.save();
+    }
+
+
+    NotificationService.createNotification({ 
+      message: `part time user has dropped the request `,
+      userId: res.get("userId"),
+      notificationType: "requestDropped",
+
+       } as  Notification
+     );
+    
+    return res.status(httpStatus.OK).send({
+      data: request,
+      statusCode: httpStatus.OK,
+      message: "Request Dropped succesfully",
+    });
+  
   } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({

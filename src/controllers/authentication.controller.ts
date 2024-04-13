@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { User } from "../models/user.model";
-import { AuthenticationService, SettingsService } from "../service";
+import { AuthenticationService } from "../service";
+import { Notification } from "../models/notification.model";
+import { NotificationService} from "../service";
 
 export async function login(req: Request, res: Response) {
   try {
@@ -61,7 +63,15 @@ export async function signup(req: Request, res: Response) {
         password: AuthenticationService.hashPassword(password),
       };
       const createdUser = await AuthenticationService.createUser(user as User);
-      await SettingsService.createSettings(createdUser._id);
+      
+      NotificationService.createNotification({ 
+        message: "New Student Joined",
+        userId: createdUser._id,
+        notificationType: "newStudentJoined",
+  
+         } as  Notification
+       );
+
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
         message: "User created successfully",
