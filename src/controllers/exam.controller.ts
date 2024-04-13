@@ -7,7 +7,7 @@ import {
   ScheduleService,
 } from "../service";
 import { Notification } from "../models/notification.model";
-import { Schedule } from "../models/exam.model";
+import { Schedule } from "../models/schedule.model";
 
 export async function postSchedule(req: Request, res: Response) {
   try {
@@ -106,7 +106,7 @@ export async function addRequesteeId(req: Request, res: Response) {
       request.dropStatus = "deleted";
       request.save();
       NotificationService.createNotification({
-        message: `Exam session's requestee Id is added`,
+        message: `Schedule Match Request Arrived`,
         userId: request.userId,
         notificationType: "partTimeCasual/Exam/LectureRequest",
       } as Notification);
@@ -140,7 +140,7 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
     }
 
     NotificationService.createNotification({
-      message: `Exam session is ${request.specialNeedStatus} by Special need Student`,
+      message: `Student Schedule Match request  ${request.specialNeedstatus}`,
       userId: request.userId,
       notificationType:
         "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",

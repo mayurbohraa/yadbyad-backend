@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import * as lectureService from "../service/schedule.service";
 import { Notification } from "../models/notification.model";
 import { NotificationService } from "../service";
-import { Schedule } from "../models/exam.model";
+import { Schedule } from "../models/schedule.model";
 
 
 export async function postLecture(req: Request, res: Response) {
@@ -121,7 +121,7 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
     }
 
     NotificationService.createNotification({
-      message: `Lecture session is ${request.specialNeedstatus} by Special need Student`,
+      message: `Student Schedule Match request  ${request.specialNeedstatus}`,
       userId: request.userId,
       notificationType:
         "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",

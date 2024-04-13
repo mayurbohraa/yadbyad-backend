@@ -1,4 +1,4 @@
-import ScheduleModel, { Schedule } from "../models/exam.model";
+import ScheduleModel, { Schedule } from "../models/schedule.model";
 import moment from "moment";
 import { Types } from "mongoose";
 import { ObjectId } from "mongodb";

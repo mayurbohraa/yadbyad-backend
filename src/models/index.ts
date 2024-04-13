@@ -6,7 +6,7 @@ import ReportSlotModel from "./reportSlot.model";
 import ResourceModel from "./resource.model";
 import NotificationModel from "./notification.model";
 import LectureModel from "./lecture.model";
-import ScheduleModel from "./exam.model";
+import ScheduleModel from "./schedule.model";
 import CasualModel from "./casual.model";
 
 export { UserModel, RequestModel, ComplainModel,ReportModel,ReportSlotModel , ResourceModel,NotificationModel,

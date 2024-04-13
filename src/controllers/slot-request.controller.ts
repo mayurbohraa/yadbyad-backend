@@ -121,8 +121,6 @@ export async function dropRequest(req: Request, res: Response) {
       req.params.requestId,
       req.body.requesteeId,
     );
-
-    console.log(request);
     
     if(request.dropStatus == "deleted"){
       request.dropStatus = "open";
@@ -131,9 +129,9 @@ export async function dropRequest(req: Request, res: Response) {
 
 
     NotificationService.createNotification({ 
-      message: `part time user has dropped the request `,
-      userId: res.get("userId"),
-      notificationType: "requestDropped",
+      message: `Session Dropped`,
+      userId: request.userId,
+      notificationType: "sessionDropped",
 
        } as  Notification
      );

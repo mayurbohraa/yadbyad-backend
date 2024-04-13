@@ -13,7 +13,6 @@ export enum dropStatus {
 
 // Common interface for all document types
 export interface Schedule extends Document {
-  // userId: mongoose.Types.ObjectId [];
   userId: mongoose.Types.ObjectId;
   date: string;
   startTime: string;
@@ -41,10 +40,6 @@ const eventSchema: Schema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
     },
-    // userId: [{
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "users",
-    // }],
     date: {
       type: String,
       required: true,

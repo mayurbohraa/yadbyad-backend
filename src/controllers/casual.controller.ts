@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as casualService from "../service/schedule.service";
-import { Schedule } from "../models/exam.model";
+import { Schedule } from "../models/schedule.model";
 import { Notification } from "../models/notification.model";
 import { NotificationService} from "../service";
 
@@ -82,7 +82,7 @@ export async function addRequesteeId(req: Request, res: Response) {
       request.dropStatus = "deleted";
       request.save();
     NotificationService.createNotification({ 
-      message: `Casual session's requestee Id is added`,
+      message: `Requested for Casual Session`,
       userId: request.userId,
       notificationType: "partTimeCasual/Exam/LectureRequest",
 
@@ -108,7 +108,6 @@ export async function addRequesteeId(req: Request, res: Response) {
 
 export async function deleteSchedule(req: Request, res: Response) {
   try {
-    const userId = res.get("userId")!;
     const { scheduleId } = req.params;
     const request = await casualService.findCasualById(scheduleId);
 
@@ -186,7 +185,7 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
     }
 
     NotificationService.createNotification({ 
-      message: `Casual session is ${request.specialNeedstatus} by Special need Student`,
+      message: `Request ${request.specialNeedstatus} for casual session `,
       userId: request.userId,
       notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
 

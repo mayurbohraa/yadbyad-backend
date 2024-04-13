@@ -47,18 +47,20 @@ export async function fetchNotification(req: Request, res: Response) {
       {notificationType:"reportsubmitted"},
       {notificationType:"casualSessionRequested"},
       {notificationType:"Casual/Exam/LectureDeleted"},
+      {notificationType:"newStudentJoined"}
     ];
   }
   else if(role == "part time student" ){
    
     matchBody["$or"] = [
       { notificationType: "reportSlotDeleted" },
-      { notificationType: "resourcecreated" },
-      { notificationType: "resourceedited" },
       { notificationType: "reportSlotCreated" },
       { notificationType: "lectureCreated" },
       { notificationType: "examAdded" },
       {notificationType:"Casual/Exam/LectureDeleted"},
+      {notificationType:"complainReplied"},
+      {notificationType:"reportRemarked"},
+      { notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed" },
       {
         $and: [
           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted"] } },
@@ -73,8 +75,10 @@ export async function fetchNotification(req: Request, res: Response) {
       { notificationType: "resourceedited" },
       { notificationType: "examAdded" },
       { notificationType: "partTimeCasual/Exam/LectureRequest" },
-      { notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed" },
       {notificationType:"Casual/Exam/LectureDeleted"},
+      {notificationType:"sessionDropped"},
+      {notificationType:"resourcedeleted"},
+      {notificationType:"complainReplied"},
       {
         $and: [
           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "reportSlotDeleted","reportSlotCreated"] } },

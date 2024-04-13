@@ -20,7 +20,7 @@ export enum NotificationType {
   CasualExamLectureDeleted = "Casual/Exam/LectureDeleted",
   newStudentJoined = "newStudentJoined",
   resourcedeleted = "resourcedeleted",
-  requestDropped = "requestDropped"
+  sessionDropped = "sessionDropped"
 }
 
 export interface Notification extends Document {
@@ -32,6 +32,7 @@ export interface Notification extends Document {
   updatedAt: Date;
   createdAt: Date;
   userId:any;
+ 
 }
 
 
@@ -56,8 +57,6 @@ const notificationSchema: Schema = new Schema(
       type: String,
       enum: NotificationType,
     },
-
-
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",

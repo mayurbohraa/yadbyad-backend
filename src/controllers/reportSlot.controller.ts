@@ -5,7 +5,6 @@ import { NotificationService} from "../service";
 import moment from "moment";
 import { Types } from "mongoose";
 import { Notification } from "../models/notification.model";
-import axios from "axios";
 import { ReportSlot } from "../models/reportSlot.model";
 
 export async function createSlot(req: Request, res: Response) {

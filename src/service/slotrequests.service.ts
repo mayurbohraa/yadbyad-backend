@@ -1,5 +1,5 @@
 import slotModel, { SlotRequest } from "../models/slot-requests.model";
-import examModel, { Schedule } from "../models/exam.model";
+import examModel, { Schedule } from "../models/schedule.model";
 import moment from "moment";
 import { Types } from "mongoose";
 import { ScheduleModel } from "../models";
