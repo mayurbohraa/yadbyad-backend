@@ -8,7 +8,7 @@ import {
 } from "../service";
 import { Notification } from "../models/notification.model";
 import { Schedule } from "../models/schedule.model";
-
+import { Types } from "mongoose";
 export async function postSchedule(req: Request, res: Response) {
   try {
     const userID = await AuthenticationService.findUserByStudentSecondId(
@@ -47,12 +47,13 @@ export async function getSchedule(req: Request, res: Response) {
     let schedules: any = [];
 
     const matchObject: any = {
-      userId: res.get("userId"),
+      userId: new Types.ObjectId(res.get("userId")),
       dropStatus: "open",
     };
 
     if (role === "part time student") {
-      matchObject["status"] = "accepted";
+      delete matchObject.userId;
+      matchObject["$and"] = [{"dropStatus":"open"},{$or:[{status:{$exists:true,$eq:"accepted"}},{status:{$exists:false}}]}];
     }
     if (role === "admin") {
       delete matchObject.userId;
@@ -60,7 +61,7 @@ export async function getSchedule(req: Request, res: Response) {
       delete matchObject.status;
     }
     console.log(matchObject);
-    console.log(typeof matchObject.userId);
+
     schedules = await scheduleService.getSchedule(matchObject);
 
     return res.status(httpStatus.OK).send({
