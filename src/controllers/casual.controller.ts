@@ -171,7 +171,7 @@ export async function requestUpdateAdmin(req: Request, res: Response) {
 
 export async function requestUpdateSpecialNeed(req: Request, res: Response) {
   try {
-    console.log(req.body);
+    
     const request = await casualService.requestUpdateSpecialNeed(
       req.params.id,
       req.params.update
