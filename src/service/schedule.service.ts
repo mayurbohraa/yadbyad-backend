@@ -27,7 +27,7 @@ export async function scheduleByUserId(userId: string): Promise<Schedule[]> {
   return await ScheduleModel.find({ userId }).populate({
     path: "slotRequestId",
     model: "slotrequest",
-  });;
+  });
 }
 
 /**
@@ -39,6 +39,10 @@ export async function scheduleByAdmin(): Promise<Schedule[]> {
   return await ScheduleModel.find({}).populate({
     path: "userId",
     model: "users",
+    
+  }).populate({
+    path: "slotRequestId",
+    model: "slotrequest",
   });
 }
 
