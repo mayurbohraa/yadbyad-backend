@@ -6,6 +6,7 @@ import { Notification } from "../models/notification.model";
 import * as scheduleService from "../service/schedule.service";
 import slotModel, { SlotRequest } from "../models/slot-requests.model";
 import { schedule } from "node-cron";
+import { Schedule } from "../models/schedule.model";
 
 // for part time student to post request
 export async function postRequest(req: Request, res: Response) {
@@ -85,9 +86,15 @@ export async function requestUpdate(req: Request, res: Response) {
       req.params.update
     );
 
+   const schedule = await scheduleService.findCasualById(req.body.eventId);
+
+   if(schedule){
+   schedule.slotRequestId = request._id;
+   schedule.save();
+   }
 
     NotificationService.createNotification({ 
-      message: `Schedule Match request ${request.specialNeedStatus} `,
+      message: `Schedule Match request ${request.status} `,
       userId: request.userId,
       notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
 
@@ -112,27 +119,17 @@ export async function requestUpdate(req: Request, res: Response) {
 export async function dropRequest(req: Request, res: Response) {
   try {
     
-    const request = await requestService.findRequestByUserId(
-      req.params.requestId,
-      req.body.requesteeId,
-    );
 
-    // console.log(request);
-    // // const userId = request[0].eventId[0]._id;
-    // let schedule = await scheduleService.scheduleByUserId(userId);
-    // console.log(userId);
-    // console.log(schedule);
+    const schedule = await scheduleService.findCasualById(req.body.eventId);
 
-    // NotificationService.createNotification({ 
-    //   message: `Session Dropped`,
-    //   userId: request.userId,
-    //   notificationType: "sessionDropped",
-
-    //    } as  Notification
-    //  );
+    if(schedule){
+    schedule.slotRequestId = null;
+    schedule.requesteeId = null;
+    schedule.save();
+    }
     
     return res.status(httpStatus.OK).send({
-      data: request,
+      data: schedule,
       statusCode: httpStatus.OK,
       message: "Request Dropped succesfully",
     });

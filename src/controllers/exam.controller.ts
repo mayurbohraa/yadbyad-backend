@@ -50,9 +50,18 @@ export async function getSchedule(req: Request, res: Response) {
         ? await scheduleService.scheduleByUserId(res.get("userId")!)
         : await scheduleService.scheduleByAdmin();
 
-    const activeSchedules = schedules.filter(
-      (schedule: Schedule) => (schedule.dropStatus === "open")
-    );
+   const userId:any = res.get("userId");
+    const activeSchedules = schedules.filter((schedule: Schedule) => {
+      if (schedule.slotRequestId && schedule.requesteeId) {
+        return (
+          schedule.dropStatus === "open" &&
+          (schedule.requesteeId == userId || schedule.userId == userId)
+        );
+      } else {
+        return schedule.dropStatus === "open";
+      }
+    });
+    
 
     return res.status(httpStatus.OK).send({
       data: activeSchedules,
@@ -82,7 +91,7 @@ export async function getAdminFetchExam(req: Request, res: Response) {
     const schedules = await scheduleService.scheduleByAdmin();
 
     const examSchedules = schedules.filter(
-      (schedule: Schedule) => schedule.type === "exam"
+      (schedule: Schedule) => (schedule.type === "exam" && schedule.dropStatus === "open") 
     );
 
     return res.status(httpStatus.OK).send({
