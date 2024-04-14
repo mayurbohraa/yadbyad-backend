@@ -14,6 +14,7 @@ export enum dropStatus {
 // Common interface for all document types
 export interface Schedule extends Document {
   userId: mongoose.Types.ObjectId;
+  slotRequestId:mongoose.Types.ObjectId | null;
   date: string;
   startTime: string;
   endTime: string;
@@ -27,7 +28,7 @@ export interface Schedule extends Document {
   specialNeedsStudentPhoneNumber?: string;
   specialNeedStatus: string;
   dropStatus: string;
-  requesteeId: string;
+  requesteeId: string | null;
   status: string;
   updatedAt: Date;
   createdAt: Date;
@@ -39,6 +40,10 @@ const eventSchema: Schema = new Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
+    },
+    slotRequestId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "slotrequest",
     },
     date: {
       type: String,
