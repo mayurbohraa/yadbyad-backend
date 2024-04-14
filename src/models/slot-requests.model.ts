@@ -15,7 +15,6 @@ export interface SlotRequest extends Document {
   userId: mongoose.Schema.Types.ObjectId;
   requesteeId: mongoose.Schema.Types.ObjectId;
   status: Status;
-  dropStatus: string;
   updatedAt: Date;
   createdAt: Date;
   type: string;
@@ -42,11 +41,6 @@ const requestSchema: Schema = new Schema(
       type: String,
       enum: Status,
       default: "pending",
-    },
-    dropStatus: {
-      type: String,
-      enum: dropStatus,
-      default: "open",
     },
   },
   {

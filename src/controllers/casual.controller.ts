@@ -79,8 +79,6 @@ export async function addRequesteeId(req: Request, res: Response) {
     
     if(request){
       request.requesteeId= userId;
-      request.dropStatus = "deleted";
-      request.save();
     NotificationService.createNotification({ 
       message: `Requested for Casual Session`,
       userId: request.userId,
@@ -178,11 +176,6 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
       req.params.id,
       req.params.update
     );
-
-    if(request.specialNeedStatus == "rejected"){
-      request.dropStatus = "open";
-      request.save();
-    }
 
     NotificationService.createNotification({ 
       message: `Request ${request.specialNeedstatus} for casual session `,

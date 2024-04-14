@@ -57,16 +57,21 @@ export async function getReportSlots(req: Request, res: Response) {
 
     // Update report slots status to "closed" if end date is less than current date
     const currentDate = new Date();
-    reportSlots = reportSlots.map(reportSlot => {
+    
+    reportSlots = await Promise.all(reportSlots.map(async (reportSlot) => {
       if (reportSlot.endDate < currentDate) {
+      
         reportSlot.status = "closed";
-        reportSlot.save();
+        await reportSlot.save();
       }
       return reportSlot;
-    });
-
-    let activeReportSlots = reportSlots.filter(
-      (reportSlot: ReportSlot) =>  reportSlot.status = "open"
+    }));
+    
+    let activeReportSlots = await ReportSlotService.getReportSlots(
+      new Types.ObjectId(userId),
+      parseInt(limit as string),
+      parseInt(page as string),
+      role as string
     );
 
     res.status(httpStatus.OK).send({
