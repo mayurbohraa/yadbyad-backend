@@ -24,7 +24,10 @@ export async function schedule(scheduleDto: any): Promise<Schedule> {
  * @returns {Promise<Schedule[]>}
  */
 export async function scheduleByUserId(userId: string): Promise<Schedule[]> {
-  return await ScheduleModel.find({ userId });
+  return await ScheduleModel.find({ userId }).populate({
+    path: "slotRequestId",
+    model: "slotrequest",
+  });;
 }
 
 /**
