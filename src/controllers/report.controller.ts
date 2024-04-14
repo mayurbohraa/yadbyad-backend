@@ -20,6 +20,7 @@ export async function submitReport(req: Request, res: Response) {
         message: "Report slot not found",
       });
     }
+    
     const startdate = moment(reportSlot.startDate, "DD-MM-YY: hh:mma");
     const enddate = moment(reportSlot.endDate, "DD-MM-YY: hh:mma");
 
