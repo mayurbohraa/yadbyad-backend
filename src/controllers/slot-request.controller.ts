@@ -27,7 +27,7 @@ export async function postRequest(req: Request, res: Response) {
     return res.status(httpStatus.OK).send({
       data: schedule,
       statusCode: httpStatus.OK,
-      message: "Schedule succesfully",
+      message: `${schedule.type} match request sent`,
     });
   } catch (error) {
     console.log(error);
@@ -104,7 +104,7 @@ export async function requestUpdate(req: Request, res: Response) {
     return res.status(httpStatus.OK).send({
       data: request,
       statusCode: httpStatus.OK,
-      message: "Request Updated succesfully",
+      message: `Request ${request.status}`,
     });
   } catch (error) {
     console.log(error);

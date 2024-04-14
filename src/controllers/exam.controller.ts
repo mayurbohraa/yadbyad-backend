@@ -30,7 +30,7 @@ export async function postSchedule(req: Request, res: Response) {
       return res.status(httpStatus.OK).send({
         data: schedule,
         statusCode: httpStatus.OK,
-        message: "Schedule succesfully",
+        message:  `${schedule.type} scheduled succesfully`,
       });
     }
   } catch (error) {
@@ -55,16 +55,21 @@ export async function getSchedule(req: Request, res: Response) {
    
     const activeSchedules = schedules.filter((schedule: Schedule) => {
       if(schedule.status){
-        return (
-          schedule.status === "accepted" &&
-          (schedule.requesteeId == userId || schedule.userId == userId)
-           &&  res.get("role") === "part time student"
-        );
-      }
-      else if(schedule.status){
-        return (
-          (schedule.requesteeId == userId || schedule.userId == userId)
-        );
+
+        if(req.get("role") !== "special need student"){
+          return ( 
+            schedule.dropStatus === "open" &&
+            (schedule.requesteeId == userId || schedule.userId == userId)
+           );
+        }
+        
+        if(req.get("role") === "part time student"){
+          return (
+                schedule.status === "accepted" &&
+                schedule.dropStatus === "open"
+          );
+        }
+
       }
       else if (schedule.slotRequestId && schedule.requesteeId) {
         return (

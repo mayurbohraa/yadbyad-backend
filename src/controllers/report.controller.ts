@@ -57,7 +57,7 @@ export async function submitReport(req: Request, res: Response) {
 
     res.status(httpStatus.OK).send({
       status: httpStatus.OK,
-      message: "File uploaded successfully",
+      message: "Report Submitted successfully",
       data: report,
     });
   } catch (error) {
@@ -136,7 +136,7 @@ export async function remarks(req: Request, res: Response) {
 
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "Report is replied successfully",
+        message: "Report remarked successfully",
         data: report,
       });
     } else {
@@ -164,7 +164,7 @@ export async function deleteReport(req: Request, res: Response) {
       report.save();
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "Report is deleted successfully",
+        message: "Report deleted successfully",
         data: report,
       });
     }

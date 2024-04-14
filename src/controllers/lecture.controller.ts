@@ -30,7 +30,7 @@ export async function postLecture(req: Request, res: Response) {
     return res.status(httpStatus.OK).send({
       data: lectures,
       statusCode: httpStatus.OK,
-      message: "Schedules successfully created",
+      message: `lectures scheduled successfully`,
     });
   } catch (error) {
     console.log(error);

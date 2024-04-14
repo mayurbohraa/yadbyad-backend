@@ -30,7 +30,7 @@ export async function createSlot(req: Request, res: Response) {
 
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Report slot is created successfully",
+      message: "Report slot created successfully",
       data: createdReportSlot,
     });
   } catch (error) {
@@ -119,7 +119,7 @@ if(reportSlots){
 
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Report slots deleted successfully",
+      message: "Report slot deleted successfully",
       data: reportSlots,
     });
   } catch (error) {

@@ -30,7 +30,7 @@ export async function submitComplain(req: Request, res: Response) {
 
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Complain is submitted successfully",
+      message: "Complain registered successfully",
       data: createdComplain,
     });
   } catch (error) {
@@ -119,7 +119,7 @@ export async function replyComplain(req: Request, res: Response) {
 
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "Complain is replied successfully",
+        message: "Complain replied successfully",
         data: complain,
       });
     } else {
@@ -147,7 +147,7 @@ export async function deleteComplain(req: Request, res: Response) {
       complain.save();
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "Complain is deleted successfully",
+        message: "Complain deleted successfully",
         data: complain,
       });
     }

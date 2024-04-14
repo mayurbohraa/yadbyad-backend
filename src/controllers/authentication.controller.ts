@@ -15,7 +15,7 @@ export async function login(req: Request, res: Response) {
       if (AuthenticationService.comparePassword(password, user.password)) {
         res.status(httpStatus.OK).send({
           statusCode: httpStatus.OK,
-          message: "User login successfully",
+          message: "Login successfull",
           data: {
             user,
             token: AuthenticationService.generateToken(user.toObject()),
@@ -30,7 +30,7 @@ export async function login(req: Request, res: Response) {
     } else {
       res.status(httpStatus.BAD_REQUEST).send({
         statusCode: httpStatus.BAD_REQUEST,
-        message: "User doesn't Exists",
+        message: "User doesn't Exist",
       });
     }
   } catch (error) {
@@ -49,7 +49,7 @@ export async function signup(req: Request, res: Response) {
     if (await AuthenticationService.findUserByEmail(email)) {
       res.status(httpStatus.BAD_REQUEST).send({
         statusCode: httpStatus.BAD_REQUEST,
-        message: "User already exists",
+        message: "User already exist",
       });
     } else {
       const user = {
@@ -74,7 +74,7 @@ export async function signup(req: Request, res: Response) {
 
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "User created successfully",
+        message: "Signup successfull",
         data: {
           user: createdUser,
           token: AuthenticationService.generateToken(createdUser.toObject()),
@@ -215,7 +215,7 @@ export async function forgotPassword(req: Request, res: Response) {
     if (passwordChanged) {
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "New password is set",
+        message: "New password Set",
         data: user
       });
     } else {
@@ -243,7 +243,7 @@ export async function editProfile(req: Request, res: Response) {
     if (user && user.status == "active") {
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Users details is updated successfully",
+      message: "Profile updated successfully",
       data: {
         user
       },
@@ -276,7 +276,7 @@ export async function changePassword(req: Request, res: Response) {
     if (passwordChanged) {
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "New password is set",
+        message: "password Changed",
         data: user
       });
     }

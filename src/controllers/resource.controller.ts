@@ -28,7 +28,7 @@ export async function createResource(req: Request, res: Response) {
 
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,
-        message: "Resource is submitted successfully",
+        message: "Resource added successfully",
         data: createdResource
         
       });
@@ -92,7 +92,7 @@ export async function editResource(req: Request, res: Response) {
     
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Resource is edited successfully",
+      message: "Resource updated successfully",
       data:  resource
     
     });
@@ -135,7 +135,7 @@ export async function deleteResource(req: Request, res: Response) {
        );
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Resource is deleted successfully",
+      message: "Resource deleted successfully",
       data: resource
     });
   }

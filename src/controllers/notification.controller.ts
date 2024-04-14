@@ -230,7 +230,7 @@ export async function readNotification(req: Request, res: Response) {
 
       res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
-      message: "Notification is fetched successfully",
+      message: "All notifications mark read",
       // data: notifications
       data:activeNotifications
     });
