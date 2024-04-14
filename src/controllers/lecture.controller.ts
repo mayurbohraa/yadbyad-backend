@@ -84,8 +84,7 @@ export async function addRequesteeId(req: Request, res: Response) {
 
     if (request) {
       request.requesteeId = userId;
-      request.dropStatus= "deleted";
-      request.save();
+     
       NotificationService.createNotification({
         message: `Lecture session's requestee Id is added`,
         userId: request.userId,
@@ -114,11 +113,6 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
       req.params.id,
       req.params.update
     );
-
-    if(request.specialNeedStatus == "rejected"){
-      request.dropStatus = "open";
-      request.save();
-    }
 
     NotificationService.createNotification({
       message: `Student Schedule Match request  ${request.specialNeedstatus}`,

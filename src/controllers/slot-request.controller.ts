@@ -13,9 +13,6 @@ export async function postRequest(req: Request, res: Response) {
       ...req.body,
     });
 
-    schedule.dropStatus = "deleted";
-    schedule.save();
-
     NotificationService.createNotification({ 
       message: `Schedule Match Request Arrived`,
       userId: schedule.userId,
@@ -86,10 +83,6 @@ export async function requestUpdate(req: Request, res: Response) {
       req.params.update
     );
 
-    if(request.status == "rejected"){
-      request.dropStatus = "open";
-      request.save();
-    }
 
     NotificationService.createNotification({ 
       message: `Schedule Match request ${request.specialNeedStatus} `,
