@@ -86,7 +86,7 @@ export async function requestUpdate(req: Request, res: Response) {
       req.params.update
     );
 
-   const schedule = await scheduleService.findCasualById(req.body.eventId);
+   const schedule = await scheduleService.findCasualById(req.body.eventId.toString());
 
    if(schedule){
    schedule.slotRequestId = request._id;
@@ -120,7 +120,7 @@ export async function dropRequest(req: Request, res: Response) {
   try {
     
 
-    const schedule = await scheduleService.findCasualById(req.body.eventId);
+    const schedule = await scheduleService.findCasualById(req.body.eventId.toString());
 
     if(schedule){
     schedule.slotRequestId = null;
