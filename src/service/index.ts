@@ -5,9 +5,8 @@ import * as ReportService from "./report.service";
 import * as ReportSlotService from "./report.service";
 import * as ResourceService from "./resource.service";
 import * as NotificationService from "./notification.service";
-import * as CasualService from "./casual.service";
-import * as LectureService from "./lecture.service";
+
 
 export { AuthenticationService, ScheduleService,ComplainService, ReportService, 
-    ReportSlotService, ResourceService,NotificationService,CasualService,
-    LectureService,  };
+    ReportSlotService, ResourceService,NotificationService,
+    };
