@@ -59,7 +59,8 @@ export async function getSchedule(req: Request, res: Response) {
       delete matchObject.dropStatus;
       delete matchObject.status;
     }
-
+    console.log(matchObject);
+    console.log(typeof matchObject.userId);
     schedules = await scheduleService.getSchedule(matchObject);
 
     return res.status(httpStatus.OK).send({
