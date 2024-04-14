@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as ReportSlotService from "../service/reportSlot.service";
-import { NotificationService} from "../service";
+import { NotificationService } from "../service";
 import moment from "moment";
 import { Types } from "mongoose";
 import { Notification } from "../models/notification.model";
-import { ReportSlot } from "../models/reportSlot.model";
 
 export async function createSlot(req: Request, res: Response) {
   try {
@@ -20,13 +19,11 @@ export async function createSlot(req: Request, res: Response) {
 
     const createdReportSlot = await ReportSlotService.createSlot(reportSlot);
 
-    NotificationService.createNotification({ 
-        message: "ReportSlot is Created",
-        userId: userId,
-        notificationType: "reportSlotCreated",
-
-       } as  Notification
-     );
+    NotificationService.createNotification({
+      message: "ReportSlot is Created",
+      userId: userId,
+      notificationType: "reportSlotCreated",
+    } as Notification);
 
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
@@ -57,16 +54,17 @@ export async function getReportSlots(req: Request, res: Response) {
 
     // Update report slots status to "closed" if end date is less than current date
     const currentDate = new Date();
-    
-    reportSlots = await Promise.all(reportSlots.map(async (reportSlot) => {
-      if (reportSlot.endDate < currentDate) {
-      
-        reportSlot.status = "closed";
-        await reportSlot.save();
-      }
-      return reportSlot;
-    }));
-    
+
+    reportSlots = await Promise.all(
+      reportSlots.map(async (reportSlot) => {
+        if (reportSlot.endDate < currentDate) {
+          reportSlot.status = "closed";
+          await reportSlot.save();
+        }
+        return reportSlot;
+      })
+    );
+
     let activeReportSlots = await ReportSlotService.getReportSlots(
       new Types.ObjectId(userId),
       parseInt(limit as string),
@@ -106,15 +104,12 @@ export async function deleteReportSlot(req: Request, res: Response) {
     const reportSlots = await ReportSlotService.deleteReportSlot(
       new Types.ObjectId(slotId)
     );
-if(reportSlots){
-
-  NotificationService.createNotification({ 
-    message: "ReportSlot is Deleted",
+    if (reportSlots) {
+      NotificationService.createNotification({
+        message: "ReportSlot is Deleted",
         userId: reportSlots.userId.toString(),
         notificationType: "reportSlotDeleted",
-
-     } as  Notification
-   );
+      } as Notification);
     }
 
     res.status(httpStatus.OK).send({

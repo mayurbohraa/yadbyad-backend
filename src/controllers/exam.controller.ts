@@ -8,13 +8,12 @@ import {
 } from "../service";
 import { Notification } from "../models/notification.model";
 import { Schedule } from "../models/schedule.model";
-
+import { Types } from "mongoose";
 export async function postSchedule(req: Request, res: Response) {
   try {
     const userID = await AuthenticationService.findUserByStudentSecondId(
       req.body.specialNeedsStudentID
     );
-  
 
     if (userID) {
       const schedule = await scheduleService.schedule({
@@ -31,7 +30,7 @@ export async function postSchedule(req: Request, res: Response) {
       return res.status(httpStatus.OK).send({
         data: schedule,
         statusCode: httpStatus.OK,
-        message:  `${schedule.type} scheduled succesfully`,
+        message: `${schedule.type} scheduled succesfully`,
       });
     }
   } catch (error) {
@@ -43,47 +42,28 @@ export async function postSchedule(req: Request, res: Response) {
   }
 }
 
-
 export async function getSchedule(req: Request, res: Response) {
   try {
-    const schedules =
-      res.get("role") === "special need student"
-        ? await scheduleService.scheduleByUserId(res.get("userId")!)
-        : await scheduleService.scheduleByAdmin();
+    const role = res.get("role");
+    let schedules: any = [];
 
-   const userId:any = res.get("userId");
+    const matchObject: any = {
+      userId: new Types.ObjectId(res.get("userId")),
+      dropStatus: "open",
+    };
 
-   
-    const activeSchedules = schedules.filter((schedule: Schedule) => {
-      if(schedule.status){
-
-        if(req.get("role") !== "special need student"){
-          return ( 
-            schedule.dropStatus === "open" &&
-            (schedule.requesteeId == userId || schedule.userId == userId)
-           );
-        }
-        
-        if(req.get("role") === "part time student"){
-          return (
-                schedule.status === "accepted" &&
-                schedule.dropStatus === "open"
-          );
-        }
-
-      }
-      else if (schedule.slotRequestId && schedule.requesteeId) {
-        return (
-          schedule.dropStatus === "open" &&
-          (schedule.requesteeId == userId || schedule.userId == userId)
-        );
-      } else {
-        return schedule.dropStatus === "open";
-      }
-    });
+    if (role === "part time student") {
+      matchObject["status"] = "accepted";
+    }
+    if (role === "admin") {
+      delete matchObject.userId;
+      delete matchObject.dropStatus;
+      delete matchObject.status;
+    }
+    schedules = await scheduleService.getSchedule(matchObject);
 
     return res.status(httpStatus.OK).send({
-      data: activeSchedules,
+      data: schedules,
       statusCode: httpStatus.OK,
       message: "Schedules succesfully",
     });
@@ -110,7 +90,8 @@ export async function getAdminFetchExam(req: Request, res: Response) {
     const schedules = await scheduleService.scheduleByAdmin();
 
     const examSchedules = schedules.filter(
-      (schedule: Schedule) => (schedule.type === "exam" && schedule.dropStatus === "open") 
+      (schedule: Schedule) =>
+        schedule.type === "exam" && schedule.dropStatus === "open"
     );
 
     return res.status(httpStatus.OK).send({
@@ -131,7 +112,7 @@ export async function addRequesteeId(req: Request, res: Response) {
 
     if (request) {
       request.requesteeId = userId;
-    
+
       NotificationService.createNotification({
         message: `Schedule Match Request Arrived`,
         userId: request.userId,
@@ -181,6 +162,3 @@ export async function requestUpdateSpecialNeed(req: Request, res: Response) {
     });
   }
 }
-
-
-
