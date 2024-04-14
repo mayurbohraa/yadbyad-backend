@@ -67,6 +67,5 @@ export async function findRequestByUserId(requestId:string, requesteeId:string):
   return await slotModel
   .find({ status: "accepted", _id: requestId, requesteeId: requesteeId })
   .populate("requesteeId", "-password")
-  .populate("userId", "-password")
-  .populate("eventId");
+  .populate("userId", "-password");
 }

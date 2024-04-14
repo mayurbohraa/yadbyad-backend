@@ -51,7 +51,7 @@ export async function getSchedule(req: Request, res: Response) {
         : await scheduleService.scheduleByAdmin();
 
     const activeSchedules = schedules.filter(
-      (schedule: Schedule) => (schedule.dropStatus === "open" && schedule.status != "accepted")
+      (schedule: Schedule) => (schedule.dropStatus === "open")
     );
 
     return res.status(httpStatus.OK).send({
