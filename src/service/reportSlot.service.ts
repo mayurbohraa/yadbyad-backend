@@ -32,7 +32,7 @@ export async function getReportSlots(
   if (role === "admin") {
     matchObject.userId = userId;
   } else {
-    matchObject.status = "open";
+    matchObject.status ;
   }
   return await reportSlotModel
     .find(matchObject)

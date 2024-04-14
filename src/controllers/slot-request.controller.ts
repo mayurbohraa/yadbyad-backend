@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import * as requestService from "../service/slotrequests.service";
 import { NotificationService } from "../service";
 import { Notification } from "../models/notification.model";
+import * as scheduleService from "../service/schedule.service";
 import slotModel, { SlotRequest } from "../models/slot-requests.model";
 
 // for part time student to post request
@@ -114,9 +115,11 @@ export async function dropRequest(req: Request, res: Response) {
       req.params.requestId,
       req.body.requesteeId,
     );
-    
-    if(request.dropStatus == "deleted"){
-      request.dropStatus = "open";
+
+    console.log(request);
+
+    if(request.status == "accepted"){
+      request.status = "pending";
       await request.save();
     }
 
