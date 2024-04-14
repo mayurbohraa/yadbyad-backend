@@ -12,7 +12,6 @@ export enum NotificationType {
   resourceedited = "resourceedited",
   casualSessionRequested = "casualSessionRequested",
   examAdded = "examAdded",
-  casualSessionAccepted = "casualSessionAccepted",
   lectureCreated= "lectureCreated",
   casualSessionAcceptedOrRejected = "casualSessionAcceptedOrRejected",
   partTimeCasualExamLectureRequest = "partTimeCasual/Exam/LectureRequest",
