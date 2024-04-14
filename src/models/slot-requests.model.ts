@@ -4,6 +4,7 @@ export enum Status {
   Accepted = "accepted",
   Pending = "pending",
   Rejected = "rejected",
+  Dropped = "dropped"
 }
 
 export enum dropStatus {
@@ -14,7 +15,7 @@ export enum dropStatus {
 export interface SlotRequest extends Document {
   userId: mongoose.Schema.Types.ObjectId;
   requesteeId: mongoose.Schema.Types.ObjectId;
-  status: Status;
+  status: string;
   updatedAt: Date;
   createdAt: Date;
   type: string;

@@ -55,6 +55,14 @@ export async function ReuestAcceptedPt(userId: string): Promise<SlotRequest[]> {
     .populate("requesteeId", "-password")
     .populate("eventId");
 }
+
+export async function ReuestAccepted(userId: string, eventId:string): Promise<SlotRequest[]> {
+  return await slotModel
+    .find({ status: "accepted", requesteeId: userId ,eventId: eventId })
+    .populate("userId", "-password")
+    .populate("requesteeId", "-password")
+    .populate("eventId");
+}
 export async function ReuestAcceptedSn(userId: string): Promise<SlotRequest[]> {
   return await slotModel
     .find({ status: "accepted", userId: userId })
