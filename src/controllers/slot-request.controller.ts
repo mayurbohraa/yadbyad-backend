@@ -5,6 +5,7 @@ import { NotificationService } from "../service";
 import { Notification } from "../models/notification.model";
 import * as scheduleService from "../service/schedule.service";
 import slotModel, { SlotRequest } from "../models/slot-requests.model";
+import { schedule } from "node-cron";
 
 // for part time student to post request
 export async function postRequest(req: Request, res: Response) {
@@ -111,26 +112,24 @@ export async function requestUpdate(req: Request, res: Response) {
 export async function dropRequest(req: Request, res: Response) {
   try {
     
-    const request:any = await requestService.findRequestByUserId(
+    const request = await requestService.findRequestByUserId(
       req.params.requestId,
       req.body.requesteeId,
     );
 
-    console.log(request);
+    // console.log(request);
+    // // const userId = request[0].eventId[0]._id;
+    // let schedule = await scheduleService.scheduleByUserId(userId);
+    // console.log(userId);
+    // console.log(schedule);
 
-    if(request.status == "accepted"){
-      request.status = "pending";
-      await request.save();
-    }
+    // NotificationService.createNotification({ 
+    //   message: `Session Dropped`,
+    //   userId: request.userId,
+    //   notificationType: "sessionDropped",
 
-
-    NotificationService.createNotification({ 
-      message: `Session Dropped`,
-      userId: request.userId,
-      notificationType: "sessionDropped",
-
-       } as  Notification
-     );
+    //    } as  Notification
+    //  );
     
     return res.status(httpStatus.OK).send({
       data: request,
