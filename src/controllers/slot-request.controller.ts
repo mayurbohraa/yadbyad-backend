@@ -127,6 +127,21 @@ export async function dropRequest(req: Request, res: Response) {
     schedule.requesteeId = null;
     schedule.save();
     }
+
+    const slotRequests = await requestService.ReuestAccepted(res.get("userId")!, req.body.eventId.toString());
+
+  for (const slotRequest of slotRequests) {
+    slotRequest.status = "dropped";
+    await slotRequest.save();
+}
+
+    NotificationService.createNotification({ 
+      message: `Session Dropped`,
+      userId: schedule?.userId,
+      notificationType: "sessionDropped",
+
+       } as  Notification
+     );
     
     return res.status(httpStatus.OK).send({
       data: schedule,

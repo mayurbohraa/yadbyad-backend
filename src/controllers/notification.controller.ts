@@ -36,7 +36,6 @@ export async function fetchNotification(req: Request, res: Response) {
   try {
     const userId  =  res.get("userId")!;
     const { page, limit, role } = req.query;
-    console.log(role);
 
    const matchBody: any = {
     // isRead : false, 
@@ -53,7 +52,7 @@ export async function fetchNotification(req: Request, res: Response) {
       {
         $and: [
           { notificationType: { $nin: ["partTimeCasual/Exam/LectureRequest", "complainReplied", "sessionDropped", "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
-          "reportRemarked", "casualSessionAcceptedOrRejected"
+          "reportRemarked", "casualSessionAcceptedOrRejected", "examAdded", "lectureCreated", "resourcecreated", "resourceedited", "resourcedeleted", "reportSlotCreated", "reportSlotDeleted"
           ] } },
         ],
       },
@@ -72,13 +71,13 @@ export async function fetchNotification(req: Request, res: Response) {
       { notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed" },
       {
         $and: [
-          { notificationType: { $nin: ["reportsubmitted", "complainsubmitted"] } },
+          { notificationType: { $nin: ["reportsubmitted", "complainsubmitted","newStudentJoined", "sessionDropped", "partTimeCasual/Exam/LectureRequest"] } },
           { $or: [{ userId: userId },{ requesteeId :userId} ,{ userId: { $exists: false } }] },
         ],
       },
     ];
     
-  }else if(role == "special need student"){
+  }else{
     matchBody["$or"] = [
       { notificationType: "resourcecreated" },
       { notificationType: "resourceedited" },
@@ -91,16 +90,14 @@ export async function fetchNotification(req: Request, res: Response) {
       {
         $and: [
           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "reportSlotDeleted","reportSlotCreated", "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
-          "casualSessionRequested",
+          "casualSessionRequested", "newStudentJoined",
           ] } },
           { $or: [{ userId: userId }, { userId: { $exists: false } }] },
         ],
       },
     ];
   }
-  else{
-    console.log("Enter the role ");
-  }
+  
 
     const notifications = await NotificationService.fetchAllNotifications(
       matchBody,
@@ -108,14 +105,29 @@ export async function fetchNotification(req: Request, res: Response) {
       parseInt(limit as string)
     );
 
+
     const user = await AuthenticationService.findUserById(
       userId
     );
 
     if(user){
-    const activeNotifications = notifications.filter(
-      (notification: Notification) =>  new Date(notification.createdAt) > user.createdAt
-    );
+      const activeNotifications = notifications.filter((notification: Notification) => {
+        if (new Date(notification.createdAt) > user.createdAt) {
+          if (notification.notificationType === "examAdded") {
+            return (user.studentID === user._id && user.role === "special need student");
+          } else if (notification.notificationType === "lectureCreated") {
+            return notification.userId !== user._id;
+          } else if (notification.notificationType === "sessionDropped") {
+            return notification.userId === user._id;
+          } else if (notification.notificationType === "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed") {
+            return notification.userId === user._id;
+          } else {
+            return true; // Include notifications with other types
+          }
+        }
+        return false; // Exclude notifications older than user's creation date
+      });
+      
 
       res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
@@ -245,86 +257,3 @@ export async function readNotification(req: Request, res: Response) {
   }
 }
 
-// export async function readNotification(req: Request, res: Response) {
-//   try {
-//     // const {userId}  =  req.params;
-//     const userId  =  res.get("userId")!;
-//     const { page, limit, role } = req.query;
-
-//    const matchBody: any = {
-//     // isRead : false,
-//     readBy: { $nin: userId }
-//   };
-
-//   if(role == "admin"){
-//     matchBody["$or"] = [
-//       {notificationType: "complainsubmitted"} ,
-//       {notificationType:"reportsubmitted"},
-//       {notificationType:"casualSessionRequested"},
-//       {notificationType:"Casual/Exam/LectureDeleted"},
-//       {notificationType:"newStudentJoined"},
-//     ];
-//   }
-//   else if(role == "part time student" ){
-   
-//     matchBody["$or"] = [
-//       { notificationType: "reportSlotDeleted" },
-//       { notificationType: "reportSlotCreated" },
-//       { notificationType: "lectureCreated" },
-//       { notificationType: "examAdded" },
-//       {notificationType:"Casual/Exam/LectureDeleted"},
-//       {
-//         $and: [
-//           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted"] } },
-//           { $or: [{ userId: userId },{ requesteeId :userId} ,{ userId: { $exists: false } }] },
-//         ],
-//       },
-//     ];
-    
-//   }else{
-//     matchBody["$or"] = [
-//       { notificationType: "resourcecreated" },
-//       { notificationType: "resourceedited" },
-//       { notificationType: "examAdded" },
-//       { notificationType: "partTimeCasual/Exam/LectureRequest" },
-//       { notificationType: "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed" },
-//       {notificationType:"Casual/Exam/LectureDeleted"},
-//       {notificationType:"resourcedeleted"},
-//       {
-//         $and: [
-//           { notificationType: { $nin: ["reportsubmitted", "complainsubmitted", "reportSlotDeleted","reportSlotCreated"] } },
-//           { $or: [{ userId: userId }, { userId: { $exists: false } }] },
-//         ],
-//       },
-//     ];
-//   }
-
-//     const notifications = await NotificationService.fetchAllNotifications(
-//       matchBody,
-//       parseInt(page as string),
-//       parseInt(limit as string)
-//     );
-
-
-//     for (const notification of notifications) {
-//       if (!notification.readBy.includes(userId)) {
-//         notification.readBy.push(userId);
-//         await notification.save();
-//       }
-//     }
-
-
-//       res.status(httpStatus.OK).send({
-//       statusCode: httpStatus.OK,
-//       message: "Notification is read successfully",
-//       data: notifications
-//     });
-//   }
-//   catch (error) {
-//     console.log(error);
-//     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
-//       statusCode: httpStatus.INTERNAL_SERVER_ERROR,
-//       message: error,
-//     });
-//   }
-// }
