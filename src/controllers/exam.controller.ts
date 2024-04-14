@@ -51,8 +51,16 @@ export async function getSchedule(req: Request, res: Response) {
         : await scheduleService.scheduleByAdmin();
 
    const userId:any = res.get("userId");
+
+   
     const activeSchedules = schedules.filter((schedule: Schedule) => {
-      if (schedule.slotRequestId && schedule.requesteeId) {
+      if(schedule.status){
+        return (
+          schedule.status === "accepted" &&
+          (schedule.requesteeId == userId || schedule.userId == userId)
+        );
+      }
+      else if (schedule.slotRequestId && schedule.requesteeId) {
         return (
           schedule.dropStatus === "open" &&
           (schedule.requesteeId == userId || schedule.userId == userId)
@@ -61,7 +69,6 @@ export async function getSchedule(req: Request, res: Response) {
         return schedule.dropStatus === "open";
       }
     });
-    
 
     return res.status(httpStatus.OK).send({
       data: activeSchedules,
