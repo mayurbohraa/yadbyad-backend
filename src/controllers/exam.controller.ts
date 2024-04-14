@@ -58,6 +58,12 @@ export async function getSchedule(req: Request, res: Response) {
         return (
           schedule.status === "accepted" &&
           (schedule.requesteeId == userId || schedule.userId == userId)
+           &&  res.get("role") === "part time student"
+        );
+      }
+      else if(schedule.status){
+        return (
+          (schedule.requesteeId == userId || schedule.userId == userId)
         );
       }
       else if (schedule.slotRequestId && schedule.requesteeId) {
