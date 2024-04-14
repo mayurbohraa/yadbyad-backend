@@ -20,11 +20,11 @@ export async function schedule(scheduleDto: any): Promise<Schedule> {
 /**
  * @description This function is used to fetch the list of schedule by user Id
  * @author Keshav suman
- * @param {String} userId
+ * @param {any} matchObject
  * @returns {Promise<Schedule[]>}
  */
-export async function scheduleByUserId(userId: string): Promise<Schedule[]> {
-  return await ScheduleModel.find({ userId }).populate({
+export async function getSchedule(matchObject: any): Promise<Schedule[]> {
+  return await ScheduleModel.find(matchObject).populate({
     path: "slotRequestId",
     model: "slotrequest",
   });
@@ -36,14 +36,15 @@ export async function scheduleByUserId(userId: string): Promise<Schedule[]> {
  * @returns {Promise<Schedule[]>}
  */
 export async function scheduleByAdmin(): Promise<Schedule[]> {
-  return await ScheduleModel.find({}).populate({
-    path: "userId",
-    model: "users",
-    
-  }).populate({
-    path: "slotRequestId",
-    model: "slotrequest",
-  });
+  return await ScheduleModel.find({})
+    .populate({
+      path: "userId",
+      model: "users",
+    })
+    .populate({
+      path: "slotRequestId",
+      model: "slotrequest",
+    });
 }
 
 export async function requestUpdate(
@@ -82,7 +83,7 @@ export async function CasualByAdmin(): Promise<Schedule[]> {
     type: "casual",
     dropStatus: "open",
   }).populate("userId", "-password");
- 
+
   return schedules;
 }
 
@@ -118,9 +119,11 @@ export async function lecture(scheduleDto: any): Promise<Schedule> {
 
 export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
   const schedules: Schedule[] = [];
-  
+
   // Convert scheduleDto.dates to an array if it's not already an array
-  const dates = Array.isArray(scheduleDto.date) ? scheduleDto.date : [scheduleDto.date];
+  const dates = Array.isArray(scheduleDto.date)
+    ? scheduleDto.date
+    : [scheduleDto.date];
 
   for (const date of dates) {
     const schedule = await ScheduleModel.create({
@@ -128,7 +131,6 @@ export async function createLectures(scheduleDto: any): Promise<Schedule[]> {
       date: date,
       startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),
       endTime: moment(scheduleDto.endTime, "hh:mma").toDate(),
-      
     });
     schedules.push(schedule);
   }
@@ -147,8 +149,10 @@ export async function lectureByUserId(userId: string): Promise<Schedule[]> {
   return await ScheduleModel.find({ userId });
 }
 
-
-export async function findDatesForSelectedDaysInMonth(selectedDays: string[], month: string) {
+export async function findDatesForSelectedDaysInMonth(
+  selectedDays: string[],
+  month: string
+) {
   // Initialize an empty array to store dates
   const dates: string[] = [];
 
@@ -156,26 +160,22 @@ export async function findDatesForSelectedDaysInMonth(selectedDays: string[], mo
   const currentDate = moment();
 
   // Loop through selected days
-  selectedDays.forEach(day => {
+  selectedDays.forEach((day) => {
     // Get the first occurrence of the selected day in the given month
-    let currentDate = moment(`${month}-01`, 'YYYY-MM-DD');
+    let currentDate = moment(`${month}-01`, "YYYY-MM-DD");
     const selectedDayOfWeek = moment().day(day).day();
     while (currentDate.day() !== selectedDayOfWeek) {
-      currentDate.add(1, 'day');
+      currentDate.add(1, "day");
     }
 
     // Add all occurrences of the selected day in the given month to the dates array
-    while (currentDate.month() === moment(month, 'YYYY-MM').month()) {
-      if (currentDate.isSameOrAfter(moment(), 'day')) {
-        dates.push(currentDate.format('YYYY-MM-DD'));
+    while (currentDate.month() === moment(month, "YYYY-MM").month()) {
+      if (currentDate.isSameOrAfter(moment(), "day")) {
+        dates.push(currentDate.format("YYYY-MM-DD"));
       }
-      currentDate.add(7, 'days');
+      currentDate.add(7, "days");
     }
   });
 
   return dates;
 }
-
-
-
-
