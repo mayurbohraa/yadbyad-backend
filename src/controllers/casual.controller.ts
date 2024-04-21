@@ -141,7 +141,6 @@ export async function deleteSchedule(req: Request, res: Response) {
 
 export async function requestUpdateAdmin(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const request = await casualService.requestUpdate(
       req.params.id,
       req.params.update

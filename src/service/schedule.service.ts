@@ -70,7 +70,7 @@ export async function requestUpdateSpecialNeed(
 }
 
 export async function Casual(scheduleDto: any): Promise<Schedule> {
-  console.log(scheduleDto);
+  // console.log(scheduleDto);
   return await ScheduleModel.create({
     ...scheduleDto,
     startTime: moment(scheduleDto.startTime, "hh:mma").toDate(),

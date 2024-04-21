@@ -108,7 +108,6 @@ export async function addRequesteeId(req: Request, res: Response) {
 
 export async function requestUpdateSpecialNeed(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const request = await lectureService.requestUpdateSpecialNeed(
       req.params.id,
       req.params.update
