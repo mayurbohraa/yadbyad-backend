@@ -31,14 +31,16 @@ export async function getReportSlots(
   const matchObject: any = {};
   if (role === "admin") {
     matchObject.userId = userId;
+    matchObject.status = { $in: ["open", "closed"] };
   } else {
-    matchObject.status ;
+    matchObject.status = { $in: ["open", "closed"] };
   }
   return await reportSlotModel
     .find(matchObject)
     .limit(limit)
     .skip(page * limit);
 }
+
 
 /**
  * @description this function delete the report slot
