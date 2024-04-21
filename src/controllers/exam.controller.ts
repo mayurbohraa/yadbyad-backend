@@ -36,8 +36,8 @@ export async function postSchedule(req: Request, res: Response) {
       });
     }
     else{
-      return res.status(httpStatus.OK).send({
-        statusCode: httpStatus.OK,
+      return res.status(httpStatus.BAD_REQUEST).send({
+        statusCode: httpStatus.BAD_REQUEST,
         message: `StudentID does not exist `,
       });
 
