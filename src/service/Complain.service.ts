@@ -1,7 +1,6 @@
 import { ComplainModel, ReportModel } from "../models";
 import { Complain } from "../models/complain.model";
 import jsonwebtoken from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import { ObjectId } from 'mongodb';
 
 

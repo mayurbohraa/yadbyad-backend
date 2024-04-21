@@ -2,8 +2,6 @@ import { ReportModel, ReportSlotModel } from "../models";
 import { Report } from "../models/report.model";
 import { ReportSlot } from "../models/reportSlot.model";
 import jsonwebtoken from "jsonwebtoken";
-
-import bcrypt from "bcryptjs";
 import { ObjectId } from "mongodb";
 
 /**

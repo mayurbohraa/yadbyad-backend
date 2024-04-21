@@ -25,7 +25,6 @@ export async function postSchedule(req: Request, res: Response) {
 
       NotificationService.createNotification({
         message: "New Exam Scheduled Check Calendar",
-        // userId: schedule.userId.toString(),
         specialNeedsStudentID:req.body.specialNeedsStudentID,
         notificationType: "examAdded",
       } as Notification);
@@ -70,8 +69,7 @@ export async function getSchedule(req: Request, res: Response) {
       delete matchObject.dropStatus;
       delete matchObject.status;
     }
-    console.log(matchObject);
-
+  
     schedules = await scheduleService.getSchedule(matchObject);
 
     return res.status(httpStatus.OK).send({
