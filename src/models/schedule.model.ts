@@ -13,7 +13,7 @@ export enum dropStatus {
 
 // Common interface for all document types
 export interface Schedule extends Document {
-  userId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId | any;
   slotRequestId:mongoose.Types.ObjectId | null;
   date: string;
   startTime: string;

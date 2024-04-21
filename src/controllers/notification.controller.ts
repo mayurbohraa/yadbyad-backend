@@ -7,12 +7,13 @@ import { AuthenticationService } from "../service";
 export async function createNotification(req: Request, res: Response) {
   try {
     
-    const { message, notificationType , userId} =  req.body;
+    const { message, notificationType , userId, specialNeedsStudentID} =  req.body;
       const Notification = {
        
         message:message,
         notificationType: notificationType,
-        userId: userId
+        userId: userId,
+        specialNeedsStudentID: specialNeedsStudentID
       };
      
       const createdNotification = await NotificationService.createNotification( Notification as Notification);
@@ -114,7 +115,7 @@ export async function fetchNotification(req: Request, res: Response) {
       const activeNotifications = notifications.filter((notification: Notification) => {
         if (new Date(notification.createdAt) > user.createdAt) {
           if (notification.notificationType === "examAdded") {
-            return (user.studentID === user._id && user.role === "special need student");
+            return (notification.specialNeedsStudentID === user.studentID && user.role === "special need student");
           } else if (notification.notificationType === "lectureCreated") {
             return notification.userId !== user._id;
           } else if (notification.notificationType === "sessionDropped") {

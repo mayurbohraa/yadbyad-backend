@@ -9,6 +9,8 @@ import {
 import { Notification } from "../models/notification.model";
 import { Schedule } from "../models/schedule.model";
 import { Types } from "mongoose";
+
+
 export async function postSchedule(req: Request, res: Response) {
   try {
     const userID = await AuthenticationService.findUserByStudentSecondId(
@@ -24,7 +26,7 @@ export async function postSchedule(req: Request, res: Response) {
       NotificationService.createNotification({
         message: "New Exam Scheduled Check Calendar",
         // userId: schedule.userId.toString(),
-        userId:req.body.specialNeedsStudentID,
+        specialNeedsStudentID:req.body.specialNeedsStudentID,
         notificationType: "examAdded",
       } as Notification);
       return res.status(httpStatus.OK).send({
@@ -32,6 +34,13 @@ export async function postSchedule(req: Request, res: Response) {
         statusCode: httpStatus.OK,
         message: `${schedule.type} scheduled succesfully`,
       });
+    }
+    else{
+      return res.status(httpStatus.OK).send({
+        statusCode: httpStatus.OK,
+        message: `StudentID does not exist `,
+      });
+
     }
   } catch (error) {
     console.log(error);

@@ -30,7 +30,8 @@ export interface Notification extends Document {
   notificationType:string;
   updatedAt: Date;
   createdAt: Date;
-  userId:any;
+  userId: string | any ;
+  specialNeedsStudentID?:string;
  
 }
 
@@ -60,6 +61,11 @@ const notificationSchema: Schema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
     },
+
+    specialNeedsStudentID:{
+      type:String,
+      default: null,
+    }
   },
   {
     timestamps: true,
