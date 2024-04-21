@@ -56,8 +56,8 @@ export async function findUserByIdAndUpdate(
 }
 
 /**
- * @description This function is used to reset password details by using email
- * @param {String} email
+ * @description This function is used to reset password details by using Id
+ * @param {String} id
  * @author Kunal Rathod
  * @returns {Promise<User|null>}
  */
@@ -68,6 +68,31 @@ export async function changePasswordById(
   // Find the user by email
   const objectId = new ObjectId(id);
   const existingUser = await UserModel.findOne({ _id: objectId });
+
+  if (!existingUser) {
+    return null; // User not found
+  }
+
+  // Update the user's password
+  existingUser.password = newPassword;
+
+  await existingUser.save();
+
+  return existingUser; // Password changed successfully
+}
+
+/**
+ * @description This function is used to reset password details by using email
+ * @param {String} email
+ * @author Kunal Rathod
+ * @returns {Promise<User|null>}
+ */
+export async function changePasswordByEmail(
+  email: string,
+  newPassword: string
+): Promise<User | null> {
+  
+  const existingUser = await UserModel.findOne({ email: email });
 
   if (!existingUser) {
     return null; // User not found

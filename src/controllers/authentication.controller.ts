@@ -204,12 +204,12 @@ export async function deleteUsers(req: Request, res: Response) {
 export async function forgotPassword(req: Request, res: Response) {
  
   try {
-    const Id  =  res.get("userId")!;
-    const { newPassword } = req.body;
+  
+    const { email, newPassword } = req.body;
     const hashedPassword = AuthenticationService.hashPassword(newPassword);
-    const passwordChanged = await AuthenticationService.changePasswordById(Id, hashedPassword);
-    const user: User | null = await AuthenticationService.findUserById(
-      Id
+    const passwordChanged = await AuthenticationService.changePasswordByEmail(email, hashedPassword);
+    const user: User | null = await AuthenticationService.findUserByEmail(
+      email
     );
 
     if (passwordChanged) {
