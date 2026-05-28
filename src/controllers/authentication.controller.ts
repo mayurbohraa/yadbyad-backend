@@ -7,7 +7,7 @@ import { NotificationService} from "../service";
 
 export async function login(req: Request, res: Response) {
   try {
-    const { username, password } = req.body;
+    const { username, password } = req.body;    
     const user: User | null = await AuthenticationService.findUserByUsername(
       username
     );

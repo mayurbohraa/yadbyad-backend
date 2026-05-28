@@ -1,0 +1,669 @@
+{
+  "info": {
+    "name": "YadByad Backend API",
+    "_postman_id": "c2f6b71a-8a2c-4b20-9d2a-6d858b0a1d6f",
+    "description": "Auto-generated from route files under src/routes. Base path in server: /api/v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:9000/api/v1" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"\",\n  \"email\": \"\",\n  \"password\": \"\",\n  \"role\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/forgotPassword", "host": ["{{baseUrl}}"], "path": ["auth", "forgotPassword"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Users (list)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/auth/users", "host": ["{{baseUrl}}"], "path": ["auth", "users"] }
+          }
+        },
+        {
+          "name": "Users (get by id)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/auth/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "users", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            }
+          }
+        },
+        {
+          "name": "Users (update by id)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "users", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Users (delete by id)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/auth/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "users", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/users/changePassword", "host": ["{{baseUrl}}"], "path": ["auth", "users", "changePassword"] },
+            "body": { "mode": "raw", "raw": "{\n  \"oldPassword\": \"\",\n  \"newPassword\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Edit Profile",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/users/profile/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "users", "profile", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schedule (Exam)",
+      "item": [
+        {
+          "name": "Get schedule",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/schedule", "host": ["{{baseUrl}}"], "path": ["schedule"] }
+          }
+        },
+        {
+          "name": "Get schedule admin",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/schedule/scheduleadmin", "host": ["{{baseUrl}}"], "path": ["schedule", "scheduleadmin"] }
+          }
+        },
+        {
+          "name": "Create schedule request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/schedule/request", "host": ["{{baseUrl}}"], "path": ["schedule", "request"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Admin fetch exam",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/schedule/adminFetchExam", "host": ["{{baseUrl}}"], "path": ["schedule", "adminFetchExam"] }
+          }
+        },
+        {
+          "name": "Part time request exam",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/schedule/partTimeRequest/:examId",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedule", "partTimeRequest", ":examId"],
+              "variable": [{ "key": "examId", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Special need update exam request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/schedule/specialNeedUpdate/:id/:update",
+              "host": ["{{baseUrl}}"],
+              "path": ["schedule", "specialNeedUpdate", ":id", ":update"],
+              "variable": [
+                { "key": "id", "value": "" },
+                { "key": "update", "value": "accept" }
+              ]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lecture",
+      "item": [
+        {
+          "name": "Get lectures",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/lecture", "host": ["{{baseUrl}}"], "path": ["lecture"] }
+          }
+        },
+        {
+          "name": "Get lectures admin",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/lecture/scheduleadmin", "host": ["{{baseUrl}}"], "path": ["lecture", "scheduleadmin"] }
+          }
+        },
+        {
+          "name": "Create lecture request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/lecture/request", "host": ["{{baseUrl}}"], "path": ["lecture", "request"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Part time request lecture",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/lecture/partTimeRequest/:casualId",
+              "host": ["{{baseUrl}}"],
+              "path": ["lecture", "partTimeRequest", ":casualId"],
+              "variable": [{ "key": "casualId", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Special need update lecture request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/lecture/specialNeedUpdate/:id/:update",
+              "host": ["{{baseUrl}}"],
+              "path": ["lecture", "specialNeedUpdate", ":id", ":update"],
+              "variable": [
+                { "key": "id", "value": "" },
+                { "key": "update", "value": "accept" }
+              ]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Casual",
+      "item": [
+        {
+          "name": "Get casual requests",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/casual", "host": ["{{baseUrl}}"], "path": ["casual"] }
+          }
+        },
+        {
+          "name": "Admin update casual request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/casual/update/:id/:update",
+              "host": ["{{baseUrl}}"],
+              "path": ["casual", "update", ":id", ":update"],
+              "variable": [
+                { "key": "id", "value": "" },
+                { "key": "update", "value": "accept" }
+              ]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Special need update casual request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/casual/specialNeedUpdate/:id/:update",
+              "host": ["{{baseUrl}}"],
+              "path": ["casual", "specialNeedUpdate", ":id", ":update"],
+              "variable": [
+                { "key": "id", "value": "" },
+                { "key": "update", "value": "accept" }
+              ]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Create casual request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/casual/request", "host": ["{{baseUrl}}"], "path": ["casual", "request"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Casual accepted",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/casual/accept", "host": ["{{baseUrl}}"], "path": ["casual", "accept"] }
+          }
+        },
+        {
+          "name": "Part time request casual",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/casual/partTimeRequest/:casualId",
+              "host": ["{{baseUrl}}"],
+              "path": ["casual", "partTimeRequest", ":casualId"],
+              "variable": [{ "key": "casualId", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Delete casual schedule",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/casual/deleteSchedule/:scheduleId",
+              "host": ["{{baseUrl}}"],
+              "path": ["casual", "deleteSchedule", ":scheduleId"],
+              "variable": [{ "key": "scheduleId", "value": "" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Slot Requests",
+      "item": [
+        {
+          "name": "Get slot requests",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/slot", "host": ["{{baseUrl}}"], "path": ["slot"] }
+          }
+        },
+        {
+          "name": "Update slot request (accept/reject)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/slot/update/:id/:update",
+              "host": ["{{baseUrl}}"],
+              "path": ["slot", "update", ":id", ":update"],
+              "variable": [
+                { "key": "id", "value": "" },
+                { "key": "update", "value": "accept" }
+              ]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"requesteeId\": \"\",\n  \"eventId\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Drop slot request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/slot/dropRequest/:requestId",
+              "host": ["{{baseUrl}}"],
+              "path": ["slot", "dropRequest", ":requestId"],
+              "variable": [{ "key": "requestId", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"eventId\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Get accepted slot requests",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/slot/accepted", "host": ["{{baseUrl}}"], "path": ["slot", "accepted"] }
+          }
+        },
+        {
+          "name": "Create slot request",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/slot/request", "host": ["{{baseUrl}}"], "path": ["slot", "request"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Complaints",
+      "item": [
+        {
+          "name": "Submit complain",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/complain/submitComplain", "host": ["{{baseUrl}}"], "path": ["complain", "submitComplain"] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Fetch complain (my)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/complain/fetchComplain", "host": ["{{baseUrl}}"], "path": ["complain", "fetchComplain"] }
+          }
+        },
+        {
+          "name": "Fetch all complain",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/complain/fetchAllComplain", "host": ["{{baseUrl}}"], "path": ["complain", "fetchAllComplain"] }
+          }
+        },
+        {
+          "name": "Reply complain",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/complain/replyComplain/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["complain", "replyComplain", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"reply\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Delete complain",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/complain/deleteComplain/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["complain", "deleteComplain", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Submit report (multipart file)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/reports/submitReport/:slotId",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "submitReport", ":slotId"],
+              "variable": [{ "key": "slotId", "value": "" }]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] },
+                { "key": "remarks", "value": "", "type": "text" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fetch report (my)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/reports/fetchReport", "host": ["{{baseUrl}}"], "path": ["reports", "fetchReport"] }
+          }
+        },
+        {
+          "name": "Fetch all report",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/reports/fetchAllReport", "host": ["{{baseUrl}}"], "path": ["reports", "fetchAllReport"] }
+          }
+        },
+        {
+          "name": "Add remarks",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/reports/remarks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "remarks", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"remarks\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Delete report",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/reports/deleteReport/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "deleteReport", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Report Slots",
+      "item": [
+        {
+          "name": "Create report slot",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/reportSlot/createReportSlot", "host": ["{{baseUrl}}"], "path": ["reportSlot", "createReportSlot"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Get report slots",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/reportSlot", "host": ["{{baseUrl}}"], "path": ["reportSlot"] }
+          }
+        },
+        {
+          "name": "Delete report slot",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/reportSlot/:slotId",
+              "host": ["{{baseUrl}}"],
+              "path": ["reportSlot", ":slotId"],
+              "variable": [{ "key": "slotId", "value": "" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Library (Resources)",
+      "item": [
+        {
+          "name": "Create resource",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/library/createResource", "host": ["{{baseUrl}}"], "path": ["library", "createResource"] },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Fetch resources",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/library/fetchResource", "host": ["{{baseUrl}}"], "path": ["library", "fetchResource"] }
+          }
+        },
+        {
+          "name": "Edit resource",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/library/editResource/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["library", "editResource", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            },
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Delete resource",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/library/deleteResource/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["library", "deleteResource", ":id"],
+              "variable": [{ "key": "id", "value": "" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Create notification (no auth in routes)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/notifications/createNotification", "host": ["{{baseUrl}}"], "path": ["notifications", "createNotification"] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"\",\n  \"userId\": \"\",\n  \"notificationType\": \"\"\n}" }
+          }
+        },
+        {
+          "name": "Fetch notifications",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/notifications/fetchNotification", "host": ["{{baseUrl}}"], "path": ["notifications", "fetchNotification"] }
+          }
+        },
+        {
+          "name": "Read notification",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/notifications/readNotification", "host": ["{{baseUrl}}"], "path": ["notifications", "readNotification"] },
+            "body": { "mode": "raw", "raw": "{\n  \"notificationId\": \"\"\n}" }
+          }
+        }
+      ]
+    }
+  ]
+}
+
