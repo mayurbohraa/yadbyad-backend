@@ -4,7 +4,7 @@
 
 ## About the project
 
-The Express API supports Yad Byad, a college-project demo for students with special needs, part-time student supporters, and administrators.
+This Express API powers Yad Byad, a student peer-support application delivered through a freelance engagement for a client’s college project.
 
 ## Key features
 
