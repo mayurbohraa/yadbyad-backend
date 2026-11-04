@@ -1,5 +1,9 @@
 # Yad Byad Backend
 
+*Empowering student success through peer collaboration.*
+
+## About the project
+
 Express and TypeScript API for a college-project student support platform, covering accounts, schedules, session requests, resources, complaints, reports, and notifications. The project is a demonstration application with no real users.
 
 ## Key features
@@ -16,18 +20,16 @@ Recovery approval is deliberately a dashboard demonstration: no email is deliver
 
 https://yadbyad-backend.vercel.app/
 
-The latest local improvements have not been deployed.
-
 ## Tech stack
 
-Express 4, TypeScript 5, MongoDB/Mongoose 8, jsonwebtoken, bcryptjs, Node crypto, Multer, Moment, Jest 29, and ts-jest. Report attachments use local disk.
+Express 4, TypeScript 5, MongoDB/Mongoose 8, jsonwebtoken, bcryptjs, Node crypto, Multer, Moment, Jest 29, and ts-jest. Report attachments use local disk during development and temporary storage on Vercel.
 
 ## Prerequisites
 
 - Node.js and npm. Verification used Node.js 24.13.0 and npm 11.12.1; no engine version is pinned.
 - Access to MongoDB. Recovery acceptance uses transactions and requires Atlas or a replica set.
 
-## Installation and environment
+## Installation and setup
 
 1. Open this repository's folder, `YadByad_Backend`.
 2. Run `npm ci`.
@@ -36,11 +38,13 @@ Express 4, TypeScript 5, MongoDB/Mongoose 8, jsonwebtoken, bcryptjs, Node crypto
 5. Optionally configure `RECOVERY_CODE_KEY` and `DNS_SERVERS`.
 6. Run `npm run dev`.
 
+## Environment configuration
+
 `RECOVERY_CODE_KEY` is a stable private secret for recovery-code encryption. If absent, the existing JWT signing secret is used. Changing the encryption secret prevents existing codes from being decrypted. Configure a dedicated key before code creation if JWT signing-key rotation will be needed independently.
 
 `DNS_SERVERS` accepts optional comma-separated resolver addresses. Never publish private environment values. The local environment is ignored and preserved; its removal from future Git tracking does not erase historical commits.
 
-## Running and checks
+## Running locally and verification
 
 ```sh
 npm run dev
@@ -50,6 +54,12 @@ node dist/index.js
 ```
 
 Start the compiled server from this repository's root so the environment and `uploads/` directory resolve correctly. The build and all 42 backend regression tests passed after relocation. Tests use mocked persistence; earlier temporary-account API checks separately verified database-backed account flows and recovery-approval notifications.
+
+## Vercel deployment
+
+Configure `DB_URL` and `JWT_Token` as private Production environment variables in Vercel. Keep the existing `RECOVERY_CODE_KEY` if one is configured so previously issued codes stay readable. Deploy the backend repository with Vercel’s Express framework detection.
+
+Open `/` to check that the function starts. Open `/api/v1/health` to check database connectivity. The readiness endpoint returns HTTP 503 when the API cannot connect.
 
 ## Account API
 
@@ -78,6 +88,7 @@ Other route groups under `/api/v1` are `/schedule`, `/lecture`, `/casual`, `/slo
 ```text
 YadByad_Backend/
 ├── index.ts
+├── scripts/            # demo data seeder
 ├── src/
 │   ├── controllers/
 │   ├── middlewares/
@@ -96,7 +107,7 @@ This remains an independent Git repository inside `YadByad_Code`. Local dependen
 
 ## Limitations
 
-This college demo still needs a complete non-account authorization audit, dependency/security review, upload size/type policy, and durable hosted storage decision before production use. Application-level duplicate checks do not replace database unique indexes. Per-process rate limits are not distributed. No backend Vercel configuration was found in this checkout, so serverless entry behavior and file persistence require verification before redeployment. Historical secrets require a private review and rotation of any real exposed values before public publication.
+This college demo still needs a complete non-account authorization audit, dependency/security review, upload size/type policy, and durable hosted storage decision before production use. Application-level duplicate checks do not replace database unique indexes. Per-process rate limits are not distributed. Vercel detects the exported Express app in `index.ts`. Hosted report uploads use temporary instance storage, so durable attachments require a separate storage service. Historical secrets require a private review and rotation of any real exposed values before public publication.
 
 ## Dashboard and persistent sessions
 
@@ -111,3 +122,7 @@ npm run seed:demo -- <admin-username> <special-needs-username> <part-time-userna
 ```
 
 Use three existing active demo accounts in the indicated role order. The script uses the configured database, keeps existing credentials, and skips records it already inserted. Sample report files are written to the local backend uploads folder.
+
+## Acknowledgements
+
+The API uses Express and Mongoose. See the dependency licenses for attribution and terms.

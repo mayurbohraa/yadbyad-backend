@@ -1,61 +1,70 @@
+import cors from "cors";
+import dns from "node:dns";
+import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+
 import router from "./src/routes";
-import path from "path";
 import Exceptionhandler from "./src/utils/exceptionhandler";
-import cors from "cors";
-import dns from "dns";
+import { uploadsDirectory } from "./src/utils/upload.middleware";
+
+dotenv.config({ path: ".env" });
 
 const app = express();
+let pendingConnection: Promise<typeof mongoose> | undefined;
 
-dotenv.config({
-  path: ".env",
-});
+async function connectDatabase() {
+  if (mongoose.connection.readyState === 1) return;
 
-const dnsServers =
-  process.env.DNS_SERVERS?.split(",")
-    .map((s) => s.trim())
-    .filter(Boolean) ?? [];
+  if (!pendingConnection) {
+    const dbUrl = process.env.DB_URL?.trim();
+    if (!dbUrl) throw new Error("Missing DB_URL environment variable");
 
-if (dnsServers.length) {
-  // Ensures SRV/TXT lookups (mongodb+srv) don't go through a broken local DNS proxy.
-  dns.setServers(dnsServers);
-}
+    const dnsServers = process.env.DNS_SERVERS?.split(",").map((server) => server.trim()).filter(Boolean);
+    if (dnsServers?.length) dns.setServers(dnsServers);
 
-const dbUrl = process.env.DB_URL?.trim() ?? "";
-const port = Number(process.env.PORT ?? 5000);
-
-if (!dbUrl) {
-  console.error("Missing DB_URL environment variable");
-  process.exit(1);
-}
-
-app.use(express.json());
-app.use(cors());
-app.use("/api/v1", router);
-app.use(
-  "/api/v1/uploads",
-  express.static(path.resolve(process.cwd(), "uploads")),
-);
-app.use(Exceptionhandler);
-app.use((req, res) => {
-  res.status(404).json({
-    message: "Not found error",
-  });
-});
-
-async function startApp() {
-  try {
-    await mongoose.connect(dbUrl);
-    console.log("Database connected");
-    app.listen(port, () => {
-      console.log(`Server started at ${port}`);
-    });
-  } catch (err: unknown) {
-    console.error("Failed to connect to the database:", err);
-    process.exit(1);
+    // Concurrent requests during a cold start share the same connection attempt.
+    pendingConnection = mongoose.connect(dbUrl, { serverSelectionTimeoutMS: 8000 })
+      .finally(() => { pendingConnection = undefined; });
   }
+
+  await pendingConnection;
 }
 
-startApp();
+app.use(cors());
+app.use(express.json());
+app.get("/", (_req, res) => {
+  res.json({ service: "Yad Byad API", status: "running" });
+});
+app.use("/api/v1/uploads", express.static(uploadsDirectory));
+app.use("/api/v1", async (_req, res, next) => {
+  try {
+    await connectDatabase();
+    next();
+  } catch (error) {
+    console.error("Database unavailable:", error instanceof Error ? error.name : "Unknown error");
+    res.status(503).json({ message: "Database temporarily unavailable." });
+  }
+});
+app.get("/api/v1/health", (_req, res) => {
+  res.json({ status: "ready" });
+});
+app.use("/api/v1", router);
+app.use(Exceptionhandler);
+app.use((_req, res) => {
+  res.status(404).json({ message: "Not found error" });
+});
+
+if (require.main === module && !process.env.VERCEL) {
+  const port = Number(process.env.PORT ?? 5000);
+  connectDatabase()
+    .then(() => {
+      app.listen(port, () => console.log(`Server started at ${port}`));
+    })
+    .catch((error: unknown) => {
+      console.error("Backend startup failed:", error instanceof Error ? error.name : "Unknown error");
+      process.exitCode = 1;
+    });
+}
+
+export default app;
