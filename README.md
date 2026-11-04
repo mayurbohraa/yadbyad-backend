@@ -1,80 +1,100 @@
 # Yad Byad Backend
 
-*Empowering student success through peer collaboration.*
+## Project Overview
 
-## About the project
+The Yad Byad API supports academic peer assistance through account management, session scheduling, matching requests, resources, complaints, and reports. It stores application records and report attachments in MongoDB and serves the companion web interface.
 
-This Express API powers Yad Byad, a student peer-support application delivered through a freelance engagement for a client’s college project.
+## Project Preview
 
-## Key features
+<img src="documents/project-preview.webp" alt="Yad Byad Backend application screens and visual identity" width="520">
 
-- Student accounts, session revocation, profile changes, and recovery-code password reset.
-- Administrator recovery approval with a private dashboard notification.
-- Role-specific dashboard summaries, schedules, matching, resources, complaints, and report review.
-- Report submission windows and durable MongoDB GridFS attachments. Report owners and administrators can open attachments through the authenticated API.
+Companion application screens and visual identity. Branding mockups are presentation concepts.
 
-## Live backend
+## Key Features
 
-https://yadbyad-backend.vercel.app/
+- Student accounts, profiles, persistent sessions, and explicit session revocation.
+- Recovery codes and administrator-reviewed recovery requests with private notifications.
+- Dashboard summaries, exam/lecture/casual sessions, and matching requests.
+- Resources, complaints, report slots, and report review.
+- GridFS report attachments with authenticated owner/administrator access.
 
-## Tech stack
+## Live Website & Related Repository
 
-Express 4, TypeScript 5, MongoDB and GridFS, Mongoose 8, Multer, jsonwebtoken, bcryptjs, and Jest 29 with ts-jest.
+Frontend repository: https://github.com/mayurbohraa/yadbyad-frontend
+
+API deployment: https://yadbyad-backend.vercel.app/
+
+## Tech Stack
+
+- **Server:** Node.js, Express 4, TypeScript 5.
+- **Data:** MongoDB, Mongoose 8, GridFS.
+- **Security and files:** jsonwebtoken, bcryptjs, Multer.
+- **Checks:** Jest 29, ts-jest, TypeScript compiler.
 
 ## Prerequisites
 
-- Node.js and npm. Verification used Node.js 24.13.0 and npm 11.12.1.
-- MongoDB Atlas or another replica set for the recovery-approval transaction.
+Node.js, npm, and MongoDB. Recovery approval uses transactions and requires a replica set, such as MongoDB Atlas. Node.js 24 is used for this documentation verification.
 
-## Installation and setup
+## Installation & Setup
 
-1. Open `YadByad_Backend` and run `npm ci`.
-2. Copy `.env.sample` to `.env` if one does not exist.
-3. Set the backend environment variables below.
-4. Run `npm run dev`.
+1. Clone and open the backend:
 
-## Environment configuration
+   ```sh
+   git clone https://github.com/mayurbohraa/yadbyad-backend.git
+   cd yadbyad-backend
+   ```
 
-| Variable | Purpose |
-| --- | --- |
-| `DB_URL` | Private MongoDB connection string for application records and report files |
-| `JWT_Token` | Private signing secret |
-| `PORT` | Set to `9000` for the standard local setup |
-| `RECOVERY_CODE_KEY` | Optional stable encryption key. Defaults to the signing secret |
-| `DNS_SERVERS` | Optional comma-separated DNS resolvers |
+2. Install dependencies:
 
-Keep secrets in private environment settings. Preserve the configured recovery-code encryption key so previously issued codes remain readable.
+   ```sh
+   npm ci
+   ```
 
-## Running locally
+3. For a fresh setup, copy `.env.sample` to `.env`. Set `DB_URL`, a private `JWT_Token` signing secret, and `PORT=9000` for the standard frontend connection.
+4. Optionally set a stable `RECOVERY_CODE_KEY`; otherwise encryption uses `JWT_Token`. Changing the encryption key can make stored recovery codes unreadable. `DNS_SERVERS` optionally supplies comma-separated resolver addresses.
+5. Keep environment values private. With no `PORT`, the code defaults to `5000`; the supplied environment template selects `9000`.
 
-| Task | Command |
-| --- | --- |
-| Development server | `npm run dev` |
-| Unit tests | `npm test -- --runInBand` |
-| Production build | `npm run build` |
-| Run the compiled server | `node dist/index.js` |
+## Running Locally
 
-For a demo database with three existing active accounts, run `npm run seed:demo -- <admin-username> <special-needs-username> <part-time-username>`. The seed preserves credentials and stores the sample report attachments in GridFS.
+Development:
 
-## Deployment and report storage
+```sh
+npm run dev
+```
 
-Vercel detects the Express app exported by `index.ts`. Configure `DB_URL` and `JWT_Token` in the Production environment. The root route checks startup. `/api/v1/health` checks database readiness.
+Compile and run the compiled server:
 
-New report uploads are limited to 4 MB and stored in MongoDB. `GET /api/v1/reports/:id/file` requires a valid session and restricts access to the report owner or an administrator. Older local attachments can be opened where the original file is still available.
+```sh
+npm run build
+```
 
-## Project structure
+```sh
+node dist/index.js
+```
+
+`npm start` is also a development watcher; it is not the compiled production command.
+
+Run tests:
+
+```sh
+npm test -- --runInBand
+```
+
+The root `/` reports liveness; `/api/v1/health` checks database readiness. Sessions persist until logout or a security change; access-token expiry is not enforced by the current middleware.
+
+## Project Structure
 
 ```text
-YadByad_Backend/
-├── index.ts
-├── scripts/          # Demo data and attachment seed
-├── src/
-│   ├── controllers/ # HTTP request handling
-│   ├── middlewares/ # Authentication and request guards
-│   ├── models/      # MongoDB schemas
-│   ├── routes/      # API endpoints
-│   ├── service/     # Data operations and GridFS storage
-│   ├── tests/       # Backend regression tests
-│   └── utils/       # Account security and upload handling
-└── .env.sample
+index.ts              # Express entry, database connection, and listener
+src/
+├── controllers/      # HTTP handling
+├── middlewares/      # Session and request middleware
+├── models/           # MongoDB schemas
+├── routes/           # API route groups
+├── service/          # Feature operations and file storage
+├── tests/            # Backend regression tests
+└── utils/            # Account security, uploads, and errors
+scripts/              # Demo-data tools
+documents/            # Public application preview
+.env.sample           # Private configuration template
 ```
