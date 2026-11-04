@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 
 import router from "./src/routes";
 import Exceptionhandler from "./src/utils/exceptionhandler";
-import { uploadsDirectory } from "./src/utils/upload.middleware";
 
 dotenv.config({ path: ".env" });
 
@@ -36,7 +35,6 @@ app.use(express.json());
 app.get("/", (_req, res) => {
   res.json({ service: "Yad Byad API", status: "running" });
 });
-app.use("/api/v1/uploads", express.static(uploadsDirectory));
 app.use("/api/v1", async (_req, res, next) => {
   try {
     await connectDatabase();

@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import moment from "moment";
 import * as reports from "../controllers/report.controller";
+import { storeReportFile } from "../service/report-file.service";
 import UserModel, { Role } from "../models/user.model";
 import NotificationModel from "../models/notification.model";
 import * as controller from "../controllers/authentication.controller";
@@ -22,6 +23,10 @@ import {
   validPassword,
 } from "../utils/account-security";
 
+jest.mock("../service/report-file.service", () => ({
+  storeReportFile: jest.fn(),
+  reportFiles: jest.fn(),
+}));
 jest.mock("../models/user.model", () => ({
   __esModule: true,
   Role: {
@@ -514,22 +519,26 @@ describe("report upload regressions", () => {
     await reports.submitReport(req, res);
     expect(status()).toBe(400);
   });
-  test("saved upload URLs use web separators instead of Windows disk paths", async () => {
+  test("submitted reports reference a GridFS file and protected download route", async () => {
     req.body = { filename: "Report", fileDescription: "Description" };
     req.params.slotId = id;
     req.file = {
-      filename: "sample.pdf",
-      path: "uploads\\sample.pdf",
+      originalname: "sample.pdf",
+      buffer: Buffer.from("sample"),
     } as Express.Multer.File;
     (ReportService.findReportSlotById as jest.Mock).mockResolvedValue({
       startDate: moment().subtract(1, "hour").format("DD-MM-YY: hh:mma"),
       endDate: moment().add(1, "hour").format("DD-MM-YY: hh:mma"),
     });
     (ReportService.createReport as jest.Mock).mockResolvedValue({ _id: id });
+    (storeReportFile as jest.Mock).mockResolvedValue(id);
     await reports.submitReport(req, res);
     expect(status()).toBe(200);
     expect(ReportService.createReport).toHaveBeenCalledWith(
-      expect.objectContaining({ fileUrl: "uploads/sample.pdf" }),
+      expect.objectContaining({
+        fileId: id,
+        fileUrl: expect.stringMatching(/^reports\/[a-f0-9]{24}\/file$/),
+      }),
     );
   });
 });

@@ -14,7 +14,8 @@ export enum userStatus {
 export interface Report extends Document {
   slotId:mongoose.Schema.Types.ObjectId;
   userId:mongoose.Schema.Types.ObjectId;
-  fileUrl: String;
+  fileUrl: string;
+  fileId?: mongoose.Types.ObjectId;
   filename: String;
   fileDescription:string;
   remarks: string;
@@ -35,6 +36,8 @@ const reportSchema: Schema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "reportSlot",
     },
+
+    fileId: { type: Schema.Types.ObjectId },
 
     fileUrl: {
         type: String,

@@ -1,6 +1,5 @@
 import { createHash } from "node:crypto";
 import dns from "node:dns";
-import { mkdir, writeFile } from "node:fs/promises";
 
 import dotenv from "dotenv";
 import mongoose, { Model, Types } from "mongoose";
@@ -17,6 +16,7 @@ import {
 import { NotificationType } from "../src/models/notification.model";
 import SlotRequestModel from "../src/models/slot-requests.model";
 import { Role } from "../src/models/user.model";
+import { reportFiles, storeReportFile } from "../src/service/report-file.service";
 
 dotenv.config();
 
@@ -94,7 +94,6 @@ async function seedDemo() {
     });
   }
 
-  await mkdir("uploads", { recursive: true });
   const reports = [
     { key: "database", title: "Database revision session", description: "Reviewed joins and practiced writing queries.", reviewed: true },
     { key: "study-skills", title: "Study planning session", description: "Prepared an accessible revision checklist.", reviewed: false },
@@ -102,7 +101,6 @@ async function seedDemo() {
 
   for (const report of reports) {
     const filename = `demo-${id(report.key)}.txt`;
-    await writeFile("uploads/" + filename, report.title + "\n\n" + report.description + "\n");
     await insert(ReportSlotModel, report.key + "-slot", {
       title: report.title,
       userId: admin._id,
@@ -113,12 +111,33 @@ async function seedDemo() {
     await insert(ReportModel, report.key + "-report", {
       userId: helper._id,
       slotId: id(report.key + "-slot"),
-      fileUrl: "uploads/" + filename,
       filename,
       fileDescription: report.description,
       status: report.reviewed ? "completed" : "processing",
       ...(report.reviewed && { remarks: "Clear notes and practical next steps." }),
     });
+    const reportId = id(report.key + "-report");
+    const missingAttachment = {
+      _id: reportId,
+      userStatus: "active",
+      fileId: { $exists: false },
+      $or: [{ fileUrl: { $exists: false } }, { fileUrl: "uploads/" + filename }],
+    };
+    if (await ReportModel.exists(missingAttachment)) {
+      const fileId = await storeReportFile(
+        filename,
+        Buffer.from(report.title + "\n\n" + report.description + "\n"),
+      );
+      let linked = false;
+      try {
+        const result = await ReportModel.updateOne(missingAttachment, {
+          $set: { fileId, fileUrl: `reports/${reportId}/file` },
+        });
+        linked = result.modifiedCount === 1;
+      } finally {
+        if (!linked) await reportFiles().delete(fileId);
+      }
+    }
   }
 
   await insert(ResourceModel, "sql-resource", {

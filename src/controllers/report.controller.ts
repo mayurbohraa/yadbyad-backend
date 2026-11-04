@@ -2,6 +2,12 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { ReportService, NotificationService } from "../service";
 import moment from "moment";
+import { Types } from "mongoose";
+import { pipeline } from "node:stream/promises";
+import { ReportModel } from "../models";
+import { Role } from "../models/user.model";
+import { reportFiles, storeReportFile } from "../service/report-file.service";
+import { legacyUploadsDirectory } from "../utils/upload.middleware";
 import { Notification } from "../models/notification.model";
 
 export async function submitReport(req: Request, res: Response) {
@@ -46,12 +52,25 @@ export async function submitReport(req: Request, res: Response) {
       });
     }
 
-    const report = await ReportService.createReport({
-      ...req.body,
-      userId: userId,
-      fileUrl: `uploads/${file.filename}`,
-      slotId: slotId,
-    });
+    const reportId = new Types.ObjectId();
+    const fileId = await storeReportFile(file.originalname, file.buffer);
+    let report;
+    try {
+      report = await ReportService.createReport({
+        _id: reportId,
+        filename: req.body.filename.trim(),
+        fileDescription: req.body.fileDescription.trim(),
+        userId,
+        slotId,
+        fileId,
+        fileUrl: `reports/${reportId}/file`,
+      });
+    } catch (error) {
+      await reportFiles().delete(fileId).catch(() => {
+        console.error("Failed to remove an unlinked report attachment.");
+      });
+      throw error;
+    }
 
     NotificationService.createNotification({
       message: "Report Submitted",
@@ -70,6 +89,58 @@ export async function submitReport(req: Request, res: Response) {
       status: httpStatus.INTERNAL_SERVER_ERROR,
       data: error,
     });
+  }
+}
+
+export async function viewReportFile(req: Request, res: Response) {
+  const { id } = req.params;
+  if (!Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ message: "Report file not found." });
+  }
+
+  try {
+    const report = await ReportModel.findOne({
+      _id: id,
+      userStatus: "active",
+      ...(res.locals.user.role === Role.Admin ? {} : { userId: res.get("userId") }),
+    });
+
+    if (!report) return res.status(404).json({ message: "Report file not found." });
+
+    res.set("Cache-Control", "private, no-store");
+    res.set("X-Content-Type-Options", "nosniff");
+    res.set("Access-Control-Expose-Headers", "Content-Disposition");
+
+    if (!report.fileId) {
+      const legacyName = /^uploads[\\/]([^\\/]+)$/.exec(report.fileUrl || "")?.[1];
+      if (!legacyName || legacyName === "." || legacyName === "..") {
+        return res.status(404).json({ message: "Report file not found." });
+      }
+      res.attachment(legacyName).type("application/octet-stream");
+      return res.sendFile(legacyName, { root: legacyUploadsDirectory }, (error) => {
+        if (error && !res.headersSent) {
+          res.removeHeader("Content-Disposition");
+          res.status(404).json({ message: "This older attachment is unavailable." });
+        }
+      });
+    }
+
+    const bucket = reportFiles();
+    const file = await bucket.find({ _id: report.fileId }).next();
+    if (!file) return res.status(404).json({ message: "Report file not found." });
+
+    res.attachment(file.filename);
+    // Only passive formats are shown inline. Other formats are downloaded.
+    const type = res.get("Content-Type") || "";
+    if (!/^(application\/pdf|image\/(png|jpeg|gif|webp)|text\/plain)(;|$)/.test(type)) {
+      res.type("application/octet-stream");
+    }
+    await pipeline(bucket.openDownloadStream(file._id), res);
+  } catch {
+    if (!res.headersSent && !res.destroyed) {
+      res.removeHeader("Content-Disposition");
+      res.status(500).json({ message: "Unable to open the report file." });
+    }
   }
 }
 
@@ -122,8 +193,14 @@ export async function fetchAllReport(req: Request, res: Response) {
 export async function remarks(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    if (res.locals.user.role !== Role.Admin) {
+      return res.status(403).json({ message: "Administrator access required." });
+    }
+    if (typeof req.body.remarks !== "string") {
+      return res.status(400).json({ message: "Provide report remarks." });
+    }
     const report = await ReportService.findReportByIdAndUpdate(id, {
-      ...req.body,
+      remarks: req.body.remarks,
     });
 
     if (report && report.userStatus == "active") {

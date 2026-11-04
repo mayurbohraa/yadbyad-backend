@@ -95,7 +95,7 @@ export async function findReportSlotById(
 
 export async function findReportByIdAndUpdate(
   id: string,
-  report: Report
+  report: Pick<Report, "remarks">
 ): Promise<Report | null> {
   // Convert the string id to ObjectId
   const objectId = new ObjectId(id);
