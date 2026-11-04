@@ -9,8 +9,11 @@ import notificationRoutes from "./notification.routes";
 import lectureRoutes from "./lecture.routes";
 import casualRoutes from "./casual.routes";
 import slotRoutes from "./slot-request.routes";
+import { jwtverify } from "../middlewares";
+import { dashboardSummary } from "../controllers/dashboard.controller";
 
 const routes = Router();
+routes.get("/dashboard", jwtverify, dashboardSummary);
 
 routes.use("/auth", authRoutes);
 routes.use("/schedule", scheduleRoutes);
@@ -22,6 +25,5 @@ routes.use("/notifications", notificationRoutes);
 routes.use("/lecture", lectureRoutes);
 routes.use("/casual", casualRoutes);
 routes.use("/slot", slotRoutes);
-
 
 export default routes;

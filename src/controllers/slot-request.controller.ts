@@ -5,8 +5,6 @@ import { NotificationService } from "../service";
 import { Notification } from "../models/notification.model";
 import * as scheduleService from "../service/schedule.service";
 import slotModel, { SlotRequest } from "../models/slot-requests.model";
-import { schedule } from "node-cron";
-import { Schedule } from "../models/schedule.model";
 
 // for part time student to post request
 export async function postRequest(req: Request, res: Response) {

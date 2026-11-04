@@ -1,6 +1,5 @@
 # dependencies
 node_modules
-package-lock.json
 
 # build output
 dist
@@ -12,3 +11,9 @@ dist
 
 # uploads and runtime files
 uploads/
+
+# editor, system, and test artifacts
+.DS_Store
+coverage/
+*.log
+.vercel/

@@ -4,13 +4,22 @@ import { ReportService, NotificationService } from "../service";
 import moment from "moment";
 import { Notification } from "../models/notification.model";
 
-
 export async function submitReport(req: Request, res: Response) {
- 
   try {
     const { slotId } = req.params;
     const userId = res.get("userId")!;
     const file = req.file;
+    if (
+      !file ||
+      typeof req.body.filename !== "string" ||
+      !req.body.filename.trim() ||
+      typeof req.body.fileDescription !== "string" ||
+      !req.body.fileDescription.trim()
+    ) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ message: "Provide a report name, description, and file." });
+    }
 
     const reportSlot = await ReportService.findReportSlotById(slotId);
 
@@ -20,13 +29,13 @@ export async function submitReport(req: Request, res: Response) {
         message: "Report slot not found",
       });
     }
-    
+
     const startdate = moment(reportSlot.startDate, "DD-MM-YY: hh:mma");
     const enddate = moment(reportSlot.endDate, "DD-MM-YY: hh:mma");
 
     const currentDateTime = moment();
     const isDateAfterStartDate = currentDateTime.isSameOrAfter(
-      moment(startdate)
+      moment(startdate),
     );
     const isDateBeforeEndDate = currentDateTime.isSameOrBefore(moment(enddate));
 
@@ -40,20 +49,15 @@ export async function submitReport(req: Request, res: Response) {
     const report = await ReportService.createReport({
       ...req.body,
       userId: userId,
-      fileUrl: file!.path,
+      fileUrl: `uploads/${file.filename}`,
       slotId: slotId,
     });
 
-
-    NotificationService.createNotification(
-      { 
-        message: "Report Submitted",
-        notificationType: "reportsubmitted",
-        userId: userId,
-  
-         }as  Notification
-       );
-
+    NotificationService.createNotification({
+      message: "Report Submitted",
+      notificationType: "reportsubmitted",
+      userId: userId,
+    } as Notification);
 
     res.status(httpStatus.OK).send({
       status: httpStatus.OK,
@@ -76,7 +80,7 @@ export async function fetchReport(req: Request, res: Response) {
     const reports = await ReportService.fetchReports(
       id,
       parseInt(page as string),
-      parseInt(limit as string)
+      parseInt(limit as string),
     );
     res.status(httpStatus.OK).send({
       statusCode: httpStatus.OK,
@@ -98,7 +102,7 @@ export async function fetchAllReport(req: Request, res: Response) {
 
     const reports = await ReportService.fetchAllReport(
       parseInt(page as string),
-      parseInt(limit as string)
+      parseInt(limit as string),
     );
 
     res.status(httpStatus.OK).send({
@@ -125,14 +129,12 @@ export async function remarks(req: Request, res: Response) {
     if (report && report.userStatus == "active") {
       report.status = "completed";
       report.save();
-     
-      NotificationService.createNotification({ 
-          message: "Your Report Reviewed & Remarked by Admin",
-          notificationType: "reportRemarked",
-          userId: report.userId,
-         
-           } as  Notification
-         );
+
+      NotificationService.createNotification({
+        message: "Your Report Reviewed & Remarked by Admin",
+        notificationType: "reportRemarked",
+        userId: report.userId,
+      } as Notification);
 
       res.status(httpStatus.OK).send({
         statusCode: httpStatus.OK,

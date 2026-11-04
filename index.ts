@@ -32,11 +32,12 @@ if (!dbUrl) {
 }
 
 app.use(express.json());
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "src/views"));
 app.use(cors());
 app.use("/api/v1", router);
-app.use('/api/v1/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(
+  "/api/v1/uploads",
+  express.static(path.resolve(process.cwd(), "uploads")),
+);
 app.use(Exceptionhandler);
 app.use((req, res) => {
   res.status(404).json({

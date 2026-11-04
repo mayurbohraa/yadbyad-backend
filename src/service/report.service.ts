@@ -1,7 +1,6 @@
 import { ReportModel, ReportSlotModel } from "../models";
 import { Report } from "../models/report.model";
 import { ReportSlot } from "../models/reportSlot.model";
-import jsonwebtoken from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 
 /**
@@ -13,16 +12,6 @@ import { ObjectId } from "mongodb";
 
 export async function createReport(report: any): Promise<Report> {
   return await ReportModel.create(report);
-}
-
-/**
- * @description This function is used to generate authenticaton token
- * @param {Report} report
- * @author Kunal Rathod
- * @returns {Promise<Report>}
- */
-export function generateToken(report: Report): string {
-  return jsonwebtoken.sign(report, process.env.JWT_Token!);
 }
 
 /**

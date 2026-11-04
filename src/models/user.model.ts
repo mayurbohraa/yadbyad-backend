@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum Role {
-  Admin= "admin",
+  Admin = "admin",
   PartTime = "part time student",
   SpecialNeed = "special need student",
 }
@@ -27,6 +27,13 @@ export interface User extends Document {
   status: string;
   updatedAt: Date;
   createdAt: Date;
+  recoveryCodeEncrypted?: string;
+  recoveryFailedAttempts: number;
+  recoveryLockedUntil?: Date;
+  recoveryRequestedAt?: Date;
+  recoveryRequestStatus?: "pending" | "approved";
+  recoveryApprovedAt?: Date;
+  authVersion: number;
 }
 
 const userSchema: Schema = new Schema(
@@ -55,6 +62,17 @@ const userSchema: Schema = new Schema(
     password: {
       type: String,
     },
+    recoveryCodeEncrypted: { type: String, select: false },
+    recoveryFailedAttempts: { type: Number, default: 0, select: false },
+    recoveryLockedUntil: { type: Date, select: false },
+    recoveryRequestedAt: { type: Date, select: false },
+    recoveryRequestStatus: {
+      type: String,
+      enum: ["pending", "approved"],
+      select: false,
+    },
+    recoveryApprovedAt: { type: Date, select: false },
+    authVersion: { type: Number, default: 0 },
     isProfileCompleted: {
       type: Boolean,
       default: false,
@@ -77,11 +95,24 @@ const userSchema: Schema = new Schema(
       enum: Status,
       default: "active",
     },
-    
   },
   {
     timestamps: true,
-  }
+    toJSON: {
+      transform(_doc, ret) {
+        const result = ret as unknown as Record<string, unknown>;
+        for (const key of [
+          "password",
+          "recoveryCodeEncrypted",
+          "recoveryFailedAttempts",
+          "recoveryLockedUntil",
+          "recoveryRequestedAt",
+        ])
+          delete result[key];
+        return ret;
+      },
+    },
+  },
 );
 
 export default mongoose.model<User>("users", userSchema);

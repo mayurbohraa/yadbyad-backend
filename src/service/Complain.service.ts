@@ -1,6 +1,5 @@
 import { ComplainModel, ReportModel } from "../models";
 import { Complain } from "../models/complain.model";
-import jsonwebtoken from "jsonwebtoken";
 import { ObjectId } from 'mongodb';
 
 
@@ -13,16 +12,6 @@ import { ObjectId } from 'mongodb';
 
 export async function createComplain(complain: Complain): Promise<Complain> {
   return await ComplainModel.create(complain);
-}
-
-/**
- * @description This function is used to generate authenticaton token
- * @param {Complain} complain
- * @author Kunal Rathod
- * @returns {Promise<Complain>}
- */
-export function generateToken(complain: Complain): string {
-  return jsonwebtoken.sign(complain, process.env.JWT_Token!);
 }
 
 /**

@@ -1,41 +1,37 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-
 export enum NotificationType {
-  reportSubmitted= "reportsubmitted",
+  accountRecoveryAccepted = "accountRecoveryAccepted",
+  reportSubmitted = "reportsubmitted",
   complainSubmitted = "complainsubmitted",
   reportSlotCreated = "reportSlotCreated",
   complainReplied = "complainReplied",
   reportRemarked = "reportRemarked",
   reportSlotDeleted = "reportSlotDeleted",
-  resourcecreated ="resourcecreated",
+  resourcecreated = "resourcecreated",
   resourceedited = "resourceedited",
   casualSessionRequested = "casualSessionRequested",
   examAdded = "examAdded",
-  lectureCreated= "lectureCreated",
+  lectureCreated = "lectureCreated",
   casualSessionAcceptedOrRejected = "casualSessionAcceptedOrRejected",
   partTimeCasualExamLectureRequest = "partTimeCasual/Exam/LectureRequest",
   casualexamlectureSessionAcceptedOrRejectedBySpecialNeed = "casual/exam/lectureSessionAcceptedOrRejectedBySpecialNeed",
   CasualExamLectureDeleted = "Casual/Exam/LectureDeleted",
   newStudentJoined = "newStudentJoined",
   resourcedeleted = "resourcedeleted",
-  sessionDropped = "sessionDropped"
+  sessionDropped = "sessionDropped",
 }
 
 export interface Notification extends Document {
-  
-  message:string;
-  isRead:boolean;
+  message: string;
+  isRead: boolean;
   readBy: [string];
-  notificationType:string;
+  notificationType: string;
   updatedAt: Date;
   createdAt: Date;
-  userId: string | any ;
-  specialNeedsStudentID?:string;
- 
+  userId: string | any;
+  specialNeedsStudentID?: string;
 }
-
-
 
 const notificationSchema: Schema = new Schema(
   {
@@ -62,14 +58,14 @@ const notificationSchema: Schema = new Schema(
       ref: "users",
     },
 
-    specialNeedsStudentID:{
-      type:String,
+    specialNeedsStudentID: {
+      type: String,
       default: null,
-    }
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model<Notification>("notification", notificationSchema);
