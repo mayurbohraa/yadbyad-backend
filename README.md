@@ -98,3 +98,9 @@ scripts/              # Demo-data tools
 documents/            # Public application preview
 .env.sample           # Private configuration template
 ```
+
+## My Contributions
+
+- Contributed to backend planning and API integration planning.
+- Defined frontend and backend interactions within the overall implementation plan.
+- Deployed the backend on Vercel.
