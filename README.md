@@ -1,14 +1,14 @@
 # Yad Byad Backend
 
-## Project Overview
+## Overview
 
 The Yad Byad API supports academic peer assistance through account management, session scheduling, matching requests, resources, complaints, and reports. It stores application records and report attachments in MongoDB and serves the companion web interface.
 
 ## Project Preview
 
-<img src="documents/project-preview.webp" alt="Yad Byad Backend application screens and visual identity" width="520">
+<img src="documents/project-preview.webp" alt="Yad Byad Backend application screens and visual identity" width="100%">
 
-Companion application screens and visual identity. Branding mockups are presentation concepts.
+Companion application preview.
 
 ## Key Features
 
